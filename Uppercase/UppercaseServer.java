@@ -6,21 +6,32 @@ public class UppercaseServer {
         try {
             ServerSocket serverSocket = new ServerSocket(9090);
             System.out.println("Server waiting for client connection...");
-
+            
             Socket clientSocket = serverSocket.accept();
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            
+            out.println("Greetings!");
+            out.println("Server v1.0 | GECA Assignment");
+            out.println("Updated: October, 2024");
+            while (true) {
+                // Receive message from client
+                String message = in.readLine();
+                System.out.println("Received: " + message);
+                
+                // Shutdown server, in case of empty message
+                if (message.equals("")) break;
 
-            String message = in.readLine();  // Receive message from client
-            System.out.println("Received: " + message);
-
-            String upperCaseMessage = message.toUpperCase();  // Convert to uppercase
-            out.println(upperCaseMessage);  // Send back to client
+                // Send back to client
+                out.println(message.toUpperCase());
+            }
 
             clientSocket.close();
             serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Something went wrong!");
+        } finally {
+            System.out.println("Connection Closed.");
         }
     }
 }

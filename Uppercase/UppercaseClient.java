@@ -1,23 +1,41 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class UppercaseClient {
     public static void main(String[] args) {
         try {
+            Scanner scanner = new Scanner(System.in);
             Socket socket = new Socket("localhost", 9090);
-
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            String message = "hello server";
-            out.println(message); // Send message to server
-            String response = in.readLine(); // Receive response from server
+            // Three line header from server
+            System.out.println(in.readLine());
+            System.out.println(in.readLine());
+            System.out.println(in.readLine());
 
-            System.out.println("Server response: " + response); // Output uppercase response
+            while (true) {
+                // Send message to server
+                System.out.print("send ➜ ");
+                String message = scanner.nextLine();
+                out.println(message);
+
+                // In case of empty message, server will shutdown
+                // and so do the client prompt
+                if (message.equals(""))
+                    break;
+
+                // Get response
+                String response = in.readLine();
+                System.out.println(response);
+            }
 
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Something went wrong!");
+        } finally {
+            System.out.println("Connection Closed.");
         }
     }
 }
