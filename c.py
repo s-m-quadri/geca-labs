@@ -3,3 +3,9 @@
 
 # 💡 TIP:
 # `input()` always returns a string, so use `int()` to convert age.
+
+name=input("Enter your name")
+
+a=input("Enter your age")
+age=int(a)
+print(f"Hello {name} you are {age} years old")
