@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
+numbers = [1,2,3,4,5]
+print(numbers[0], numbers[2], numbers[-1])
+numbers[2] = 100
+print(numbers)

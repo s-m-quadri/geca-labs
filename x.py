@@ -4,3 +4,6 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
+import random
+print(random.randint(1, 6))
+print(random.choice(["Heads", "Tails"]))

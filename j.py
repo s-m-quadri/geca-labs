@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+words = []
+words.append("pen")
+words.append("pencil")
+words.append("scale")
+words.sort()
+words.reverse()
+print(words)
