@@ -1,9 +1,10 @@
-# ✅ TASK:
-# Declare three variables:
-#  - name (string)
-#  - age (integer)
-#  - is_student (boolean)
-# Then print them in one line using commas.
 
-# 💡 TIP:
-# Use `=`, `True/False`, and `print()` with commas.
+
+
+ let name = "Arpit";
+    let age = 20;
+    let is_std = true;
+
+  
+
+    console.log("name", name, "age", age, "is_Std", is_std);
