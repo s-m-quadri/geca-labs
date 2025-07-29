@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Sets remove duplicates automatically. Use `.add()` to insert.
+nums = {1, 2, 2, 3, 4, 4, 5}
+print(nums)
+nums.add(6)
+print(nums)
