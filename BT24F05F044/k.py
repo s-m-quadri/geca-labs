@@ -4,3 +4,6 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+t = (1, 2, 3)
+for item in t:
+    print(item)

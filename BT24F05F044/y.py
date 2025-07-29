@@ -3,3 +3,8 @@
 
 # 💡 TIP:
 # Use `.isdigit()` or handle exceptions using try-except.
+num = input("Enter a number: ")
+if num.lstrip('-').isdigit():
+    print(int(num))
+else:
+    print("Invalid input")
