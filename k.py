@@ -4,3 +4,8 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+
+tuple = ("a", "b", "c")
+
+for x in tuple:
+    print(x)
