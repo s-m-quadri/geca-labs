@@ -7,3 +7,7 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+name="reva"
+x=20
+is_student='true' 
+print(name,x,is_student)
