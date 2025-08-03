@@ -2,4 +2,4 @@
 #  - Use file modes `'w'` and `'r'`.
 
 # 💡 TIP:
-# Use `with open(...) as f:` to auto-close files.
+# Use `with open(...) as f:` to auto-close files
