@@ -5,5 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("Hellolo !")
+print("Hello !")
 print("This is lab of DAA")
