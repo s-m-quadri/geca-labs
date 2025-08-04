@@ -4,3 +4,20 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+
+my_list = []
+
+
+my_list.append("orange")
+my_list.append("apple")
+my_list.append("banana")
+
+
+my_list.sort()
+
+
+my_list.reverse()
+
+
+print("Sorted in reverse order:", my_list)
