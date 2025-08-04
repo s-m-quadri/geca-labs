@@ -4,3 +4,14 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+letter = []
+
+letter.append("a")
+letter.append("b")
+letter.append("c")
+
+letter.sort()
+letter.reverse()
+
+print(letter)
