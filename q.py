@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
+
+rows=int(input("enter height"))
+column=int(input("enter width"))
+for i in  range(rows):
+    for j in range (column):
+        print("*",end="");
+    print()
