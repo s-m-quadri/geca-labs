@@ -7,3 +7,8 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+
+name="hello"
+age=20
+is_student=True
+print(f"name: {name} ,age: {age} ,is_student :{is_student}")

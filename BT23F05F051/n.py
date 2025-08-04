@@ -3,3 +3,6 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+def sum(a,b):
+    return a+b
+print(sum(4,5))    

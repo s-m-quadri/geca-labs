@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
+import random
+print("dice:"random.randint(1,6))
+
+print("coin :" ,random.choice(["heads","tails"]))
