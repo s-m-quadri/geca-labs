@@ -4,3 +4,14 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
+
+
+try:
+    a=int(input())
+    b=int(input())
+    result=a/b
+    print(result)
+except ZeroDivisionError:
+    print("zero division error")
+except ValueError:
+    print("enter valid numbers")

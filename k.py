@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+tup=(1,2,3,4)
+# tup[0]=4
+for i in tup:
+    print(i)
