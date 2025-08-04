@@ -4,14 +4,4 @@
 
 # 💡 TIP:
 # `range(1, 11)` gives 1 through 10.
-# Use `while` with a x.
-
-# for loop
-for x in range(1, 11):
-    print(x)
-
-# while loop
-x = 1
-while x <= 10:
-    print(x)
-    x += 1
+# Use `while` with a counter.
