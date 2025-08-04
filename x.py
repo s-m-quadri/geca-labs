@@ -4,11 +4,3 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
-
-import random
-
-dice_roll = random.randint(1, 6)
-print(f"Dice roll: {dice_roll}")
-
-coin_toss = random.choice(["Heads", "Tails"])
-print(f"Coin toss: {coin_toss}")

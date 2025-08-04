@@ -7,3 +7,9 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+x="Saiesh"
+y = 20
+z = True
+
+
+print(x,y,z)
