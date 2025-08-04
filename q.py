@@ -12,3 +12,4 @@ for i in range(x):
     for j in range(y):
         print("*", end="")
     print()
+
