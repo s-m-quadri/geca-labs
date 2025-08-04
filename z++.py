@@ -6,6 +6,7 @@
 # 💡 TIP:
 # Use `.split()` and `.upper()` / `.lower()`
 
+
 Fullname = input("Enter your full name: ")
 
 print("Lowercase:", Fullname.lower())
