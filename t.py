@@ -4,6 +4,7 @@
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
 
+
 # Write 
 with open("output.txt", "w") as f:
     f.write("Line 1: Hello\n")
