@@ -2,8 +2,6 @@
 
 This repository hosts a structured collection of laboratory resources aligned with advanced undergraduate and postgraduate coursework in Computer Science and Engineering. The materials are curated and adapted from GECA Aurangabad's official instructional site: [https://www.s-m-quadri.me/geca](https://www.s-m-quadri.me/geca).
 
-Original resources and materials are derived from the academic content at GECA Aurangabad: [https://www.s-m-quadri.me/geca](https://www.s-m-quadri.me/geca)
-
 ## Objective
 
 - Facilitate **hands-on laboratory education** in key domains of Computer Science.
