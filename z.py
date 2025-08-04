@@ -5,12 +5,13 @@
 # 💡 TIP:
 # Combine `if`, `math`, `random`, and type conversion.
 
+
 import math
 import random
 
 quote = ["Comparison is a thief of joy"]
 
-a = input("Enter: ")
+a = input("Enter number: ")
 
 if a.isdigit():
     a = int(a)
