@@ -7,3 +7,9 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+x="Ronit"
+y = 17
+z = True
+
+
+print(x,y,z)
