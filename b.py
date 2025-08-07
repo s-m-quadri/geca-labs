@@ -7,4 +7,7 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
-print("GECA")
+Name : Gunjan
+age :19
+is_student = True
+print(Name,age,is_student)
