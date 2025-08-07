@@ -7,4 +7,5 @@
 # Use the `print()` function.
 
 
-print("Hii")
+print("Hello, Python!")
+print("This is Lab A")
