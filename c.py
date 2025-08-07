@@ -3,3 +3,4 @@
 
 # 💡 TIP:
 # `input()` always returns a string, so use `int()` to convert age.
+input(int())
