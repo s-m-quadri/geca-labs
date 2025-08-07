@@ -7,3 +7,9 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+name = "Prajakta"
+age = 20
+is_student = True
+
+# Printing all in one line using commas
+print(name, age, is_student)
