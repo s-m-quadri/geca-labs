@@ -7,3 +7,8 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+name="vishal"
+age=21
+is_student=True
+
+print("my name is ",name,"my age is ",age," Is i am student ",is_student)
