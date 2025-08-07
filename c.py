@@ -4,5 +4,7 @@
 # 💡 TIP:
 # `input()` always returns a string, so use `int()` to convert age.
 
-name = int(input("enter your name:"))
-print("hello",name)
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+print("Hello", name + ", you are", age, "years old.")
+
