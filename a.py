@@ -6,3 +6,4 @@
 # 💡 TIP:
 # Use the `print()` function.
 print("Hi")
+print("Hello")
