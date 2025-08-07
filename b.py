@@ -7,3 +7,4 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+print("GECA")
