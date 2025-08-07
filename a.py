@@ -5,4 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("")
+print("Hello,Python!")
+print("This is Lab A")
