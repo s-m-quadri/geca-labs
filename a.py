@@ -6,5 +6,5 @@
 # 💡 TIP:
 # Use the `print()` function.
 
-print("hello Python!")
+print("Hello Python!")
 print("This is Lab A")
