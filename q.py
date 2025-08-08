@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
+
+rows = int(input("Enter number of rows: "))
+columns = int(input("Enter number of columns: "))
+for row in range(0,rows):
+    for col in range(0,columns):
+        print("*",end="")
+    print()

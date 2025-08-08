@@ -4,3 +4,14 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+list = []
+
+list.append("Apple")
+list.append("Banana")
+list.append("Orange")
+
+list.sort()
+
+list.reverse()
+print(list)
