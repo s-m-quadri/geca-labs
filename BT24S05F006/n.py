@@ -3,3 +3,10 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+
+# Define the function
+def add_numbers(a, b):
+    return a + b
+
+# Call the function with example values
+print("Sum:", add_numbers(2, 3))

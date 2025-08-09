@@ -4,13 +4,3 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
-
-import random
-
-# Simulate a dice roll (1 to 6)
-dice = random.randint(1, 6)
-print("Dice roll result:", dice)
-
-# Simulate a coin toss (Heads or Tails)
-coin = random.choice(["Heads", "Tails"])
-print("Coin toss result:", coin)
