@@ -3,12 +3,3 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
-
-with open('output.txt', 'w') as f:
-    f.write("Line 1: Hello, World!\n")
-    f.write("Line 2: Python is great.\n")
-    f.write("Line 3: File handling is easy.\n")
-with open('output.txt', 'r') as f:
-    content = f.read()
-print("File content:")
-print(content)

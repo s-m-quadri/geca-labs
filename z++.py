@@ -5,12 +5,3 @@
 
 # 💡 TIP:
 # Use `.split()` and `.upper()` / `.lower()`
-full_name = input("Enter your full name: ")
-name_parts = full_name.split()
-lowercase_name = full_name.lower()
-uppercase_name = full_name.upper()
-initials = ' '.join([part[0].upper() + '.' for part in name
-_parts])
-print("Lowercase:", lowercase_name)
-print("Uppercase:", uppercase_name)
-print("Initials:", initials)
