@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+
+numbers = (1,2,3)
+# numbers[1] = 10
+
+for item in numbers:
+    print(item)

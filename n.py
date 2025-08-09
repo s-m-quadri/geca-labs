@@ -3,3 +3,9 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+
+def f(num1,num2):
+    return num1+num2
+
+ex = f(2,3)
+print(ex)
