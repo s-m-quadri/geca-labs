@@ -4,3 +4,11 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+
+tuple = ("Jan", "Feb", "Mar")
+try:
+    tuple[1] = "Apr" 
+except TypeError as e:
+    print("Error:", e)
+for item in tuple:
+    print(item)

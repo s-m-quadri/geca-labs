@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
+
+list = [10, 20, 30, 40, 50]
+print("First element: ", list[0])
+print("Middle element: ", list[2])
+print("Last element: ", list[-1])
+list[2] = 100
+print(list)
