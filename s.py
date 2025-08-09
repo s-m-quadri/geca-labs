@@ -4,13 +4,3 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
-
-try:
-    a = float(input("Enter first number: "))
-    b = float(input("Enter second number: "))
-    result = a / b
-    print("Result:", result)
-except ValueError:
-    print("Invalid input! Please enter numbers only.")
-except ZeroDivisionError:
-    print("Error: Cannot divide by zero!")
