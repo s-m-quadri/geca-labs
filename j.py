@@ -4,3 +4,11 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+list=[]
+list.append("Math")
+list.append("Science")
+list.append("English")
+list.sort()
+list.reverse()
+print("sorted list in reverse order:")
+print(list)
