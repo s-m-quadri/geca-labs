@@ -3,3 +3,7 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
+with open("output.txt", "w") as f:
+    f.write("HI\nGoogle\nby\n")
+with open("output.txt", "r") as f:
+    print(f.read())
