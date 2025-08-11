@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+a = []
+a.append("Dog")
+a.append("Cat")
+a.append("Bird")
+a.sort()
+a.reverse()
+print(a)
