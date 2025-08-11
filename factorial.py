@@ -1,8 +1,20 @@
-def factorial(n):
+def fact(n):
     if(n==0):
-        return 1
-    return n*factorial(n-1)
+      return 1
+    return n*fact(n-1)
 
-a=input("Enter a number")
-n=int(a)
-print(factorial(n))
+
+def factorial(n):
+    if n==0:
+     return 0
+    result=1
+    for i in range(2,n+1):
+      result*=i
+    return result
+
+      
+   
+s=input("enter a number ")
+a=int(s)
+print(fact(a))
+print(factorial(a))
