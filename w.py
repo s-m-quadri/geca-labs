@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
+import random
+dice= random.randint(1,6)
+print("Dice roll :", dice)
+
+coin = random.choice(["Heads", "Tails"])
+print("Coin toss: ", coin )
