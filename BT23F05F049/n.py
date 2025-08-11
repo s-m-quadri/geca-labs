@@ -3,3 +3,7 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+def add_numbers(a,b):
+    return a+b
+sum=add_numbers(2,3)
+print("Sum of two numbers is:",sum)
