@@ -3,3 +3,9 @@
 
 # 💡 TIP:
 # Format → `[expression for item in iterable if condition]`
+squares = [x**2 for x in range(1, 11)]
+print("Squares (1 to 10):", squares)
+
+# List of even numbers from 1 to 20
+even_numbers = [x for x in range(1, 21) if x % 2 == 0]
+print("Even numbers (1 to 20):", even_numbers)
