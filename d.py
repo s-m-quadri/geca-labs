@@ -1,3 +1,4 @@
+Completed d.py
 # Write a program that takes two numbers from the user.
 # Print their:
 #  - sum
@@ -9,3 +10,22 @@
 
 # 💡 TIP:
 # Use `+`, `-`, `*`, `/`, `%`, and `**`.
+print("Enter a no : ")
+a= int(input())
+print("Enter a no : ")
+b= int(input())
+sum = a +b 
+difference = a -b
+product = a * b
+quotient = a /b
+remainder = a %b
+power = a **b 
+
+print(f"""
+sum ={sum}
+difference ={difference}
+product ={product}
+Quotient ={quotient}
+Remainder ={remainder} 
+Power = {power} """)
+
