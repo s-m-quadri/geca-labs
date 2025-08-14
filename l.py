@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
+
+dict = {"JOY":90,"Ketki":40,"Jay":99}
+
+print(dict["Jay"])
+
+for i in dict.items():
+    print(i)
