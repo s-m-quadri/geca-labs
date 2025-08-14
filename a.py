@@ -1,3 +1,4 @@
+
 # Write a program that prints:
 #  - "Hello, Python!"
 #  - "This is Lab A"
@@ -5,3 +6,4 @@
 
 # 💡 TIP:
 # Use the `print()` function.
+print("hello!")
