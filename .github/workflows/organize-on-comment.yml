@@ -23,11 +23,35 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}  # Checkout with bot identity
           fetch-depth: 0
 
+      - name: Get PR title
+        id: prdata
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              pull_number: context.issue.number
+            });
+            core.setOutput("title", pr.data.title);
+      
       - name: Extract Roll Number from PR title
         run: |
-          PR_TITLE="${{ steps.pr.outputs.title }}"
-          ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+')
+          PR_TITLE="${{ steps.prdata.outputs.title }}"
+          ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
+          if [ -z "$ROLL" ]; then
+            echo "❌ Could not extract roll number from PR title: $PR_TITLE"
+            exit 1
+          fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
+
+
+      # - name: Extract Roll Number from PR title
+      #   run: |
+      #     PR_TITLE="${{ steps.pr.outputs.title }}"
+      #     ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+')
+      #     echo "ROLL=$ROLL" >> $GITHUB_ENV
 
       - name: Organize files (preview only)
         run: |
