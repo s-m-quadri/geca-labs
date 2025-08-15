@@ -150,14 +150,13 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            const prn = process.env.PRN;
+            const prn = process.env.PRN.toUpperCase();
             const { data: pulls } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "all",
               per_page: 100
             });
-            const prn = process.env.PRN.toUpperCase();
             const related = pulls.filter(p => p.title.toUpperCase().includes(prn));
             return related.map(p => `- #${p.number}`).join('\n');
 
