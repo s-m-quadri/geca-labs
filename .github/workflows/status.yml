@@ -141,6 +141,7 @@ jobs:
               base: `sub-lab-daa-${process.env.LAB_NUM}`
             });
 
+
       - name: List all PRs for PRN
         id: listprs
         uses: actions/github-script@v7
@@ -155,31 +156,31 @@ jobs:
             });
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
-            return related.map(p => `- #${p.number}`).join("\n");
+            return related.map(p => `- [#${p.number}](${p.html_url}) – ${p.title}`).join('\n');
 
       - name: Post beautiful status comment
         run: |
           REVIEW_DATE=$(date -d "+3 weeks" +"%d %B %Y")
-          SUBMISSIONS_LIST="${{ steps.listprs.outputs.result }}"
+          PR_LIST="${{ steps.listprs.outputs.result }}"
 
           BODY=$(cat <<EOF
           ## 📌 PRN: $PRN
-          
+
           We've successfully received your submission for **Lab ${LAB_NUM}**.
-          
+
           **Your PRN**: \`$PRN\`  
           **Lab Number**: ${LAB_NUM}  
           **Base Branch**: \`${BASE_BRANCH}\`
-          
+
           ### All your submissions so far:
-          $SUBMISSIONS_LIST
-          
+          $PR_LIST
+
           Please ensure you complete all required files for this lab.  
           We will review your submissions **within at most 3 weeks**, i.e., by **$REVIEW_DATE**.
-          
+
           If you have doubts or questions, comment here, and we’ll get back to you  
           once you’ve completed your work.
-          
+
           _Thank you for your submission._
           EOF
           )
