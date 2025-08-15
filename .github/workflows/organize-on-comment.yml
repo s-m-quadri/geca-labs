@@ -30,9 +30,9 @@ jobs:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
             const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              pull_number: context.issue.number
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.issue.number
             });
             core.setOutput("title", pr.data.title);
       
