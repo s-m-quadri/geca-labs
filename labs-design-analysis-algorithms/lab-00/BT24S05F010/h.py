@@ -4,3 +4,8 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
+
+list = [23,45,23,1,23]
+print(list[0],list[2],list[-1])
+list[2] = 100
+print(list)

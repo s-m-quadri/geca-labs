@@ -5,3 +5,8 @@
 
 # 💡 TIP:
 # Use `import math`, and remember degrees must be converted to radians.
+
+import math
+print(math.sqrt(144))
+print(math.pi)
+print(math.sin(math.radians(90)))
