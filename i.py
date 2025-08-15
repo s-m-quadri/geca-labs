@@ -3,3 +3,10 @@
 
 # 💡 TIP:
 # Use `for item in list` and `enumerate(list)` for both item and index.
+
+colors = ["blue","red","yellow","pink","green"]
+for color in colors :
+    print(color)
+
+for index, value in enumerate(colors):
+    print(f"Index {index}: {value}")
