@@ -1,37 +1,36 @@
 name: Organize Submission After Merge
 
 on:
-  pull_request:
-    types: [closed] # Trigger when PR is closed (merged or not)
+  push:
+    branches:
+      - 'sub-*'  # Only run when commits land in sub-* branches
 
 jobs:
   organize:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.base.ref, 'sub-')
     runs-on: ubuntu-latest
     steps:
-      # Checkout base branch where PR was merged
-      - name: Checkout base branch
+      - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.base.ref }}
+          ref: ${{ github.ref }}
           token: ${{ secrets.BOT_TOKEN }}
           fetch-depth: 0
 
-      - name: Extract PR info
-        id: prinfo
+      - name: Extract PR info from commit
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
+          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Last commit message: $LAST_COMMIT_MSG"
+          ROLL=$(echo "$LAST_COMMIT_MSG" | grep -oP 'BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "❌ Could not extract PRN from PR title: $PR_TITLE"
+            echo "❌ Could not extract PRN from commit message"
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
-          echo "BASE_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-          echo "HEAD_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
 
-      - name: Determine Lab Folder from base branch
-        id: labdir
+          BASE_BRANCH=$(basename "${GITHUB_REF}")
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+
+      - name: Determine Lab Folder
         run: |
           LAB_BASE="labs-design-analysis-algorithms"
           LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
@@ -52,7 +51,6 @@ jobs:
 
       - name: Restore lab working set
         run: |
-          # Get original lab branch (without sub-)
           ORIGINAL_BRANCH=$(echo "${BASE_BRANCH}" | sed 's/^sub-//')
           echo "Restoring from $ORIGINAL_BRANCH ..."
           git checkout "origin/${ORIGINAL_BRANCH}" -- .
@@ -62,5 +60,5 @@ jobs:
           git config user.name "bot-s-m-quadri"
           git config user.email "access.smq@gmail.com"
           git add "$LAB_DIR/$ROLL"
-          git commit -m "Organize submission for $ROLL (PR #${{ github.event.pull_request.number }})" || echo "No changes to commit"
+          git commit -m "Organize submission for $ROLL (merge into ${BASE_BRANCH})" || echo "No changes to commit"
           git push origin "${BASE_BRANCH}"
