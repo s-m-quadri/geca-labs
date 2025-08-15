@@ -29,13 +29,21 @@ jobs:
             core.setOutput("changed_files", pr.data.changed_files);
             core.setOutput("mergeable_state", pr.data.mergeable_state);
 
+      # Checkout base branch
+      - name: Checkout base branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.pr.outputs.base_ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          path: base
+
       # Checkout PR branch
       - name: Checkout PR branch
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.pr.outputs.head_ref }}
           token: ${{ secrets.BOT_TOKEN }}
-          fetch-depth: 0
+          path: pr
 
       # Extract Roll Number and Lab Directory
       - name: Extract Roll Number and Lab Directory
@@ -45,43 +53,59 @@ jobs:
 
           ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "❌ Could not extract roll number from PR title: $PR_TITLE"
+            echo "Could not extract roll number from PR title: $PR_TITLE" >&2
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
 
           case "$BASE_BRANCH" in
             lab-daa*) LAB_DIR="labs-design-analysis-algorithms" ;;
-            lab-acn*) LAB_DIR="labs-adv-computer-netowrks" ;;
+            lab-acn*) LAB_DIR="labs-adv-computer-networks" ;;
             lab-ml*)  LAB_DIR="labs-adv-machine-learning" ;;
             lab-cv*)  LAB_DIR="labs-computer-vision" ;;
-            *) echo "❌ Unknown lab for branch $BASE_BRANCH"; exit 1 ;;
+            *) echo "Unknown lab for branch $BASE_BRANCH" >&2; exit 1 ;;
           esac
           echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
 
       # Generate status report
-      - name: Generate report
+      - name: Generate status report
         run: |
-          echo "## 📊 Lab Submission Status" > comment.md
+          echo "# Lab Submission Status Report" > comment.md
           echo "" >> comment.md
-          echo "**Target Lab Folder:** \`$LAB_DIR\`" >> comment.md
-          echo "**New Student Folder:** \`$ROLL\`" >> comment.md
+          echo "Target Lab Folder: \`$LAB_DIR\`" >> comment.md
+          echo "Proposed Student Folder: \`$ROLL\`" >> comment.md
+          echo "Base Branch: \`${{ steps.pr.outputs.base_ref }}\`" >> comment.md
+          echo "PR Branch: \`${{ steps.pr.outputs.head_ref }}\`" >> comment.md
           echo "" >> comment.md
-          echo "### 📂 Files in Submission" >> comment.md
-          if [ -d "$LAB_DIR/$ROLL" ]; then
-            # List files in flat format
-            find "$LAB_DIR/$ROLL" -type f -printf "- %P\n" >> comment.md
-          else
-            # List current files in working dir that would go into target
-            find . -maxdepth 1 -type f -printf "- %P\n" >> comment.md
-          fi
-          echo "" >> comment.md
-          echo "**Merge Conflict:** \`$( [ '${{ steps.pr.outputs.mergeable_state }}' = 'dirty' ] && echo 'yes' || echo 'no' )\`" >> comment.md
-          echo "**Files Changed in PR:** \`${{ steps.pr.outputs.changed_files }}\`" >> comment.md
-          echo "" >> comment.md
-          echo "> 📝 This report only reflects the PR's current state and does not modify files." >> comment.md
 
-      # Post comment
+          echo "## File Change Summary" >> comment.md
+          echo "" >> comment.md
+          echo "Category | File Path" >> comment.md
+          echo "--- | ---" >> comment.md
+
+          BASE_PATH="base/$LAB_DIR/$ROLL"
+          PR_PATH="pr/$LAB_DIR/$ROLL"
+
+          mkdir -p "$BASE_PATH"
+          mkdir -p "$PR_PATH"
+
+          comm -23 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) | sed 's|^\./||' | awk '{print "Added | " $0}' >> comment.md
+          comm -13 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) | sed 's|^\./||' | awk '{print "Deleted | " $0}' >> comment.md
+          comm -12 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) |
+            while read file; do
+              if ! diff -q "$PR_PATH/$file" "$BASE_PATH/$file" >/dev/null; then
+                echo "Modified | $file"
+              fi
+            done >> comment.md
+
+          echo "" >> comment.md
+          echo "## Additional Information" >> comment.md
+          echo "" >> comment.md
+          echo "Merge Conflict: \`$( [ '${{ steps.pr.outputs.mergeable_state }}' = 'dirty' ] && echo 'Yes' || echo 'No' )\`" >> comment.md
+          echo "Total Files Changed: \`${{ steps.pr.outputs.changed_files }}\`" >> comment.md
+          echo "This report is generated from a comparison of the base branch and the PR branch. It does not modify any files." >> comment.md
+
+      # Post status comment
       - name: Post status comment
         uses: actions/github-script@v7
         with:
