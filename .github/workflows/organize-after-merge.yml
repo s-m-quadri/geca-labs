@@ -2,16 +2,14 @@ name: Organize Submission After Merge
 
 on:
   pull_request:
-    types: [closed]  # Trigger when PR is closed
-    branches:
-      - 'sub-*'      # Only run if PR targets sub-* branches
+    types: [closed] # Trigger when PR is closed (merged or not)
 
 jobs:
   organize:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.base.ref, 'sub-')
     runs-on: ubuntu-latest
     steps:
-      # Checkout target branch where PR was merged
+      # Checkout base branch where PR was merged
       - name: Checkout base branch
         uses: actions/checkout@v3
         with:
@@ -35,23 +33,14 @@ jobs:
       - name: Determine Lab Folder from base branch
         id: labdir
         run: |
-          LAB_DIR=""
-          if [[ "${BASE_BRANCH}" == sub-lab-daa* ]]; then
-            LAB_BASE="labs-design-analysis-algorithms"
-          else
-            echo "Unsupported base branch: ${BASE_BRANCH}"
-            exit 1
-          fi
-
-          # Extract lab number
+          LAB_BASE="labs-design-analysis-algorithms"
           LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
           if [ -z "$LAB_NUM" ]; then
             LAB_NUM="00"
           fi
-
           LAB_DIR="$LAB_BASE/lab-$LAB_NUM"
           echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
-          
+
       - name: Move files into PRN folder
         run: |
           mkdir -p "$LAB_DIR/$ROLL"
@@ -61,6 +50,13 @@ jobs:
           mv ./*.csv "$LAB_DIR/$ROLL"/ || true
           mv ./*.md "$LAB_DIR/$ROLL"/ || true
 
+      - name: Restore lab working set
+        run: |
+          # Get original lab branch (without sub-)
+          ORIGINAL_BRANCH=$(echo "${BASE_BRANCH}" | sed 's/^sub-//')
+          echo "Restoring from $ORIGINAL_BRANCH ..."
+          git checkout "origin/${ORIGINAL_BRANCH}" -- .
+
       - name: Commit changes as bot
         run: |
           git config user.name "bot-s-m-quadri"
@@ -68,7 +64,3 @@ jobs:
           git add "$LAB_DIR/$ROLL"
           git commit -m "Organize submission for $ROLL (PR #${{ github.event.pull_request.number }})" || echo "No changes to commit"
           git push origin "${BASE_BRANCH}"
-
-      - name: Restore lab folder to original state
-        run: |
-          git checkout "origin/${BASE_BRANCH}" -- "$LAB_DIR" || true
