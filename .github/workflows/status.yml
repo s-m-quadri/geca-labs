@@ -156,7 +156,7 @@ jobs:
             });
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
-            return related.map(p => `- #${p.number}`).join("\n");
+            return related.map(p => `- #${p.number}`).join(`%0A`);
             
       - name: Prepare PR list
         run: |
