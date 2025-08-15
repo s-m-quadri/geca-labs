@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+my_tuple = ('red','blue','green')
+
+#  my_tuple[1]='Orange'   ==> error
+
+for color in my_tuple:
+    print(color)

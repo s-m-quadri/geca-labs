@@ -4,3 +4,16 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+list = []
+
+list.append("DAA")
+list.append("FLAT")
+list.append("DMDW")
+
+
+list.sort()
+print("Sorted: ",list)
+
+list.reverse()
+print("reversed: ",list)
