@@ -159,9 +159,12 @@ jobs:
             return related.map(p => `- #${p.number}`).join("\n");
             
       - name: Prepare PR list
-        run: echo "PR_LIST<<EOF" >> $GITHUB_ENV && \
-             echo "${{ steps.listprs.outputs.result }}" >> $GITHUB_ENV && \
-             echo "EOF" >> $GITHUB_ENV
+        run: |
+          {
+            echo "PR_LIST<<EOF"
+            echo "${{ steps.listprs.outputs.result }}"
+            echo "EOF"
+          } >> $GITHUB_ENV
       
       - name: Post beautiful status comment
         run: |
