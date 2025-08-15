@@ -1,18 +1,8 @@
-# ✅ TASK:
-# Ask user for a sentence.
-# Then:
-#  - Print it in uppercase.
-#  - Print it reversed.
-#  - Print its length.
+# Ask the user to enter a number.
+# Print:
+#  - "Positive" if it's > 0
+#  - "Negative" if it's < 0
+#  - "Zero" if it's 0
 
 # 💡 TIP:
-# Use `.upper()`, slicing `[::-1]`, and `len()`.
-
-
-sentence = input("Enter a sentence: ")
-
-print("Uppercase:", sentence.upper())
-
-print("Reversed:", sentence[::-1])
-
-print("Length:", len(sentence))
+# Use `if`, `elif`, and `else`.
