@@ -8,10 +8,20 @@ jobs:
   merge_and_organize:
     if: |
       github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '@bot-s-m-quadri merge')
+      contains(github.event.comment.body, '@bot-s-m-quadri merge') &&
+      github.event.comment.user.login == 's-m-quadri'
     runs-on: ubuntu-latest
 
     steps:
+      - name: Announce start
+        run: |
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="👋 **Hi!** Command received from @${{ github.event.comment.user.login }}.  
+            I’ll start merging and organizing your submission now.  
+            Please hold on while I complete my work!."
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+
       - name: Get PR details
         id: pr
         uses: octokit/request-action@v2.x
@@ -24,6 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Merge PR
+        id: merge
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge
@@ -33,6 +44,19 @@ jobs:
           merge_method: merge
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        continue-on-error: true
+
+      - name: Check merge status
+        run: |
+          if [ "${{ steps.merge.outputs.status }}" != "200" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="❌ **Merge failed!**  
+              I couldn’t merge this PR automatically.  
+              Please check for conflicts or permissions and try again."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Checkout merged branch
         uses: actions/checkout@v3
@@ -46,12 +70,16 @@ jobs:
           PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
           ROLL=$(echo "$PR_TITLE" | grep -oP 'BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "❌ Could not extract PRN from PR title"
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="⚠️ Could not extract PRN from PR title: **${PR_TITLE}**.  
+              Please ensure the PR title contains a valid roll number."
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
           echo "BASE_BRANCH=${{ fromJson(steps.pr.outputs.data).base.ref }}" >> $GITHUB_ENV
           echo "HEAD_BRANCH=${{ fromJson(steps.pr.outputs.data).head.ref }}" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Determine Lab Folder
         run: |
@@ -75,7 +103,6 @@ jobs:
       - name: Restore lab working set
         run: |
           ORIGINAL_BRANCH=$(echo "${BASE_BRANCH}" | sed 's/^sub-//')
-          echo "Restoring from $ORIGINAL_BRANCH ..."
           git checkout "origin/${ORIGINAL_BRANCH}" -- .
 
       - name: Commit changes as bot
@@ -85,3 +112,12 @@ jobs:
           git add "$LAB_DIR/$ROLL"
           git commit -m "Organize submission for $ROLL (merge into ${BASE_BRANCH})" || echo "No changes to commit"
           git push origin "${BASE_BRANCH}"
+
+      - name: Announce success
+        run: |
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="✅ **All done!**  
+            The PR was successfully merged into \`${BASE_BRANCH}\` and files were organized for **$ROLL**.  
+            Everything is neat and tidy now!"
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
