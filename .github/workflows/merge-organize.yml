@@ -37,15 +37,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Merge PR
-        run: |
-          if ! gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}/merge \
-            -f merge_method=merge; then
-            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="❌ Merge failed for PR #${{ github.event.issue.number }}."
-            exit 1
-          fi
-          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-            -f body="✅ Successfully merged PR #${{ github.event.issue.number }} into \`${{ fromJson(steps.pr.outputs.data).base.ref }}\`."
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+          merge_method: merge
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
