@@ -5,3 +5,11 @@
 # 💡 TIP:
 # `range(1, 11)` gives 1 through 10.
 # Use `while` with a counter.
+for i in range(1,11):
+    print(i)
+
+
+num=1
+while num<=10:
+    print(num)
+    num+=1        
