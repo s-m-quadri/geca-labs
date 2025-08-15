@@ -3,3 +3,16 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
+
+
+with open('output.txt', 'w') as f:
+    f.write("First line\n")
+    f.write("Second line\n")
+    f.write("Third line\n")
+
+
+with open('output.txt', 'r') as f:
+    content = f.read()
+
+print("File content:")
+print(content)
