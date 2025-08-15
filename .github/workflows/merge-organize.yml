@@ -1,36 +1,57 @@
-name: Organize Submission After Merge
+name: Bot Merge & Organize
 
 on:
-  workflow_run:
-    workflows: ["Pull Request Merge Workflow"] # name of your merge workflow
-    types:
-      - completed
+  issue_comment:
+    types: [created]
 
 jobs:
-  organize:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  merge_and_organize:
+    if: |
+      github.event.issue.pull_request != '' &&
+      contains(github.event.comment.body, '@bot-s-m-quadri merge')
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Get PR details
+        id: pr
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/{pull_number}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Merge PR
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+          merge_method: merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Checkout merged branch
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ fromJson(steps.pr.outputs.data).base.ref }}
           token: ${{ secrets.BOT_TOKEN }}
           fetch-depth: 0
 
-      - name: Extract PR info from commit
+      - name: Extract PRN
         run: |
-          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Last commit message: $LAST_COMMIT_MSG"
-          ROLL=$(echo "$LAST_COMMIT_MSG" | grep -oP 'BT[0-9A-Z]+' || true)
+          PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
+          ROLL=$(echo "$PR_TITLE" | grep -oP 'BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "❌ Could not extract PRN from commit message"
+            echo "❌ Could not extract PRN from PR title"
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
-
-          BASE_BRANCH=$(basename "${GITHUB_REF}")
-          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+          echo "BASE_BRANCH=${{ fromJson(steps.pr.outputs.data).base.ref }}" >> $GITHUB_ENV
+          echo "HEAD_BRANCH=${{ fromJson(steps.pr.outputs.data).head.ref }}" >> $GITHUB_ENV
 
       - name: Determine Lab Folder
         run: |
