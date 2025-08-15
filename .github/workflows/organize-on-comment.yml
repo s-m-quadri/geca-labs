@@ -41,17 +41,10 @@ jobs:
           PR_TITLE="${{ steps.prdata.outputs.title }}"
           ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "❌ Could not extract roll number from PR title: $PR_TITLE"
+            echo "Could not extract roll number from PR title: $PR_TITLE"
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
-
-
-      # - name: Extract Roll Number from PR title
-      #   run: |
-      #     PR_TITLE="${{ steps.pr.outputs.title }}"
-      #     ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+')
-      #     echo "ROLL=$ROLL" >> $GITHUB_ENV
 
       - name: Organize files (preview only)
         run: |
@@ -60,7 +53,7 @@ jobs:
           mv ./*.py "$ROLL"/ || true
           echo "## Organized Files Preview" >> comment.md
           tree -L 2 >> comment.md
-
+          
       - name: Post comment as bot-s-m-quadri
         uses: actions/github-script@v7
         with:
@@ -73,4 +66,3 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.name,
               body
-            });
