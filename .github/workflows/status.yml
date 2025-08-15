@@ -162,7 +162,7 @@ jobs:
         run: |
           {
             echo "PR_LIST<<EOF"
-            echo "${{ steps.listprs.outputs.result }}"
+            echo ${{ steps.listprs.outputs.result }}
             echo "EOF"
           } >> $GITHUB_ENV
       
