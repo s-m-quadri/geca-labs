@@ -1,74 +1,121 @@
-- name: Generate Lab Status Report
-  id: labstatus
-  run: |
-    LAB_DIR="${{ env.LAB_DIR }}"  # e.g., labs-design-analysis-algorithms
-    ROLL="${{ env.ROLL }}"        # e.g., BT24F05F000
+name: Organize Lab Submission (on comment)
 
-    BASE_FOLDER="base/$LAB_DIR/$ROLL"
-    PR_FOLDER="pr/$LAB_DIR/$ROLL"
+on:
+  issue_comment:
+    types: [created]
 
-    mkdir -p "$BASE_FOLDER" "$PR_FOLDER"
+jobs:
+  organize:
+    if: |
+      github.event.issue.pull_request != '' &&
+      contains(github.event.comment.body, '@bot-s-m-quadri status')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR details
+        uses: actions-ecosystem/action-get-merged-pull-request@v1
+        with:
+          github_token: ${{ secrets.BOT_TOKEN }}
 
-    # Checkout base branch into ./base
-    git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
-    git --work-tree=base checkout FETCH_HEAD -- "$LAB_DIR" || true
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
 
-    # Checkout PR branch into ./pr
-    git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
-    git --work-tree=pr checkout FETCH_HEAD -- "$LAB_DIR" || true
+      - name: Determine LAB_DIR from base branch
+        id: labdir
+        run: |
+          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+          if [[ "$BASE_BRANCH" == lab-daa* ]]; then
+            echo "LAB_DIR=labs-design-analysis-algorithms" >> $GITHUB_ENV
+          fi
 
-    # If PR folder doesn't exist in structured location, try to find it anywhere in PR tree
-    if [ ! -d "$PR_FOLDER" ]; then
-      echo "Note: $ROLL folder not found under $LAB_DIR in PR branch — scanning repository."
-      mkdir -p "$PR_FOLDER"
-      find pr -type f -not -path '*/.git/*' > pr_all_files.txt
-      while read f; do
-        cp --parents "$f" "$PR_FOLDER" || true
-      done < pr_all_files.txt
-    fi
+      - name: Generate Lab Status Report
+        id: labstatus
+        run: |
+          LAB_DIR="${{ env.LAB_DIR }}"  # e.g., labs-design-analysis-algorithms
+          ROLL="${{ env.ROLL }}"        # e.g., BT24F05F000
+      
+          BASE_FOLDER="base/$LAB_DIR/$ROLL"
+          PR_FOLDER="pr/$LAB_DIR/$ROLL"
+      
+          mkdir -p "$BASE_FOLDER" "$PR_FOLDER"
+      
+          # Checkout base branch into ./base
+          git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+          git --work-tree=base checkout FETCH_HEAD -- "$LAB_DIR" || true
+      
+          # Checkout PR branch into ./pr
+          git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
+          git --work-tree=pr checkout FETCH_HEAD -- "$LAB_DIR" || true
+      
+          # If PR folder doesn't exist in structured location, try to find it anywhere in PR tree
+          if [ ! -d "$PR_FOLDER" ]; then
+            echo "Note: $ROLL folder not found under $LAB_DIR in PR branch — scanning repository."
+            mkdir -p "$PR_FOLDER"
+            find pr -type f -not -path '*/.git/*' > pr_all_files.txt
+            while read f; do
+              cp --parents "$f" "$PR_FOLDER" || true
+            done < pr_all_files.txt
+          fi
+      
+          # Get lists of files (relative paths)
+          BASE_FILES=$(cd base && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
+          PR_FILES=$(cd pr && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
+      
+          # Compare
+          ADDED=$(comm -13 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
+          DELETED=$(comm -23 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
+      
+          # Modified detection
+          MODIFIED=""
+          for f in $BASE_FILES; do
+            if echo "$PR_FILES" | grep -qx "$f"; then
+              if ! diff -q "base/$f" "pr/$f" >/dev/null; then
+                MODIFIED="$MODIFIED"$'\n'"$f"
+              fi
+            fi
+          done
+      
+          # Stats
+          TOTAL_CHANGED=$( (echo "$ADDED"; echo "$DELETED"; echo "$MODIFIED") | grep -v '^$' | wc -l )
+          CONFLICT="no"
+          git diff --check --base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} || CONFLICT="yes"
+      
+          # Write report
+          {
+            echo "### Lab Submission Status Report"
+            echo
+            echo "**Target folder:** \`$LAB_DIR/$ROLL\`"
+            echo "**Base branch:** \`${{ github.event.pull_request.base.ref }}\`"
+            echo "**PR branch:** \`${{ github.event.pull_request.head.ref }}\`"
+            echo
+            echo "| Change Type | Files |"
+            echo "|-------------|-------|"
+            [ -n "$ADDED" ]   && echo "| Added   | $(echo "$ADDED" | wc -l) |"
+            [ -n "$DELETED" ] && echo "| Deleted | $(echo "$DELETED" | wc -l) |"
+            [ -n "$MODIFIED" ]&& echo "| Modified| $(echo "$MODIFIED" | wc -l) |"
+            echo
+            echo "**Merge conflict:** $CONFLICT"
+            echo "**Files changed:** $TOTAL_CHANGED"
+            echo
+            echo "#### Detailed Changes"
+            [ -n "$ADDED" ]   && { echo "**Added Files:**"; echo '```'; echo "$ADDED"; echo '```'; }
+            [ -n "$DELETED" ] && { echo "**Deleted Files:**"; echo '```'; echo "$DELETED"; echo '```'; }
+            [ -n "$MODIFIED" ]&& { echo "**Modified Files:**"; echo '```'; echo "$MODIFIED"; echo '```'; }
+          } > comment.md
 
-    # Get lists of files (relative paths)
-    BASE_FILES=$(cd base && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
-    PR_FILES=$(cd pr && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
-
-    # Compare
-    ADDED=$(comm -13 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
-    DELETED=$(comm -23 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
-
-    # Modified detection
-    MODIFIED=""
-    for f in $BASE_FILES; do
-      if echo "$PR_FILES" | grep -qx "$f"; then
-        if ! diff -q "base/$f" "pr/$f" >/dev/null; then
-          MODIFIED="$MODIFIED"$'\n'"$f"
-        fi
-      fi
-    done
-
-    # Stats
-    TOTAL_CHANGED=$( (echo "$ADDED"; echo "$DELETED"; echo "$MODIFIED") | grep -v '^$' | wc -l )
-    CONFLICT="no"
-    git diff --check --base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} || CONFLICT="yes"
-
-    # Write report
-    {
-      echo "### Lab Submission Status Report"
-      echo
-      echo "**Target folder:** \`$LAB_DIR/$ROLL\`"
-      echo "**Base branch:** \`${{ github.event.pull_request.base.ref }}\`"
-      echo "**PR branch:** \`${{ github.event.pull_request.head.ref }}\`"
-      echo
-      echo "| Change Type | Files |"
-      echo "|-------------|-------|"
-      [ -n "$ADDED" ]   && echo "| Added   | $(echo "$ADDED" | wc -l) |"
-      [ -n "$DELETED" ] && echo "| Deleted | $(echo "$DELETED" | wc -l) |"
-      [ -n "$MODIFIED" ]&& echo "| Modified| $(echo "$MODIFIED" | wc -l) |"
-      echo
-      echo "**Merge conflict:** $CONFLICT"
-      echo "**Files changed:** $TOTAL_CHANGED"
-      echo
-      echo "#### Detailed Changes"
-      [ -n "$ADDED" ]   && { echo "**Added Files:**"; echo '```'; echo "$ADDED"; echo '```'; }
-      [ -n "$DELETED" ] && { echo "**Deleted Files:**"; echo '```'; echo "$DELETED"; echo '```'; }
-      [ -n "$MODIFIED" ]&& { echo "**Modified Files:**"; echo '```'; echo "$MODIFIED"; echo '```'; }
-    } > comment.md
+      - name: Post comment as bot
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('comment.md', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.payload.issue.number,
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              body
+            });
