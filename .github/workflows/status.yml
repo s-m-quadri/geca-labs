@@ -163,26 +163,26 @@ jobs:
           SUBMISSIONS_LIST="${{ steps.listprs.outputs.result }}"
 
           BODY=$(cat <<EOF
-## 📌 PRN: $PRN
-
-We've successfully received your submission for **Lab ${LAB_NUM}**.
-
-**Your PRN**: \`$PRN\`  
-**Lab Number**: ${LAB_NUM}  
-**Base Branch**: \`${BASE_BRANCH}\`
-
-### All your submissions so far:
-$SUBMISSIONS_LIST
-
-Please ensure you complete all required files for this lab.  
-We will review your submissions **within at most 3 weeks**, i.e., by **$REVIEW_DATE**.
-
-If you have doubts or questions, comment here, and we’ll get back to you  
-once you’ve completed your work.
-
-_Thank you for your submission._
-EOF
-)
+          ## 📌 PRN: $PRN
+          
+          We've successfully received your submission for **Lab ${LAB_NUM}**.
+          
+          **Your PRN**: \`$PRN\`  
+          **Lab Number**: ${LAB_NUM}  
+          **Base Branch**: \`${BASE_BRANCH}\`
+          
+          ### All your submissions so far:
+          $SUBMISSIONS_LIST
+          
+          Please ensure you complete all required files for this lab.  
+          We will review your submissions **within at most 3 weeks**, i.e., by **$REVIEW_DATE**.
+          
+          If you have doubts or questions, comment here, and we’ll get back to you  
+          once you’ve completed your work.
+          
+          _Thank you for your submission._
+          EOF
+          )
 
           gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
             -f body="$BODY"
