@@ -4,3 +4,6 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+
+tuple = ("Apple","Banana","jackfruit")
+print(tuple)
