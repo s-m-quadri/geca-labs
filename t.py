@@ -3,3 +3,11 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
+# Write 3 lines to the file
+with open('output.txt', 'w') as f:
+    f.write("Line 1: Hello\n")
+    f.write("Line 2: Welcome\n")
+    f.write("Line 3: Goodbye\n")
+with open('output.txt', 'r') as f:
+    content = f.read()
+    print(content)
