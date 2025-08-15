@@ -36,12 +36,8 @@ jobs:
           LAB_DIR=""
           if [[ "${BASE_BRANCH}" == lab-daa* ]]; then
             LAB_DIR="labs-design-analysis-algorithms"
-          elif [[ "${BASE_BRANCH}" == lab-cv* ]]; then
-            LAB_DIR="labs-computer-vision"
-          elif [[ "${BASE_BRANCH}" == lab-ml* ]]; then
-            LAB_DIR="labs-adv-machine-learning"
           else
-            echo "❌ Unsupported base branch: ${BASE_BRANCH}"
+            echo "Unsupported base branch: ${BASE_BRANCH}"
             exit 1
           fi
 
