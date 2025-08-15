@@ -1,12 +1,14 @@
 name: Organize Submission After Merge
 
 on:
-  push:
-    branches:
-      - 'sub-*'  # Only run when commits land in sub-* branches
+  workflow_run:
+    workflows: ["Pull Request Merge Workflow"] # name of your merge workflow
+    types:
+      - completed
 
 jobs:
   organize:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
