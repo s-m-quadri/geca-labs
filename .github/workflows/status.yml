@@ -148,22 +148,19 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            const prn = process.env.PRN; // Already set from $GITHUB_ENV
             const { data: pulls } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "all",
               per_page: 100
             });
-            const currentPR = ${{ fromJson(steps.pr.outputs.result).number }};
-            const related = pulls.filter(p => p.title.includes(prn) || p.number === currentPR);
+            const prn = process.env.PRN;
+            const related = pulls.filter(p => p.title.includes(prn));
             return related.map(p => `- #${p.number}`).join("\n");
 
       - name: Post beautiful status comment
         run: |
           REVIEW_DATE=$(date -d "+3 weeks" +"%d %B %Y")
-          PR_LIST="${{ steps.listprs.outputs.result }}"
-
           BODY=$(cat <<EOF
           ## 📌 PRN: $PRN
 
@@ -174,7 +171,7 @@ jobs:
           **Base Branch**: \`${BASE_BRANCH}\`
 
           ### All your submissions so far:
-          $PR_LIST
+          ${{ steps.listprs.outputs.result }}
 
           Please ensure you complete all required files for this lab.  
           We will review your submissions **within at most 3 weeks**, i.e., by **$REVIEW_DATE**.
@@ -185,7 +182,6 @@ jobs:
           _Thank you for your submission._
           EOF
           )
-
           gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
             -f body="$BODY"
         env:
