@@ -1,0 +1,76 @@
+name: Organize Submission After Merge
+
+on:
+  pull_request:
+    types: [closed] # Triggered when PR is merged or closed
+
+jobs:
+  organize:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout target branch where PR was merged
+      - name: Checkout base branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Extract PR info
+        id: prinfo
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
+          if [ -z "$ROLL" ]; then
+            echo "❌ Could not extract PRN from PR title: $PR_TITLE"
+            exit 1
+          fi
+          echo "ROLL=$ROLL" >> $GITHUB_ENV
+          echo "BASE_BRANCH=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+          echo "HEAD_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+
+      - name: Determine Lab Folder from base branch
+        id: labdir
+        run: |
+          LAB_DIR=""
+          if [[ "${BASE_BRANCH}" == lab-daa* ]]; then
+            LAB_DIR="labs-design-analysis-algorithms"
+          elif [[ "${BASE_BRANCH}" == lab-cv* ]]; then
+            LAB_DIR="labs-computer-vision"
+          elif [[ "${BASE_BRANCH}" == lab-ml* ]]; then
+            LAB_DIR="labs-adv-machine-learning"
+          else
+            echo "❌ Unsupported base branch: ${BASE_BRANCH}"
+            exit 1
+          fi
+
+          # Extract lab number
+          LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
+          if [ -z "$LAB_NUM" ]; then
+            LAB_NUM="00"
+          fi
+
+          LAB_DIR="$LAB_BASE/lab-$LAB_NUM"
+          echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
+          
+      - name: Move files into PRN folder
+        run: |
+          mkdir -p "$LAB_DIR/$ROLL"
+          shopt -s nullglob
+          mv ./*.py "$LAB_DIR/$ROLL"/ || true
+          mv ./*.ipynb "$LAB_DIR/$ROLL"/ || true
+          mv ./*.csv "$LAB_DIR/$ROLL"/ || true
+          mv ./*.md "$LAB_DIR/$ROLL"/ || true
+
+      - name: Commit changes as bot
+        run: |
+          git config user.name "bot-s-m-quadri"
+          git config user.email "access.smq@gmail.com"
+          git add "$LAB_DIR/$ROLL"
+          git commit -m "Organize submission for $ROLL (PR #${{ github.event.pull_request.number }})" || echo "No changes to commit"
+          git push origin "${BASE_BRANCH}"
+
+      - name: Restore lab folder to original state
+        run: |
+          git checkout "origin/${BASE_BRANCH}" -- "$LAB_DIR" || true
