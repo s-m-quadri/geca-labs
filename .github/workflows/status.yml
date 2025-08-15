@@ -155,6 +155,7 @@ jobs:
               state: "all",
               per_page: 100
             });
+            const currentPR = ${{ fromJson(steps.pr.outputs.result).number }};
             const related = pulls.filter(p => p.title.includes(prn) || p.number === currentPR);
             return related.map(p => `- #${p.number}`).join("\n");
 
