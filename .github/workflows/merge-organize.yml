@@ -16,11 +16,11 @@ jobs:
           COMMENTER="${{ github.event.comment.user.login }}"
           if [ "$COMMENTER" != "s-m-quadri" ]; then
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="😏 Who are you to give me commands? You’re not worthy enough to order me."
-            exit 0
+              -f body="😏 Who are you? Only @s-m-quadri can do it."
+            exit 1
           else
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="👍 Got it Sir, I’ll start merging and organizing your submission."
+              -f body="👍 Got it, I’ll start merging and organizing your submission."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
