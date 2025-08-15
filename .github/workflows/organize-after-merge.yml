@@ -2,7 +2,9 @@ name: Organize Submission After Merge
 
 on:
   pull_request:
-    types: [closed] # Triggered when PR is merged or closed
+    types: [closed]  # Trigger when PR is closed
+    branches:
+      - 'sub-*'      # Only run if PR targets sub-* branches
 
 jobs:
   organize:
@@ -34,8 +36,8 @@ jobs:
         id: labdir
         run: |
           LAB_DIR=""
-          if [[ "${BASE_BRANCH}" == lab-daa* ]]; then
-            LAB_DIR="labs-design-analysis-algorithms"
+          if [[ "${BASE_BRANCH}" == sub-lab-daa* ]]; then
+            LAB_BASE="labs-design-analysis-algorithms"
           else
             echo "Unsupported base branch: ${BASE_BRANCH}"
             exit 1
