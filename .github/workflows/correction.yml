@@ -1,8 +1,8 @@
 name: PR Auto Title & Branch
 
 on:
-#   pull_request:
-#     types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
   issue_comment:
     types: [created]
 
