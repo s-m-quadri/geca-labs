@@ -156,13 +156,13 @@ jobs:
             });
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
-            return related.map(p => `- #${p.number}`).join(`%0A`);
+            return related.map(p => `- #${p.number}`).join(`\n`);
             
       - name: Prepare PR list
         run: |
           {
             echo "PR_LIST<<EOF"
-            echo ${{ steps.listprs.outputs.result }}
+            echo -e ${{ steps.listprs.outputs.result }}
             echo "EOF"
           } >> $GITHUB_ENV
       
