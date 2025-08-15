@@ -11,20 +11,9 @@ jobs:
       contains(github.event.comment.body, '@bot-s-m-quadri organize')
     runs-on: ubuntu-latest
     steps:
+      # Get PR metadata
       - name: Get PR details
-        uses: actions-ecosystem/action-get-merged-pull-request@v1
-        with:
-          github_token: ${{ secrets.BOT_TOKEN }}  # Use bot token here
-
-      - name: Checkout PR branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.pr.outputs.head_ref }}
-          token: ${{ secrets.BOT_TOKEN }}  # Checkout with bot identity
-          fetch-depth: 0
-
-      - name: Get PR title
-        id: prdata
+        id: pr
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
@@ -35,25 +24,62 @@ jobs:
               pull_number: context.payload.issue.number
             });
             core.setOutput("title", pr.data.title);
-      
-      - name: Extract Roll Number from PR title
+            core.setOutput("base_ref", pr.data.base.ref);
+            core.setOutput("head_ref", pr.data.head.ref);
+
+      # Checkout PR branch
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
+
+      # Extract Roll Number and Lab Directory
+      - name: Extract Roll Number and Lab Directory
         run: |
-          PR_TITLE="${{ steps.prdata.outputs.title }}"
+          PR_TITLE="${{ steps.pr.outputs.title }}"
+          BASE_BRANCH="${{ steps.pr.outputs.base_ref }}"
+
+          # Extract roll number (e.g., BT24F05F000)
           ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
-            echo "Could not extract roll number from PR title: $PR_TITLE"
+            echo "❌ Could not extract roll number from PR title: $PR_TITLE"
             exit 1
           fi
           echo "ROLL=$ROLL" >> $GITHUB_ENV
 
-      - name: Organize files (preview only)
-        run: |
-          mkdir -p "$ROLL"
-          shopt -s nullglob
-          mv ./*.py "$ROLL"/ || true
-          echo "## Organized Files Preview" >> comment.md
-          tree -L 2 >> comment.md
+          # Map base branch to lab folder
+          case "$BASE_BRANCH" in
+            lab-daa*) LAB_DIR="labs-design-analysis-algorithms" ;;
+            lab-acn*) LAB_DIR="labs-adv-computer-netowrks" ;;
+            lab-ml*)  LAB_DIR="labs-adv-machine-learning" ;;
+            lab-cv*)  LAB_DIR="labs-computer-vision" ;;
+            *) echo "❌ Unknown lab for branch $BASE_BRANCH"; exit 1 ;;
+          esac
+          echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
 
+      # Organize files into lab folder
+      - name: Organize files
+        run: |
+          mkdir -p "$LAB_DIR/$ROLL"
+          shopt -s nullglob
+          mv ./*.py "$LAB_DIR/$ROLL"/ || true
+          mv ./*.ipynb "$LAB_DIR/$ROLL"/ || true
+          mv ./*.csv "$LAB_DIR/$ROLL"/ || true
+          echo "## Organized Files Preview" >> comment.md
+          tree -L 3 >> comment.md
+
+      # Commit & push changes to PR branch
+      - name: Commit organized files
+        run: |
+          git config --global user.name "bot-s-m-quadri"
+          git config --global user.email "bot@example.com"
+          git add .
+          git commit -m "Organized files for $ROLL into $LAB_DIR" || echo "No changes to commit"
+          git push origin HEAD:${{ steps.pr.outputs.head_ref }} --force
+
+      # Post preview comment
       - name: Post comment as bot-s-m-quadri
         uses: actions/github-script@v7
         with:
