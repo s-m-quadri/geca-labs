@@ -1,121 +1,74 @@
-name: Lab Submission Status (on comment)
+- name: Generate Lab Status Report
+  id: labstatus
+  run: |
+    LAB_DIR="${{ env.LAB_DIR }}"  # e.g., labs-design-analysis-algorithms
+    ROLL="${{ env.ROLL }}"        # e.g., BT24F05F000
 
-on:
-  issue_comment:
-    types: [created]
+    BASE_FOLDER="base/$LAB_DIR/$ROLL"
+    PR_FOLDER="pr/$LAB_DIR/$ROLL"
 
-jobs:
-  status-report:
-    if: |
-      github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '@bot-s-m-quadri status')
-    runs-on: ubuntu-latest
-    steps:
-      # Get PR details
-      - name: Get PR details
-        id: pr
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.BOT_TOKEN }}
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.issue.number
-            });
-            core.setOutput("title", pr.data.title);
-            core.setOutput("base_ref", pr.data.base.ref);
-            core.setOutput("head_ref", pr.data.head.ref);
-            core.setOutput("changed_files", pr.data.changed_files);
-            core.setOutput("mergeable_state", pr.data.mergeable_state);
+    mkdir -p "$BASE_FOLDER" "$PR_FOLDER"
 
-      # Checkout base branch
-      - name: Checkout base branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.pr.outputs.base_ref }}
-          token: ${{ secrets.BOT_TOKEN }}
-          path: base
+    # Checkout base branch into ./base
+    git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+    git --work-tree=base checkout FETCH_HEAD -- "$LAB_DIR" || true
 
-      # Checkout PR branch
-      - name: Checkout PR branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.pr.outputs.head_ref }}
-          token: ${{ secrets.BOT_TOKEN }}
-          path: pr
+    # Checkout PR branch into ./pr
+    git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
+    git --work-tree=pr checkout FETCH_HEAD -- "$LAB_DIR" || true
 
-      # Extract Roll Number and Lab Directory
-      - name: Extract Roll Number and Lab Directory
-        run: |
-          PR_TITLE="${{ steps.pr.outputs.title }}"
-          BASE_BRANCH="${{ steps.pr.outputs.base_ref }}"
+    # If PR folder doesn't exist in structured location, try to find it anywhere in PR tree
+    if [ ! -d "$PR_FOLDER" ]; then
+      echo "Note: $ROLL folder not found under $LAB_DIR in PR branch — scanning repository."
+      mkdir -p "$PR_FOLDER"
+      find pr -type f -not -path '*/.git/*' > pr_all_files.txt
+      while read f; do
+        cp --parents "$f" "$PR_FOLDER" || true
+      done < pr_all_files.txt
+    fi
 
-          ROLL=$(echo "$PR_TITLE" | grep -oP '(?<=by )BT[0-9A-Z]+' || true)
-          if [ -z "$ROLL" ]; then
-            echo "Could not extract roll number from PR title: $PR_TITLE" >&2
-            exit 1
-          fi
-          echo "ROLL=$ROLL" >> $GITHUB_ENV
+    # Get lists of files (relative paths)
+    BASE_FILES=$(cd base && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
+    PR_FILES=$(cd pr && find "$LAB_DIR/$ROLL" -type f 2>/dev/null | sort || true)
 
-          case "$BASE_BRANCH" in
-            lab-daa*) LAB_DIR="labs-design-analysis-algorithms" ;;
-            lab-acn*) LAB_DIR="labs-adv-computer-networks" ;;
-            lab-ml*)  LAB_DIR="labs-adv-machine-learning" ;;
-            lab-cv*)  LAB_DIR="labs-computer-vision" ;;
-            *) echo "Unknown lab for branch $BASE_BRANCH" >&2; exit 1 ;;
-          esac
-          echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
+    # Compare
+    ADDED=$(comm -13 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
+    DELETED=$(comm -23 <(echo "$BASE_FILES") <(echo "$PR_FILES") || true)
 
-      # Generate status report
-      - name: Generate status report
-        run: |
-          echo "# Lab Submission Status Report" > comment.md
-          echo "" >> comment.md
-          echo "Target Lab Folder: \`$LAB_DIR\`" >> comment.md
-          echo "Proposed Student Folder: \`$ROLL\`" >> comment.md
-          echo "Base Branch: \`${{ steps.pr.outputs.base_ref }}\`" >> comment.md
-          echo "PR Branch: \`${{ steps.pr.outputs.head_ref }}\`" >> comment.md
-          echo "" >> comment.md
+    # Modified detection
+    MODIFIED=""
+    for f in $BASE_FILES; do
+      if echo "$PR_FILES" | grep -qx "$f"; then
+        if ! diff -q "base/$f" "pr/$f" >/dev/null; then
+          MODIFIED="$MODIFIED"$'\n'"$f"
+        fi
+      fi
+    done
 
-          echo "## File Change Summary" >> comment.md
-          echo "" >> comment.md
-          echo "Category | File Path" >> comment.md
-          echo "--- | ---" >> comment.md
+    # Stats
+    TOTAL_CHANGED=$( (echo "$ADDED"; echo "$DELETED"; echo "$MODIFIED") | grep -v '^$' | wc -l )
+    CONFLICT="no"
+    git diff --check --base ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} || CONFLICT="yes"
 
-          BASE_PATH="base/$LAB_DIR/$ROLL"
-          PR_PATH="pr/$LAB_DIR/$ROLL"
-
-          mkdir -p "$BASE_PATH"
-          mkdir -p "$PR_PATH"
-
-          comm -23 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) | sed 's|^\./||' | awk '{print "Added | " $0}' >> comment.md
-          comm -13 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) | sed 's|^\./||' | awk '{print "Deleted | " $0}' >> comment.md
-          comm -12 <(cd "$PR_PATH" && find . -type f | sort) <(cd "$BASE_PATH" && find . -type f | sort) |
-            while read file; do
-              if ! diff -q "$PR_PATH/$file" "$BASE_PATH/$file" >/dev/null; then
-                echo "Modified | $file"
-              fi
-            done >> comment.md
-
-          echo "" >> comment.md
-          echo "## Additional Information" >> comment.md
-          echo "" >> comment.md
-          echo "Merge Conflict: \`$( [ '${{ steps.pr.outputs.mergeable_state }}' = 'dirty' ] && echo 'Yes' || echo 'No' )\`" >> comment.md
-          echo "Total Files Changed: \`${{ steps.pr.outputs.changed_files }}\`" >> comment.md
-          echo "This report is generated from a comparison of the base branch and the PR branch. It does not modify any files." >> comment.md
-
-      # Post status comment
-      - name: Post status comment
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.BOT_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const body = fs.readFileSync('comment.md', 'utf8');
-            await github.rest.issues.createComment({
-              issue_number: context.payload.issue.number,
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              body: body
-            });
+    # Write report
+    {
+      echo "### Lab Submission Status Report"
+      echo
+      echo "**Target folder:** \`$LAB_DIR/$ROLL\`"
+      echo "**Base branch:** \`${{ github.event.pull_request.base.ref }}\`"
+      echo "**PR branch:** \`${{ github.event.pull_request.head.ref }}\`"
+      echo
+      echo "| Change Type | Files |"
+      echo "|-------------|-------|"
+      [ -n "$ADDED" ]   && echo "| Added   | $(echo "$ADDED" | wc -l) |"
+      [ -n "$DELETED" ] && echo "| Deleted | $(echo "$DELETED" | wc -l) |"
+      [ -n "$MODIFIED" ]&& echo "| Modified| $(echo "$MODIFIED" | wc -l) |"
+      echo
+      echo "**Merge conflict:** $CONFLICT"
+      echo "**Files changed:** $TOTAL_CHANGED"
+      echo
+      echo "#### Detailed Changes"
+      [ -n "$ADDED" ]   && { echo "**Added Files:**"; echo '```'; echo "$ADDED"; echo '```'; }
+      [ -n "$DELETED" ] && { echo "**Deleted Files:**"; echo '```'; echo "$DELETED"; echo '```'; }
+      [ -n "$MODIFIED" ]&& { echo "**Modified Files:**"; echo '```'; echo "$MODIFIED"; echo '```'; }
+    } > comment.md
