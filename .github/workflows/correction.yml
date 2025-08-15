@@ -155,7 +155,7 @@ jobs:
             });
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
-            return related.map(p => `- [#${p.number}](${p.html_url}) - ${p.title}`).join("\n");
+            return related.map(p => `- #${p.number}`).join("\n");
 
       - name: Post beautiful status comment
         run: |
@@ -169,7 +169,7 @@ jobs:
           **Lab Number**: ${LAB_NUM}  
           **Base Branch**: \`${BASE_BRANCH}\`
 
-          ### 📂 All your submissions so far:
+          ### All your submissions so far:
           ${{ steps.listprs.outputs.result }}
 
           Please ensure you complete all required files for this lab.  
