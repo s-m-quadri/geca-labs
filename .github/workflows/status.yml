@@ -156,7 +156,7 @@ jobs:
             });
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
-            return related.map(p => `- [#${p.number}](${p.html_url}) – ${p.title}`).join('\n');
+            return related.map(p => `- #${p.number}`).join('\n');
 
       - name: Post beautiful status comment
         run: |
