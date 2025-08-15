@@ -150,14 +150,20 @@ jobs:
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            const prn = process.env.PRN.toUpperCase();
+            let prn = process.env.PRN.toUpperCase();
             const { data: pulls } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "all",
               per_page: 100
             });
-            const related = pulls.filter(p => p.title.toUpperCase().includes(prn));
+          
+            // Ensure current PR number is included
+            const currentPR = ${{ fromJson(steps.pr.outputs.result).number }};
+            const related = pulls.filter(p => 
+              p.title.toUpperCase().includes(prn) || p.number === currentPR
+            );
+          
             return related.map(p => `- #${p.number}`).join('\n');
 
       - name: Post beautiful status comment
