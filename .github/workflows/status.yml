@@ -145,17 +145,20 @@ jobs:
       - name: List all PRs for PRN
         id: listprs
         uses: actions/github-script@v7
+        env:
+          PRN: ${{ env.PRN }}
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
+            const prn = process.env.PRN;
             const { data: pulls } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "all",
               per_page: 100
             });
-            const prn = process.env.PRN;
-            const related = pulls.filter(p => p.title.includes(prn));
+            const prn = process.env.PRN.toUpperCase();
+            const related = pulls.filter(p => p.title.toUpperCase().includes(prn));
             return related.map(p => `- #${p.number}`).join('\n');
 
       - name: Post beautiful status comment
