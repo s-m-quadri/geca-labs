@@ -63,15 +63,18 @@ jobs:
             LAB_NUM="00"
           fi
 
-          echo "PRN=$PRN" >> $GITHUB_ENV
-          echo "LAB_NUM=$LAB_NUM" >> $GITHUB_ENV
-          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+          echo "prn=$PRN" >> $GITHUB_OUTPUT
+          echo "lab_num=$LAB_NUM" >> $GITHUB_OUTPUT
+          echo "base_branch=$BASE_BRANCH" >> $GITHUB_OUTPUT
 
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Update PR title
         uses: actions/github-script@v7
+        env:
+          LAB_NUM: ${{ steps.extract.outputs.lab_num }}
+          PRN: ${{ steps.extract.outputs.prn }}
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
@@ -84,6 +87,8 @@ jobs:
 
       - name: Create label if not exists
         uses: actions/github-script@v7
+        env:
+          LAB_NUM: ${{ steps.extract.outputs.lab_num }}
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
@@ -125,12 +130,14 @@ jobs:
             echo "$TARGET_BRANCH already exists"
           fi
         env:
-          LAB_NUM: ${{ env.LAB_NUM }}
-          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+          LAB_NUM: ${{ steps.extract.outputs.lab_num }}
+          BASE_BRANCH: ${{ steps.extract.outputs.base_branch }}
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Change PR base branch
         uses: actions/github-script@v7
+        env:
+          LAB_NUM: ${{ steps.extract.outputs.lab_num }}
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
@@ -141,10 +148,11 @@ jobs:
               base: `sub-lab-daa-${process.env.LAB_NUM}`
             });
 
-
       - name: List all PRs for PRN
         id: listprs
         uses: actions/github-script@v7
+        env:
+          PRN: ${{ steps.extract.outputs.prn }}
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
@@ -157,36 +165,35 @@ jobs:
             const prn = process.env.PRN;
             const related = pulls.filter(p => p.title.includes(prn));
             return related.map(p => `- #${p.number}`).join(`\n`);
-            
+
       - name: Prepare PR list
+        id: prepare_pr_list
         run: |
-          {
-            echo "PR_LIST<<EOF"
-            echo -e ${{ steps.listprs.outputs.result }}
-            echo "EOF"
-          } >> $GITHUB_ENV
-      
+          echo "pr_list<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ steps.listprs.outputs.result }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Post beautiful status comment
         run: |
           REVIEW_DATE=$(date -d "+3 weeks" +"%d %B %Y")
           BODY=$(cat <<EOF
           ## 📌 PRN: $PRN
-      
+
           We've successfully received your submission for **Lab ${LAB_NUM}**.
-      
+
           **Your PRN**: \`$PRN\`  
           **Lab Number**: ${LAB_NUM}  
           **Base Branch**: \`${BASE_BRANCH}\`
-      
+
           ### All your submissions so far:
           $PR_LIST
-      
+
           Please ensure you complete all required files for this lab.  
           We will review your submissions **within at most 3 weeks**, i.e., by **$REVIEW_DATE**.
-      
+
           If you have doubts or questions, comment here, and we’ll get back to you  
           once you’ve completed your work.
-      
+
           _Thank you for your submission._
           EOF
           )
@@ -194,6 +201,7 @@ jobs:
             -f body="$BODY"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-          PRN: ${{ env.PRN }}
-          LAB_NUM: ${{ env.LAB_NUM }}
-          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+          PRN: ${{ steps.extract.outputs.prn }}
+          LAB_NUM: ${{ steps.extract.outputs.lab_num }}
+          BASE_BRANCH: ${{ steps.extract.outputs.base_branch }}
+          PR_LIST: ${{ steps.prepare_pr_list.outputs.pr_list }}
