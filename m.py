@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 # Sets remove duplicates automatically. Use `.add()` to insert.
+
+nums = {1, 2, 3, 3, 4, 4, 5}
+print("Unique set:", nums)
+
+nums.add(6)
+print("After adding 6:", nums)

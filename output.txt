@@ -1,3 +1,9 @@
+
+Line 1
+Line 2
+Line 3
+
 Hello this is t.py file.
 This DAA lab 
 I am student at GECA
+
