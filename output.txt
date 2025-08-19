@@ -1,9 +1,4 @@
 
-Line 1
-Line 2
-Line 3
-
-Hello this is t.py file.
-This DAA lab 
-I am student at GECA
-
+This is line 1
+This is line 2
+This is line 3
