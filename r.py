@@ -4,14 +4,3 @@
 
 # 💡 TIP:
 # Use `f"{name} scored {marks}"` or `"{} scored {}".format(...)`
-name = "Alice"
-marks = 92
-
-# Using f-string
-print(f"Student {name} scored {marks} marks.")
-
-# Using .format()
-print("Student {} scored {} marks.".format(name, marks))
-
-# Using % formatting
-print("Student %s scored %d marks." % (name, marks))

@@ -4,10 +4,3 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
-import random
-
-dice = random.randint(1, 6)
-coin = random.choice(["Heads", "Tails"])
-
-print(dice)
-print(coin)
