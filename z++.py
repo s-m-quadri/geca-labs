@@ -5,11 +5,9 @@
 
 # 💡 TIP:
 # Use `.split()` and `.upper()` / `.lower()`
-a = float(input("First number: "))
-op = input("Operator (+ - * /): ")
-b = float(input("Second number: "))
-if op == '+': print(a + b)
-elif op == '-': print(a - b)
-elif op == '*': print(a * b)
-elif op == '/': print(a / b)
-else: print("Invalid operator")
+name = input("Enter full name: ")
+parts = name.split()
+initials = '. '.join(p[0].upper() for p in parts) + '.'
+print("Lower:", name.lower())
+print("Upper:", name.upper())
+print("Initials:", initials)
