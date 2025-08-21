@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+tuple = ("apple","ball","cat")
+#tuple[1]="doll" #typeerror
+for i in tuple:
+    print(i)
