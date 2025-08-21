@@ -4,3 +4,13 @@
 
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
+students = {
+    "shrute": 85,
+    "amru": 90,
+    "bhagya": 78
+}
+
+print("amru's marks:", students["amru"])
+
+for name, marks in students.items():
+    print(f"{name}: {marks}")
