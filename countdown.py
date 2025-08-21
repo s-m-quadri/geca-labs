@@ -18,7 +18,7 @@ def countdown_iterative(n):
         n -= 1
 
 # Try both
-n = 5
+n = 10
 print("Recursive countdown:")
 countdown_recursive(n)
 
