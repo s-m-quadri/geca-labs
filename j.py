@@ -4,3 +4,11 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+words = []
+words.append("zebra")
+words.append("apple")
+words.append("mango")
+words.sort()
+words.reverse()
+print(words)
