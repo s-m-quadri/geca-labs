@@ -3,3 +3,14 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
+
+file = open("output.txt","w")
+file.write("Hello,Bharti\n")
+file.write("How are you?\n")
+file.write("Welcome to github codespaces")
+
+
+with open("output.txt", "r") as file:
+    content = file.read()
+
+print(content)

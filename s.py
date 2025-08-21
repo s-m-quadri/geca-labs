@@ -4,3 +4,11 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
+
+a = int(input("Enter First Number : "))
+b = int(input("Enter Second Number : "))
+
+try:
+    print(a//b)
+except:
+    print("ZeroDivisonError")
