@@ -1,3 +1,0 @@
-Hello,Bharti
-How are you?
-Welcome to github codespaces
