@@ -4,23 +4,19 @@
 # Goal: Practice recursion vs iteration
 # -------------------------------------------
 
-# Recursive version
 def countdown_recursive(n):
-    if n == 0:
+    if n <= 0:
         return
     print(n)
     countdown_recursive(n - 1)
 
-# Iterative version
 def countdown_iterative(n):
-    while n > 0:
-        print(n)
-        n -= 1
+    for i in range(n, 0, -1):
+        print(i)
 
-# Try both
-n = 10
-print("Recursive countdown:")
-countdown_recursive(n)
-
-print("\nIterative countdown:")
-countdown_iterative(n)
+if __name__ == "__main__":
+    n = int(input("Enter n: "))
+    print("Recursive:")
+    countdown_recursive(n)
+    print("\nIterative:")
+    countdown_iterative(n)
