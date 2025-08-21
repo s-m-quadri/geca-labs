@@ -4,3 +4,11 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+
+tup = (1, 2, 3)
+try:
+    tup[1] = 99
+except TypeError as e:
+    print("Error:", e)
+for item in tup:
+    print(item)
