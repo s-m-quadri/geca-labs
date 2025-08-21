@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
+for i in range(rows):
+    for j in range(cols):
+        print("*", end="")
+    print()
