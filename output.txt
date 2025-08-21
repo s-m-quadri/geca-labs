@@ -1,3 +1,0 @@
-Line 1: Hello, this is the first line.
-Line 2: Writing to a file in Python.
-Line 3: Now we will read it back.
