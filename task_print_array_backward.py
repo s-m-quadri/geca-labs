@@ -14,3 +14,5 @@
 # - For recursion, start from last index: len(arr) - 1
 # - Reduce index by 1 each call
 # - For iteration, use a loop from end to start
+
+#To do
