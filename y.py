@@ -3,3 +3,9 @@
 
 # 💡 TIP:
 # Use `.isdigit()` or handle exceptions using try-except.
+
+num = input("Enter a number: ")
+if num.isdigit():
+    print("You have entered:", int(num))
+else:
+    print("Invalid input")
