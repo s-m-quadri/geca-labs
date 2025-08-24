@@ -5,3 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
+print("hellow , python")
+print("this is lab a")
