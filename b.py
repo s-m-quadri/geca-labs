@@ -1,9 +1,6 @@
 # ✅ TASK:
-# Declare three variables:
-#  - name (string)
-#  - age (integer)
-#  - is_student (boolean)
-# Then print them in one line using commas.
+name = "Alice"
+age = 25
+is_student = True
 
-# 💡 TIP:
-# Use `=`, `True/False`, and `print()` with commas.
+print(name, age, is_student)
