@@ -4,6 +4,6 @@
 # This is your first Python program.
 
 # 💡 TIP:
-# Use the `print()` function.y
+# Use the `print()` function.
 print("Hello, Python!")
 print("This is Lab A")

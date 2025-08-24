@@ -7,5 +7,3 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
-print(True)
-print(False)
