@@ -57,7 +57,13 @@ jobs:
           fi
           PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
 
-          LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
+          # Handle LAB_NUM extraction (special case for lab-daa)
+          if [[ "$HEAD_BRANCH" == "lab-daa" ]]; then
+            LAB_NUM="00"
+          else
+            LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
+          fi
+
           if [ -z "$LAB_NUM" ]; then
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
               -f body="❌ Could not extract Lab number from branch."
