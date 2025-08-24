@@ -1,19 +1,15 @@
 name: Status and Corrections
 
 on:
-  pull_request:
-    types: [opened, reopened]
   issue_comment:
     types: [created]
 
 jobs:
   process-pr:
     if: |
-      github.event_name == 'pull_request' ||
-      (github.event.issue.pull_request != '' &&
-       contains(github.event.comment.body, '@bot-s-m-quadri status'))
+      github.event.issue.pull_request != '' &&
+      contains(github.event.comment.body, '@bot-s-m-quadri status')
     runs-on: ubuntu-latest
-
     steps:
       - name: Get PR context
         id: pr
