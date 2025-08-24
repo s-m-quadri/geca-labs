@@ -1,6 +1,9 @@
 # ✅ TASK:
-name = "Alice"
-age = 25
-is_student = True
+# Declare three variables:
+#  - name (string)
+#  - age (integer)
+#  - is_student (boolean)
+# Then print them in one line using commas.
 
-print(name, age, is_student)
+# 💡 TIP:
+# Use `=`, `True/False`, and `print()` with commas.

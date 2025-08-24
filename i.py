@@ -1,11 +1,5 @@
+# Write a program that prints each item of a list on a new line.
+# Then, print the index and value using a loop.
 
-fruits = ["apple", "banana", "cherry", "date", "elderberry"]
-
-for fruit in fruits:
-    print(fruit)
-
-print("---")
-
-for index, fruit in enumerate(fruits):
-    print("Index:", index, "Value:", fruit)
-
+# 💡 TIP:
+# Use `for item in list` and `enumerate(list)` for both item and index.

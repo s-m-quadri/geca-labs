@@ -1,7 +1,5 @@
-user_input = input("Enter a number: ")
+# Take a number from user input. 
+# If the input is not a valid integer, print "Invalid input".
 
-if user_input.isdigit() or (user_input.startswith('-') and user_input[1:].isdigit()):
-    number = int(user_input)
-    print("Valid integer:", number)
-else:
-    print("Invalid input")
+# 💡 TIP:
+# Use `.isdigit()` or handle exceptions using try-except.
