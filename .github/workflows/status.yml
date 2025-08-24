@@ -43,9 +43,9 @@ jobs:
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
 
-          PRN=$(echo "$HEAD_BRANCH" | grep -oP 'BT[0-9A-Z]+' || true)
+          PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
           if [ -z "$PRN" ]; then
-            PRN=$(echo "$PR_TITLE" | grep -oP 'BT[0-9A-Z]+' || true)
+            PRN=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
           fi
           if [ -z "$PRN" ]; then
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
