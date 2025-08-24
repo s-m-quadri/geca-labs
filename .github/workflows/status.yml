@@ -172,7 +172,7 @@ jobs:
           NOW_IST=$(TZ="Asia/Kolkata" date +"%d %B %Y, %I:%M %p IST")
 
           BODY=$(cat <<EOF
-          ### PRN: [\`$PRN\`](https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN) Status
+          ### PRN: <a href="https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN" target="_blank"><code>$PRN</code></a> Status
 
           Please complete the current lab before the review date.
 
@@ -182,17 +182,17 @@ jobs:
           >
           > | Info. | Value/Link |
           > |-----------------:|:------|
-          > | PRN              | [**$PRN**](https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN) (Click to search all PR) |
-          > | Lab Number       | [**${LAB_NUM}**](https://www.s-m-quadri.me/geca/daa/${LAB_NUM}) (Click to open manual pages) |
-          > | Base Repository  | [**geca-labs**](https://github.com/s-m-quadri/geca-labs) (Click to open repository) |
-          > | Base Branch      | [**${{ fromJson(steps.pr.outputs.result).base }}**](https://github.com/${{ github.repository }}/tree/${{ fromJson(steps.pr.outputs.result).base }}) (Click to view problem set) |
-          > | Student's (Merge) Repository | [**${{ fromJson(steps.pr.outputs.result).headRepo }}**](https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}) (Click to view student fork) |
-          > | Student's (Merge) Branch     | [**${{ fromJson(steps.pr.outputs.result).head }}**](https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}/tree/${{ fromJson(steps.pr.outputs.result).head }}) (Click to **resume** your work) |
+          > | PRN              | <a href="https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN" target="_blank"><b>$PRN</b></a> (Click to search all PR) |
+          > | Lab Number       | <a href="https://www.s-m-quadri.me/geca/daa/${LAB_NUM}" target="_blank"><b>${LAB_NUM}</b></a> (Click to open manual pages) |
+          > | Base Repository  | <a href="https://github.com/s-m-quadri/geca-labs" target="_blank"><b>geca-labs</b></a> (Click to open repository) |
+          > | Base Branch      | <a href="https://github.com/${{ github.repository }}/tree/${{ fromJson(steps.pr.outputs.result).base }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).base }}</b></a> (Click to view problem set) |
+          > | Student's (Merge) Repository | <a href="https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).headRepo }}</b></a> (Click to view student fork) |
+          > | Student's (Merge) Branch     | <a href="https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}/tree/${{ fromJson(steps.pr.outputs.result).head }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).head }}</b></a> (Click to <b>resume</b> your work) |
 
           ### All Submissions
           $PR_LIST
 
-          In case of doubts, contact 📧 **dev.smq@gmail.com**, or [**comment here**](https://github.com/${{ github.repository }}/pull/${{ fromJson(steps.pr.outputs.result).number }}).
+          In case of doubts, contact 📧 **dev.smq@gmail.com**, or <a href="https://github.com/${{ github.repository }}/pull/${{ fromJson(steps.pr.outputs.result).number }}" target="_blank"><b>comment here</b></a>.
 
           Thanks for your initiation of PR! 🙂 Keep it up!
           EOF
