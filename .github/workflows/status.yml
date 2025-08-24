@@ -54,7 +54,7 @@ jobs:
           fi
           PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
 
-          LAB_NUM=$(echo "$BASE_BRANCH" | grep -oP '\d{2}$' || true)
+          LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
           if [ -z "$LAB_NUM" ]; then
             LAB_NUM="00"
           fi
