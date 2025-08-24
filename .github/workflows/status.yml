@@ -8,7 +8,7 @@ jobs:
   process-pr:
     if: |
       github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '@bot-s-m-quadri status')
+      contains(github.event.comment.body, 'Hi @bot-s-m-quadri')
     runs-on: ubuntu-latest
     steps:
       - name: Get PR context
