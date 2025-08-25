@@ -3,7 +3,7 @@
 # Example: "cat" → c a t
 # -------------------------------------------
 
-# Recursive version
+#this is Recursive version
 def print_letters_recursive(word, i=0):
     if i >= len(word):
         return

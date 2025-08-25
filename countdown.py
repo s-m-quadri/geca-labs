@@ -17,7 +17,7 @@ def countdown_iterative(n):
         print(n)
         n -= 1
 
-# Try both
+# Try both solutions
 n = 5
 print("Recursive countdown:")
 countdown_recursive(n)
