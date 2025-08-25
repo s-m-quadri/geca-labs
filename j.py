@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+list=[]
+list.append("tomato")
+list.append("potato")
+list.append("bong bong")
+list.sort()
+list.reverse()
+print(list)

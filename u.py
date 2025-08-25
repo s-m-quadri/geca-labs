@@ -3,3 +3,8 @@
 
 # 💡 TIP:
 # Format → `[expression for item in iterable if condition]`
+
+sqr=[i*i for i in range(1,11)]
+even=[i for i in range(1,21) if i%2==0 ]
+print(sqr)
+print(even)
