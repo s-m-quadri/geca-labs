@@ -3,3 +3,9 @@
 
 # 💡 TIP:
 # Use `for item in list` and `enumerate(list)` for both item and index.
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+print("---")
+for index, value in enumerate(fruits):
+    print(f"Index {index}: {value}")
