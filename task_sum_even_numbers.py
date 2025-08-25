@@ -29,7 +29,7 @@ def sum_even_iterative(n):
     return total
 # Example usage:
 n = 10
-print(f"Recursive sum of even numbers up to {n}: {sum_even_recursive(n)}
-")print(f"Iterative sum of even numbers up to {n}: {sum_even_iterative(n)}")    
+print(f"Recursive sum of even numbers up to {n}: {sum_even_recursive(n)}")
+print(f"Iterative sum of even numbers up to {n}: {sum_even_iterative(n)}")    
 
 
