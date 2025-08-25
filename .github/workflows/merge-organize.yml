@@ -1,0 +1,116 @@
+name: Bot Merge & Organize
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  merge_and_organize:
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@bot-s-m-quadri merge')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Permission check
+        id: perm
+        run: |
+          COMMENTER="${{ github.event.comment.user.login }}"
+          if [ "$COMMENTER" != "s-m-quadri" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="😏 Who are you? Only @s-m-quadri can do it."
+            exit 1
+          else
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="👍 Got it, I’ll start merging and organizing your submission."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Get PR details
+        id: pr
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/{pull_number}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Merge PR
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+          merge_method: merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Checkout merged branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ fromJson(steps.pr.outputs.data).base.ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Extract PRN and Branch Info
+        run: |
+          PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
+          ROLL=$(echo "$PR_TITLE" | grep -oP 'BT[0-9A-Z]+' || true)
+          if [ -z "$ROLL" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="❌ Could not extract PRN from PR title: \`$PR_TITLE\`"
+            exit 1
+          fi
+          echo "ROLL=$ROLL" >> $GITHUB_ENV
+          BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+          ORIGINAL_BRANCH=$(echo "$BASE_BRANCH" | sed 's/^sub-//')
+          echo "ORIGINAL_BRANCH=$ORIGINAL_BRANCH" >> $GITHUB_ENV
+
+      - name: Determine Lab Folder
+        run: |
+          LAB_BASE="labs-design-analysis-algorithms"
+          LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
+          if [ -z "$LAB_NUM" ]; then
+            LAB_NUM="00"
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="⚠️ Lab number not found in branch name, defaulting to lab-00."
+          fi
+          LAB_DIR="$LAB_BASE/lab-$LAB_NUM"
+          echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Move files into PRN folder
+        run: |
+          mkdir -p "$LAB_DIR/$ROLL"
+          shopt -s nullglob
+          mv ./*.py "$LAB_DIR/$ROLL"/ || true
+          mv ./*.ipynb "$LAB_DIR/$ROLL"/ || true
+          mv ./*.csv "$LAB_DIR/$ROLL"/ || true
+          mv ./*.md "$LAB_DIR/$ROLL"/ || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Restore lab working set
+        run: |
+          echo "Restoring from origin/${ORIGINAL_BRANCH}..."
+          git checkout "origin/${ORIGINAL_BRANCH}" -- .
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Commit changes as bot
+        run: |
+          git config user.name "bot-s-m-quadri"
+          git config user.email "access.smq@gmail.com"
+          git add "$LAB_DIR/$ROLL"
+          if git commit -m "Organize submission for $ROLL (merge into ${BASE_BRANCH})"; then
+            git push origin "${BASE_BRANCH}"
+          else
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="ℹ️ No changes to commit for $ROLL."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
