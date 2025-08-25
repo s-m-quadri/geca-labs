@@ -14,3 +14,19 @@
 # - Base case for recursion: if n <= 1, return 0
 # - Recursive step: if n is even, add n and recurse on n-2
 # - Use `range()` with a step of 2 for the iterative version
+def sum_even_recursive(n):
+    if n <= 1:
+        return 0
+    if n % 2 != 0:
+        n -= 1
+    return n + sum_even_recursive(n - 2)
+
+def sum_even_iterative(n):
+    s = 0
+    for i in range(2, n + 1, 2):
+        s += i
+    return s
+
+n = 10
+print("Recursive Sum Output:", sum_even_recursive(n))
+print("Iterative Sum Output:", sum_even_iterative(n))
