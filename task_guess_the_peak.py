@@ -9,3 +9,21 @@
 #
 # Input: [0, 2, 4, 6, 3, 1]
 # Output: 6
+
+def find_peak(arr):
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        # Compare mid with its next element to decide the direction
+        if arr[mid] < arr[mid + 1]:
+            left = mid + 1  # Peak is in the right half
+        else:
+            right = mid  # Peak is in the left half or at mid
+    
+    return arr[left]  # or arr[right], both are the same here
+# Example usage:
+print(find_peak([1, 3, 7, 12, 9, 5, 2]))  # Output: 12
+print(find_peak([0, 2, 4, 6, 3, 1]))     # Output: 6    
+
