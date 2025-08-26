@@ -4,3 +4,8 @@
 
 # 💡 TIP:
 # Sets remove duplicates automatically. Use `.add()` to insert.
+
+exp={1,2,1,3,4}
+print(exp)
+exp.add(5)
+print(exp)

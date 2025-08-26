@@ -3,3 +3,10 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
+with open("output.txt","w") as f:
+    f.write("hello\n")
+    f.write("hii\n")
+    f.write("bye")
+with open("output.txt","r") as f:
+    data=f.read()
+print(data)

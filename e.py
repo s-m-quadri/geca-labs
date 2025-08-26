@@ -7,3 +7,8 @@
 
 # 💡 TIP:
 # Use `.upper()`, slicing `[::-1]`, and `len()`.
+
+str=input("Enter Sentence: ")
+print(str.upper())
+print(str[::-1])
+print(len(str))
