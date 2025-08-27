@@ -1,0 +1,212 @@
+name: Status and Corrections
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  process-pr:
+    if: |
+      github.event.issue.pull_request != '' &&
+      contains(github.event.comment.body, 'Hi @bot-s-m-quadri')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR context
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            let pr;
+            if (context.eventName === 'pull_request') {
+              pr = context.payload.pull_request;
+            } else {
+              const prNumber = context.payload.issue.number;
+              const { data } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+              pr = data;
+            }
+            return {
+              number: pr.number,
+              base: pr.base.ref,
+              head: pr.head.ref,
+              title: pr.title,
+              headRepo: pr.head.repo.full_name,
+              baseRepo: pr.base.repo.full_name
+
+            };
+
+      - name: Extract PRN & Lab Number
+        id: extract
+        run: |
+          BASE_BRANCH="${{ fromJson(steps.pr.outputs.result).base }}"
+          HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
+          PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
+
+          PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
+          if [ -z "$PRN" ]; then
+            PRN=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
+          fi
+          if [ -z "$PRN" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+              -f body="❌ Could not extract PRN from branch or title."
+            exit 1
+          fi
+          PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
+
+          # Handle LAB_NUM extraction (special case for lab-daa)
+          if [[ "$HEAD_BRANCH" == "lab-daa" ]]; then
+            LAB_NUM="00"
+          else
+            LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
+          fi
+
+          if [ -z "$LAB_NUM" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+              -f body="❌ Could not extract Lab number from branch."
+            exit 1
+          fi
+
+          echo "PRN=$PRN" >> $GITHUB_ENV
+          echo "LAB_NUM=$LAB_NUM" >> $GITHUB_ENV
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Update PR title
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ fromJson(steps.pr.outputs.result).number }},
+              title: `Submission of Lab ${process.env.LAB_NUM} by ${process.env.PRN}`
+            });
+
+      - name: Create label if not exists
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const labelName = `Lab ${process.env.LAB_NUM}`;
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: labelName
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: labelName,
+                color: '0E8A16',
+                description: `All submissions for Lab ${process.env.LAB_NUM}`
+              });
+            }
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ fromJson(steps.pr.outputs.result).number }},
+              labels: [labelName]
+            });
+
+      - name: Ensure sub-branch exists
+        run: |
+          TARGET_BRANCH="sub-lab-daa-${LAB_NUM}"
+          git init temprepo
+          cd temprepo
+          git remote add origin "https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git"
+          git fetch origin
+          if ! git rev-parse --verify origin/$TARGET_BRANCH >/dev/null 2>&1; then
+            echo "Creating $TARGET_BRANCH from ${BASE_BRANCH}"
+            git checkout -b "$TARGET_BRANCH" "origin/${BASE_BRANCH}"
+            git push origin "$TARGET_BRANCH"
+          else
+            echo "$TARGET_BRANCH already exists"
+          fi
+        env:
+          LAB_NUM: ${{ env.LAB_NUM }}
+          BASE_BRANCH: ${{ env.BASE_BRANCH }}
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Change PR base branch
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ fromJson(steps.pr.outputs.result).number }},
+              base: `sub-lab-daa-${process.env.LAB_NUM}`
+            });
+
+      - name: List all PRs for PRN
+        id: listprs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "all",
+              per_page: 100
+            });
+            const prn = process.env.PRN;
+            const related = pulls.filter(p => p.title.includes(prn));
+            return related.map(p => `- #${p.number}`).join(`\n`);
+
+      - name: Prepare PR list
+        run: |
+          {
+            echo "PR_LIST<<EOF"
+            echo -e ${{ steps.listprs.outputs.result }}
+            echo "EOF"
+          } >> $GITHUB_ENV
+
+      - name: Post status comment
+        run: |
+          REVIEW_DATE=$(date -d "+1 week" +"%d %B %Y")
+          NOW_IST=$(TZ="Asia/Kolkata" date +"%d %B %Y, %I:%M %p IST")
+
+          BODY=$(cat <<EOF
+          ### PRN: <a href="https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN" target="_blank"><code>$PRN</code></a> Status
+
+          Please complete the current lab before the review date.
+
+          > [!NOTE]
+          > - Submission Date: **$NOW_IST**  
+          > - Next Review: **$REVIEW_DATE**  
+          >
+          > | Info. | Value/Link |
+          > |-----------------:|:------|
+          > | PRN              | <a href="https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN" target="_blank"><b>$PRN</b></a> (Click to search all PR) |
+          > | Lab Number       | <a href="https://www.s-m-quadri.me/geca/daa/${LAB_NUM}" target="_blank"><b>${LAB_NUM}</b></a> (Click to open manual pages) |
+          > | Base Repository  | <a href="https://github.com/s-m-quadri/geca-labs" target="_blank"><b>geca-labs</b></a> (Click to open repository) |
+          > | Base Branch      | <a href="https://github.com/${{ github.repository }}/tree/${{ fromJson(steps.pr.outputs.result).base }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).base }}</b></a> (Click to view problem set) |
+          > | Student's (Merge) Repository | <a href="https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).headRepo }}</b></a> (Click to view student fork) |
+          > | Student's (Merge) Branch     | <a href="https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}/tree/${{ fromJson(steps.pr.outputs.result).head }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).head }}</b></a> (Click to <b>resume</b> your work) |
+
+          ### All Submissions
+          $PR_LIST
+
+          In case of doubts, contact 📧 **dev.smq@gmail.com**, or <a href="https://github.com/${{ github.repository }}/pull/${{ fromJson(steps.pr.outputs.result).number }}" target="_blank"><b>comment here</b></a>.
+
+          Thanks for your initiation of PR! 🙂 Keep it up!
+          EOF
+          )
+          gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+            -f body="$BODY"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          PRN: ${{ env.PRN }}
+          LAB_NUM: ${{ env.LAB_NUM }}
+          BASE_BRANCH: ${{ env.BASE_BRANCH }}

@@ -1,0 +1,3 @@
+Line 1: Hello, world!
+Line 2: Python is great.
+Line 3: Welcome.
