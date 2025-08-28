@@ -4,3 +4,25 @@
 
 # 💡 TIP:
 # Combine `if`, `math`, `random`, and type conversion.
+
+
+import math
+import random
+
+quotes = [
+    "Keep pushing forward!",
+    "You can do it!",
+    "Never give up!",
+    "Stay positive and strong!"
+]
+
+num = input("Enter a number: ")
+
+if num.isdigit():
+    n = int(num)
+    print("Even" if n % 2 == 0 else "Odd")
+    print("Square root:", math.sqrt(n))
+    if n > 10:
+        print("Quote:", random.choice(quotes))
+else:
+    print("Invalid input")
