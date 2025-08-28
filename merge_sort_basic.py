@@ -12,7 +12,7 @@ def merge(left, right):
     result.extend(left[i:])
     result.extend(right[j:])
     return result
-# tdod
+# to do
 def merge_sort(arr):
     """Basic recursive merge sort."""
     if len(arr) <= 1:
