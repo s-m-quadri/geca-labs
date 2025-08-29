@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 #  Use `def greet(name, msg="Hello"):` to set a default value.
+def greet(name, msg="Hello"):
+    print(f"{msg}, {name}!")    
+greet("Alice")
+greet("Bob", "Hi")
+greet(name="Charlie", msg="Welcome")
+greet(msg="Good morning", name="Diana") 
