@@ -5,3 +5,8 @@
 
 # 💡 TIP:
 # Use `.split()` and `.upper()` / `.lower()`
+name = input("Enter your full name: ")
+print("Lowercase:", name.lower())
+print("Uppercase:", name.upper())
+initials = '. '.join([part[0].upper() for part in name.split() if part]) + '.'
+print("Initials:", initials)
