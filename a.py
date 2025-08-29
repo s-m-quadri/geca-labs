@@ -5,5 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("hellow,Python")
+print("hellow,Python ")
 print("This is Lab ")
