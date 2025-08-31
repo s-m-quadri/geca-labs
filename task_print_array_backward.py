@@ -14,3 +14,13 @@
 # - For recursion, start from last index: len(arr) - 1
 # - Reduce index by 1 each call
 # - For iteration, use a loop from end to start
+public class ReverseArray {
+    public static void main(String[] args) {
+        int arr[] = {10, 20, 30, 40, 50};
+
+        System.out.println("Array in Reverse Order:");
+        for (int i = arr.length - 1; i >= 0; i--) {
+            System.out.print(arr[i] + " ");
+        }
+    }}
+    
