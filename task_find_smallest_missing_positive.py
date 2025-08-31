@@ -9,3 +9,16 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
+
+def binary_search_smpi(arr,low,high):
+    if low>high:
+        return low+1
+
+    mid=(low+high)//2
+    if arr[mid]==mid+1:
+        return binary_search_smpi(arr,mid+1,high)
+    else:
+        return binary_search_smpi(arr,low,mid-1)
+
+arr = [1, 2, 3, 4]
+print("Output:", binary_search_smpi(arr,0,len(arr)-1))
