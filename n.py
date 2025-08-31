@@ -3,3 +3,10 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+
+
+def add(a, b):
+    return a + b
+
+result = add(5, 7)
+print("Sum:", result)
