@@ -1,5 +1,5 @@
 # -------------------------------------------
-# Problem: Print each letter of a word
+# Problem: Print each letter of a word.
 # Example: "cat" → c a t
 # -------------------------------------------
 

@@ -14,3 +14,29 @@
 # - For recursion, start from last index: len(arr) - 1
 # - Reduce index by 1 each call
 # - For iteration, use a loop from end to start
+
+
+
+# Recursive approach
+def print_reverse_recursive(arr, idx=None):
+    if idx is None:
+        idx = len(arr) - 1  # start from last index
+    if idx < 0:
+        return
+    print(arr[idx], end=" ")
+    print_reverse_recursive(arr, idx - 1)
+
+
+# Iterative approach
+def print_reverse_iterative(arr):
+    for i in range(len(arr) - 1, -1, -1):
+        print(arr[i], end=" ")
+
+
+# Example usage
+arr = [1, 2, 3, 4]
+print("Recursive:", end=" ")
+print_reverse_recursive(arr)
+print("\nIterative:", end=" ")
+print_reverse_iterative(arr)
+
