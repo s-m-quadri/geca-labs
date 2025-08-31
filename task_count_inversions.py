@@ -12,3 +12,55 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
+
+def merge_and_count(arr, left, mid, right):
+   
+    L = arr[left:mid+1]
+    R = arr[mid+1:right+1]
+
+    i = j = 0
+    k = left
+    inversions = 0
+
+   
+    while i < len(L) and j < len(R):
+        if L[i] <= R[j]:
+            arr[k] = L[i]
+            i += 1
+        else:
+            arr[k] = R[j]
+            j += 1
+            inversions += (len(L) - i)
+        k += 1
+
+    while i < len(L):
+        arr[k] = L[i]
+        i += 1
+        k += 1
+    while j < len(R):
+        arr[k] = R[j]
+        j += 1
+        k += 1
+
+    return inversions
+
+
+def merge_sort_and_count(arr, left, right):
+    if left >= right:
+        return 0
+    mid = (left + right) // 2
+    inversions = 0
+    inversions += merge_sort_and_count(arr, left, mid)
+    inversions += merge_sort_and_count(arr, mid+1, right)
+    inversions += merge_and_count(arr, left, mid, right)
+    return inversions
+
+
+def count_inversions(arr):
+    return merge_sort_and_count(arr, 0, len(arr)-1)
+
+
+
+arr = [2, 4, 1, 3, 5]
+print("Number of inversions:", count_inversions(arr))
+
