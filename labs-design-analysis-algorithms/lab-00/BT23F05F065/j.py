@@ -4,3 +4,12 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+names = []
+names.append("Alice")
+names.append("Bob")
+names.append("Charlie")
+
+names.sort()
+names.reverse()
+print("Reversed sorted list:", names)
