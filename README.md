@@ -29,5 +29,5 @@ This repository is licensed under the GPL-3.0 license. See the [LICENSE](./LICEN
 ## Contributors and Learners
 
 <a href="https://github.com/s-m-quadri/learn-github/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=s-m-quadri/geca-labs" />
+  <img src="https://contrib.rocks/image?repo=s-m-quadri/geca-labs&anon=1" />
 </a>
