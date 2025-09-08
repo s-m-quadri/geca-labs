@@ -9,3 +9,12 @@
 #
 # Input: [0, 2, 4, 6, 3, 1]
 # Output: 6
+def find_peak_in_mountain_array(arr):
+    low, high = 0, len(arr) - 1
+    while low < high:
+        mid = (low + high) // 2
+        if arr[mid] < arr[mid + 1]:
+            low = mid + 1
+        else:
+            high = mid
+    return arr[low]
