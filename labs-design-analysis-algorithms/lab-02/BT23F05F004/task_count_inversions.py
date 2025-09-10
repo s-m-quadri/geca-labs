@@ -12,3 +12,18 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
+
+def count_inversions(arr):
+    def merge_sort(arr):
+        if len(arr) <= 1:
+            return arr, 0
+        
+        mid = len(arr) 
+        left, inv_left = merge_sort(arr[:mid])
+        right, inv_right = merge_sort(arr[mid:])
+        merged, inv_split = merge_and_count(left, right)
+        
+        return merged, inv_left + inv_right + inv_split
+
+    def merge_and_count(left, right):
+        i = j = inv_count = 0
