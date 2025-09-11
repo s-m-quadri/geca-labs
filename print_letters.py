@@ -1,7 +1,3 @@
-# -------------------------------------------
-# Problem: Print each letter of a word
-# Example: "cat" → c a t
-# -------------------------------------------
 
 # Recursive version
 def print_letters_recursive(word, i=0):
