@@ -2,6 +2,7 @@
 # Basic binary search implementations using recursion
 # Follow along to see the classic binary search in action!
 
+
 def binary_search_recursive(arr, low, high, x):
     """Recursive binary search"""
     # TODO
