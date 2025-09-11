@@ -2,6 +2,7 @@
 # Illustration: Watch binary search narrow down step by step
 # Focus: Track low, high, and mid values as the algorithm searches
 
+
 def binary_search_iterative_steps(arr, target):
     low, high = 0, len(arr) - 1
     step = 1
