@@ -19,7 +19,7 @@ def binary_search_iterative_steps(arr, target):
     print(f"{target} not found")
     return -1
 
-# Example usage
+#Example usage
 arr = [1, 3, 5, 7, 9, 11]
 target = 7
 binary_search_iterative_steps(arr, target)
