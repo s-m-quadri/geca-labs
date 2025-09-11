@@ -19,7 +19,7 @@
 def merge_sorted_lists(list1, list2):
     i, j = 0, 0
     merged_list = []
-
+ 
     while i < len(list1) and j < len(list2):
         if list1[i] <= list2[j]:
             merged_list.append(list1[i])

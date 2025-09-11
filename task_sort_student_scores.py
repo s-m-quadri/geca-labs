@@ -22,7 +22,7 @@ def merge(students, left, mid, right):
 
     i = j = 0
     k = left
-
+ 
     # Merge with custom comparison logic
     while i < len(left_list) and j < len(right_list):
         # Compare based on score descending, then name ascending

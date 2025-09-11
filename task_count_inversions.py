@@ -58,7 +58,7 @@ def merge_sort_and_count(arr, left, right):
         inv_count += merge_and_count(arr, left, mid, right)
     return inv_count
 
-
+ 
 def count_inversions(arr):
     return merge_sort_and_count(arr, 0, len(arr)-1)
 
