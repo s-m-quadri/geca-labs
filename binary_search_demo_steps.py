@@ -21,7 +21,7 @@ def binary_search_iterative_steps(arr, target):
 
 # Example usage
 arr = [1, 3, 5, 7, 9, 11]
-target = 7
+target = 6
 binary_search_iterative_steps(arr, target)
 
 print("\nAnother example:")
