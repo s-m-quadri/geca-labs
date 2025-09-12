@@ -10,4 +10,4 @@
 # Input: arr = [5, 5, 5, 5, 5], target = 5
 # Output: 5
 
-#todo task
+#todo task lab 03
