@@ -5,7 +5,7 @@
 def binary_search_recursive(arr, low, high, x):
     """Recursive binary search"""
     # TODO
-
+    print("Changes to be done")
 # Try it out
 arr = [1, 3, 5, 7, 9, 11]
 x = 7
