@@ -9,3 +9,26 @@
 #
 # Input: [0, 2, 4, 6, 3, 1]
 # Output: 6
+def peak_in_mountain(arr):
+    n = len(arr)
+    if n == 0:
+        return None
+    low, high = 0, n - 1
+    while low < high:
+        mid = (low + high) // 2
+        if arr[mid] > arr[mid + 1]:
+            high = mid
+        else:
+            low = mid + 1
+    return arr[low]
+
+tests = [
+    [1, 3, 7, 12, 9, 5, 2],
+    [0, 2, 4, 6, 3, 1],
+    [1],
+    [1, 2],
+    [2, 1]
+]
+
+for t in tests:
+    print("Input:", t, "-> Peak:", peak_in_mountain(t))
