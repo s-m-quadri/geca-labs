@@ -20,3 +20,12 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+# task_4.6.py
+# Example: Reverse a list
+
+def reverse_list(arr):
+	return arr[::-1]
+
+if __name__ == "__main__":
+	arr = [3, 1, 4, 1, 5, 9, 2, 6, 5]
+	print("Reversed list:", reverse_list(arr))
