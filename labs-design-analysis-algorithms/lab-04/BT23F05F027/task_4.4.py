@@ -20,3 +20,14 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+# task_4.4.py
+# Example: Calculate the average of elements in a list
+
+def average(arr):
+	if not arr:
+		return None
+	return sum(arr) / len(arr)
+
+if __name__ == "__main__":
+	arr = [3, 1, 4, 1, 5, 9, 2, 6, 5]
+	print("Average:", average(arr))
