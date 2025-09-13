@@ -24,5 +24,5 @@ binary_search_visual(arr, target)
 
 print("\nAnother example:")
 arr2 = [10, 20, 30, 40, 50]
-target2 = 35
+target2 = 40
 binary_search_visual(arr2, target2)
