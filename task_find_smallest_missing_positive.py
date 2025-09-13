@@ -9,3 +9,21 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
+
+def find_smallest_missing(arr):
+    low, high = 0, len(arr) - 1
+
+    while low <= high:
+        mid = low + (high - low) // 2
+        if arr[mid] == mid + 1:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return low + 1
+
+# Example usage
+print(find_smallest_missing([1, 2, 3, 5, 6]))  
+print(find_smallest_missing([2, 3, 4, 5]))     
+print(find_smallest_missing([1, 2, 3, 4, 5]))  
+print(find_smallest_missing([3, 4, 5]))        
