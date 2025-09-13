@@ -12,3 +12,15 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
+def count_inversions(arr):
+	count = 0
+	n = len(arr)
+	for i in range(n):
+		for j in range(i+1, n):
+			if arr[i] > arr[j]:
+				count += 1
+	return count
+
+## Example usage:
+# arr = [2, 4, 1, 3, 5]
+# print(count_inversions(arr))  # Output: 3
