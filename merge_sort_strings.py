@@ -1,4 +1,3 @@
-
 def merge(left, right):
     result = []
     i = j = 0
