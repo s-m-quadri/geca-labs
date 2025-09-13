@@ -5,13 +5,3 @@
 
 # 💡 TIP:
 # Use `import math`, and remember degrees must be converted to radians.
-import math     
-sqrt_144 = math.sqrt(144)
-pi_value = math.pi
-sin_90 = math.sin(math.radians(90))     
-print("Square root of 144 is:", sqrt_144)
-print("Value of π is:", pi_value)
-print("sin(90 degrees) is:", sin_90)    
-
-
-        
