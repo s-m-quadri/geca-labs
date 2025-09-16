@@ -62,7 +62,7 @@ def fib_sequence(n):
     return seq
 
 
-# 5. Extra: Fibonacci Generator (yields values lazily)
+
 def fib_generator(n):
     if n < 0:
         raise ValueError("Fibonacci is not defined for negative numbers")
@@ -72,9 +72,7 @@ def fib_generator(n):
         a, b = b, a + b
 
 
-# -------------------------------
-# Example Usage
-# -------------------------------
+
 if __name__ == "__main__":
     n = 6
 
