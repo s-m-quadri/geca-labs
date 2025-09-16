@@ -5,3 +5,17 @@
 
 # 💡 TIP:
 # Use `import math`, and remember degrees must be converted to radians.
+import math
+
+# Square root of 144
+sqrt_144 = math.sqrt(144)
+print("Square root of 144:", sqrt_144)
+
+# Value of π
+print("Value of π:", math.pi)
+
+# sin(90 degrees) → convert to radians first
+angle_rad = math.radians(90)
+sin_90 = math.sin(angle_rad)
+print("sin(90°):", sin_90)
+
