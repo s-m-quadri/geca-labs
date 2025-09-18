@@ -17,6 +17,5 @@ def sum_iterative(n):
     return total
 
 # Try both
-n = 10
-print("Recursive sum:", sum_recursive(n))
-print("Iterative sum:", sum_iterative(n))
+print(sum_recursive(10))
+print(sum_iterative(10))

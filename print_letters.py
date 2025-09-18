@@ -16,9 +16,5 @@ def print_letters_iterative(word):
         print(ch)
 
 # Try both
-word = "dog"
-print("Recursive:")
-print_letters_recursive(word)
-
-print("\nIterative:")
-print_letters_iterative(word)
+print_letters_recursive("dog")
+print_letters_iterative("dog")

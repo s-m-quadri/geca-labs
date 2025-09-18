@@ -18,9 +18,5 @@ def countdown_iterative(n):
         n -= 1
 
 # Try both
-n = 5
-print("Recursive countdown:")
-countdown_recursive(n)
-
-print("\nIterative countdown:")
-countdown_iterative(n)
+countdown_recursive(5)
+countdown_iterative(5)
