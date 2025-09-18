@@ -4,11 +4,12 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
-
 import random
-dice_roll = random.randint(1, 6)
 
-coin_toss = random.choice(["Heads", "Tails"])
+# Simulating a dice roll (1 to 6)
+dice = random.randint(1, 6)
+print("Dice roll:", dice)
 
-print("Dice roll:", dice_roll)
-print("Coin toss:", coin_toss)
+# Simulating a coin toss
+coin = random.choice(["Heads", "Tails"])
+print("Coin toss:", coin)

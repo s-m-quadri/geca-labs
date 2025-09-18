@@ -4,13 +4,12 @@
 
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
+# Asking user for rows and columns
+rows = int(input("Enter number of rows: "))
+cols = int(input("Enter number of columns: "))
 
-
-rows = int(input(" number of rows: "))
-cols = int(input(" number of columns: "))
-
+# Printing rectangle using nested loops
 for i in range(rows):
-    
     for j in range(cols):
-        print("*", end="") 
-    print()  
+        print("*", end=" ")
+    print()  # new line after each row

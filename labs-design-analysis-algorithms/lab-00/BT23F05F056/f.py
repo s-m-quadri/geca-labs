@@ -6,12 +6,14 @@
 
 # 💡 TIP:
 # Use `if`, `elif`, and `else`.
+# Asking the user for a number
+num = int(input("Enter a number: "))
 
-number = float(input("Enter a number: "))
-
-if number > 0:
+# Checking conditions
+if num > 0:
     print("Positive")
-elif number < 0:
+elif num < 0:
     print("Negative")
 else:
     print("Zero")
+

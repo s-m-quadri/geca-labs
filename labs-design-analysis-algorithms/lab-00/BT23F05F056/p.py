@@ -5,15 +5,14 @@
 
 # 💡 TIP:
 # All Python functions return something, even if it's just `None`.
-# Function that prints but doesn't return anything
+# Function that prints but returns nothing
 def void_function():
     print("Running")
 
+# Function that returns the sum
 def add(a, b):
     return a + b
 
-result_void = void_function()  
-result_add = add(5, 3)
-
-print("Return value of void_function():", result_void)
-print("Return value of add(5, 3):", result_add)
+# Calling functions and printing return values
+print("Return value of void_function():", void_function())
+print("Return value of add(5, 3):", add(5, 3))

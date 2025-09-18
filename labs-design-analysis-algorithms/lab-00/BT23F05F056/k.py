@@ -4,13 +4,14 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
-
+# Creating a tuple of 3 items
 my_tuple = ("red", "green", "blue")
 
-try:
-    my_tuple[1] = "yellow"  # type: ignore # This will raise a TypeError
-except TypeError as e:
-    print("Error:", e)
+# Trying to modify the second item (this will cause an error)
+# Uncommenting the line below will raise: TypeError
+# my_tuple[1] = "yellow"
 
+# Printing each item using a loop
+print("Tuple items:")
 for item in my_tuple:
     print(item)

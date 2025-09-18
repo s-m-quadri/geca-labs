@@ -7,9 +7,10 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
-
-name = "Alice"
+# Declaring variables
+name = "Isha"
 age = 20
 is_student = True
 
+# Printing them in one line using commas
 print(name, age, is_student)

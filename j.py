@@ -4,19 +4,12 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
-# Creating an empty list
-words = []
 
-# Appending 3 strings
-words.append("banana")
-words.append("apple")
-words.append("cherry")
+my_list = []
+my_list.append("zebra")
+my_list.append("apple")
+my_list.append("banana")
 
-# Sorting the list
-words.sort()
-
-# Reversing the list
-words.reverse()
-
-# Printing the final list
-print("Sorted in reverse order:", words)
+my_list.sort()
+my_list.reverse()
+print(my_list)

@@ -4,17 +4,17 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
-
 try:
-    
-    num1 = int(input("Enter first number: "))
-    num2 = int(input("Enter second number: "))
+    # Taking two numbers from the user
+    a = int(input("Enter first number: "))
+    b = int(input("Enter second number: "))
 
-    result = num1 / num2
-    print(f"Result: {result}")
+    # Division
+    result = a / b
+    print("Result:", result)
 
 except ZeroDivisionError:
-    print("Error: Division by zero is not allowed.")
+    print("Error: Cannot divide by zero!")
 
 except ValueError:
-    print("Error: Please enter valid integers only.")
+    print("Error: Please enter valid integers.")

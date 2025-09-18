@@ -3,13 +3,15 @@
 
 # 💡 TIP:
 # Use `for item in list` and `enumerate(list)` for both item and index.
+# Creating a list
+fruits = ["Apple", "Banana", "Cherry", "Mango"]
 
-fruits = ["apple", "banana", "cherry", "date"]
-
-print("Items:")
+# Printing each item on a new line
+print("Items in the list:")
 for item in fruits:
     print(item)
 
-print("Index and value:")
+# Printing index and value
+print("\nIndex and values:")
 for index, value in enumerate(fruits):
-    print(f"{index}: {value}")
+    print(index, value)

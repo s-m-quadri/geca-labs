@@ -5,4 +5,7 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("hi")
+# This is your first Python program.
+
+print("Hello, Python!")
+print("This is Lab A")

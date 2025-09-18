@@ -4,7 +4,11 @@
 
 # 💡 TIP:
 #  Use `def greet(name, msg="Hello"):` to set a default value.
+# Defining the greet function
 def greet(name, msg="Hello"):
-    print(f"{msg}, {name}!")
+    print(msg, name)
 
-greet("aditya")
+# Calling the function in different ways
+greet("Isha")                     # uses default message
+greet("Aarav", "Good morning")    # custom message
+greet(name="Meera", msg="Welcome") # using named arguments

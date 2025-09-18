@@ -4,35 +4,21 @@
 
 # 💡 TIP:
 # Combine `if`, `math`, `random`, and type conversion.
+
 import math
 import random
 
-# List of motivational quotes
 quotes = [
-    "Keep going, you're doing great!",
-    "Believe in yourself!",
-    "Success is the sum of small efforts repeated daily.",
-    "Stay positive and work hard!"
+    "Believe in yourself and all that you are.",
+    "You are stronger than you think.",
+    "Every day is a second chance.",
+    "Push yourself, because no one else is going to do it for you.",
+    "Great things never come from comfort zones."
 ]
 
-# Asking user for a number
-try:
-    num = int(input("Enter a number: "))
-
-    # Check if the number is even or odd
-    if num % 2 == 0:
-        print(f"{num} is even.")
-    else:
-        print(f"{num} is odd.")
-
-    # Calculate and print square root
-    sqrt_num = math.sqrt(num)
-    print(f"Square root of {num} is {sqrt_num}")
-
-    # Print a motivational quote if number > 10
-    if num > 10:
-        quote = random.choice(quotes)
-        print("Motivational quote:", quote)
-
-except ValueError:
-    print("Invalid input! Please enter a valid integer.")
+num = int(input("Enter a number: "))
+if num % 2 == 0:
+    print("Even number")
+print("Square root:", math.sqrt(num))
+if num > 10:
+    print(random.choice(quotes))
