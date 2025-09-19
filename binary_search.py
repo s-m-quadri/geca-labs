@@ -4,7 +4,24 @@
 
 def binary_search_recursive(arr, low, high, x):
     """Recursive binary search"""
-    # TODO
+    # Base case: element not found
+    if low > high:
+        return -1
+    
+    # Calculate middle index
+    mid = (low + high) // 2
+    
+    # Found the element
+    if arr[mid] == x:
+        return mid
+    
+    # Element is in the left half
+    elif x < arr[mid]:
+        return binary_search_recursive(arr, low, mid - 1, x)
+    
+    # Element is in the right half
+    else:
+        return binary_search_recursive(arr, mid + 1, high, x)
 
 # Try it out
 arr = [1, 3, 5, 7, 9, 11]
