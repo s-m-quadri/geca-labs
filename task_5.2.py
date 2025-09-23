@@ -13,7 +13,7 @@ Tip:
 Use a simple linear search.
 
 Test case:
-key = [0, 2, 3]
+key = [0, 4, 3]
 mstSet = [True, False, False]
 # Expected output: 1
 """
