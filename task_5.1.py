@@ -6,8 +6,8 @@ Task:
 Write a function that initializes key[], parent[], mstSet[] arrays for a graph with V vertices.
 
 Instruction:
-- Use Python lists.
-- Do not implement the full MST yet.
+- Use Python lists .
+- Do not implem   ent the full MST yet.
 
 Tip:
 Focus only on initialization. Use ∞ for key values and -1 for parent.
