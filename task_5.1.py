@@ -19,3 +19,11 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+def initialize_prim(V):
+    INF = float('inf')
+    
+    key = [INF] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    
+    return key, parent, mstSet

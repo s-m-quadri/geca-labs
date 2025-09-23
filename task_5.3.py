@@ -25,4 +25,13 @@ parent = [-1, -1, -1]
 # Expected after update:
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
+
 """
+def update_keys(graph, u, key, parent, mstSet):
+    V = len(graph)
+    
+    for v in range(V):
+        weight = graph[u][v]
+        if weight > 0 and not mstSet[v] and weight < key[v]:
+            key[v] = weight
+            parent[v] = u
