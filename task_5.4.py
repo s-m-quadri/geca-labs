@@ -14,7 +14,7 @@ Test on small 3-4 vertex graphs to check updates.
 
 Test case:
 graph = [
- [0, 1, 4],
+ [0, 2, 4],
  [1, 0, 2],
  [4, 2, 0]
 ]
