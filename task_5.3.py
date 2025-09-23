@@ -26,3 +26,10 @@ parent = [-1, -1, -1]
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
 """
+def update_keys(graph, u, key, parent, mstSet):
+    V = len(graph)
+    for v in range(V):
+        # Check if there's an edge from u to v, v is not in MST, and weight is smaller than current key[v]
+        if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
