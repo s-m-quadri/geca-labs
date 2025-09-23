@@ -1,28 +1,23 @@
-"""
-Background:
-After picking a vertex, we update keys of adjacent vertices.
+def updateKeys(graph, u, key, parent, mstSet):
+    n = len(graph)
+    for v in range(n):
+        if graph[u][v] != 0 and mstSet[v] == False and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
 
-Task:
-Implement a function to update key[] and parent[] for neighbors of selected vertex.
 
-Instruction:
-- Input: graph (adjacency matrix), u (selected vertex), key[], parent[], mstSet[]
-- Update key[v] if edge weight is smaller.
-
-Tip:
-Skip vertices already in mstSet.
-
-Test case:
+# Test case
 graph = [
- [0, 2, 0],
- [2, 0, 3],
- [0, 3, 0]
+    [0, 2, 0],
+    [2, 0, 3],
+    [0, 3, 0]
 ]
 u = 0
-key = [0, ∞, ∞]
+key = [0, float('inf'), float('inf')]
 mstSet = [True, False, False]
 parent = [-1, -1, -1]
-# Expected after update:
-# key = [0, 2, ∞]
-# parent = [-1, 0, -1]
-"""
+
+updateKeys(graph, u, key, parent, mstSet)
+
+print("key:", key)      
+print("parent:", parent) 
