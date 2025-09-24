@@ -20,3 +20,14 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+def initialize(V):
+    key = [float("inf")] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+V = 4
+key, parent, mstSet = initialize(V)
+print(key)
+print(parent)
+print(mstSet)
