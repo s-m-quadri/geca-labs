@@ -9,3 +9,27 @@
 #
 # Input: [0, 2, 4, 6, 3, 1]
 # Output: 6
+def mountain_value(arr):
+   
+    if not arr:
+        raise ValueError("Input array must be non-empty.")
+    n = len(arr)
+    if n == 1:
+        return arr[0]
+
+    left, right = 0, n - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        if arr[mid] < arr[mid + 1]:
+            left = mid + 1
+        else:
+            
+            right = mid
+    return arr[left]
+
+
+
+print(mountain_value([1, 3, 7, 12, 9, 5, 2]))  # -> 12
+print(mountain_value([0, 2, 4, 6, 3, 1]))      # -> 6
