@@ -9,27 +9,3 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
-def smallest_missing_positive(arr):
-    n = len(arr)
-    
-   
-    if arr[0] != 1:
-        return 1
-
-    left, right = 0, n - 1
-    while left <= right:
-        mid = (left + right) // 2
-
-       
-        if arr[mid] == mid + 1:
-            left = mid + 1
-        else:
-            # Gap is on the left side
-            right = mid - 1
-
-   
-    return left + 1
-
-
-print(smallest_missing_positive([1, 2, 3, 5, 6]))  # Output: 4
-print(smallest_missing_positive([2, 3, 4, 5])) 
