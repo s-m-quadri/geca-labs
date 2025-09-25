@@ -18,7 +18,7 @@ def binary_search_visual(arr, target):
     return -1
 
 # Example usage
-arr = [1, 2, 3, 4, 5, 6, 7]
+arr = [1, 2, 3, 4, 5, 6, 7,9]
 target = 4
 binary_search_visual(arr, target)
 
