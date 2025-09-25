@@ -21,7 +21,7 @@ def merge_sort_strings(arr):
     return merge(left, right)
 
 if __name__ == "__main__":
-    names = ["Charlie", "alice", "john", "david"]
+    names = ["Charlie", "alice", "Bob", "david"]
     print("Original:", names)
     sorted_names = merge_sort_strings(names)
     print("Sorted (case-insensitive):", sorted_names)
