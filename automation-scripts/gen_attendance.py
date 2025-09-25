@@ -44,7 +44,7 @@ SLOTS = {
 # Attendance data
 # -------------------------------
 ATTENDANCE = {
-    "Misc(intro)": {
+    "Misc.": {
         "24/07/2025": {"A": [3,4,5,6,7,10,11,12,13,15,16,17,18,19]},
         "28/07/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,56,57,59,60]},
     },
@@ -120,10 +120,19 @@ def was_present(prn, lab_key):
     else:
         d_key = batch
 
+    # Check if this batch had a session for the given lab
+    session_dates = [
+        date for (lab, bkey, n), date in LOOKUP.items()
+        if lab == lab_key and bkey == d_key
+    ]
+    if not session_dates:
+        return "n/a"  # no session conducted for this batch
+
     date = LOOKUP.get((lab_key, d_key, num))
     if date:
-        return f"{date} {SLOTS[SLOT_GROUPS[batch]]}"
-    return "-"
+        # return f"{date} {SLOTS[SLOT_GROUPS[batch]]}"
+        return f"{date}"
+    return "Absent"  # session was conducted but student absent
 
 # -------------------------------
 # Build one student's row
