@@ -25,3 +25,41 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+
+def prim_one_iteration(graph, key, parent, mstSet):
+    V = len(graph)
+    
+    # Pick the vertex with minimum key not yet in MST
+    min_key = float('inf')
+    u = -1
+    for v in range(V):
+        if not mstSet[v] and key[v] < min_key:
+            min_key = key[v]
+            u = v
+    
+    # Include the selected vertex in MST
+    mstSet[u] = True
+    
+    for v in range(V):
+        if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
+
+# Test case
+graph = [
+    [0, 1, 4],
+    [1, 0, 2],
+    [4, 2, 0]
+]
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+prim_one_iteration(graph, key, parent, mstSet)
+
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
+
+
+

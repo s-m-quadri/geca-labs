@@ -22,3 +22,48 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(0,3,6)]
 """
+
+def prim_mst(graph, start=0):
+    V = len(graph)
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+
+    # Start vertex has key = 0
+    key[start] = 0
+
+    for _ in range(V - 1):
+        # Pick min key vertex not yet in MST
+        min_val = float('inf')
+        u = -1
+        for v in range(V):
+            if not mstSet[v] and key[v] < min_val:
+                min_val = key[v]
+                u = v
+
+        # Include it in MST
+        mstSet[u] = True
+
+        for v in range(V):
+            if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
+                key[v] = graph[u][v]
+                parent[v] = u
+
+    mst_edges = []
+    for v in range(V):
+        if parent[v] != -1:
+            mst_edges.append((parent[v], v, graph[v][parent[v]]))
+    return mst_edges
+
+
+# Test case
+graph = [
+    [0, 2, 0, 6],
+    [2, 0, 3, 8],
+    [0, 3, 0, 0],
+    [6, 8, 0, 0]
+]
+start = 0
+mst = prim_mst(graph, start)
+print(mst)  # Expected: [(0,1,2),(1,2,3),(0,3,6)]
+
