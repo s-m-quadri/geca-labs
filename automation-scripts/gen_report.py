@@ -50,11 +50,14 @@ def status_from_rows(rows, lab_num):
         return [f"[{p}]({REPO_URL}/pull/{p.strip('#')})" for p in prs]
 
     if merged:
-        return f"Merge ({', '.join(clickable(sorted(merged)))})"
+        if len(merged) > 1:
+            largest = max(int(p.strip("#")) for p in merged)
+            merged = {f"#{largest}"}
+        return f"Acc {', '.join(clickable(sorted(merged)))}"
     elif open_prs:
-        return f"Open ({', '.join(clickable(sorted(open_prs)))})"
+        return f"Wip {', '.join(clickable(sorted(open_prs)))}"
     elif closed_prs:
-        return f"Closed ({', '.join(clickable(sorted(closed_prs)))})"
+        return f"Err {', '.join(clickable(sorted(closed_prs)))}"
     else:
         return "-"
 
@@ -85,14 +88,14 @@ for _, student in students_df.iterrows():
         if not lab_rows.empty:
             labs_started += 1
             status = status_from_rows(lab_rows, lab)
-            if status.startswith("Merge"):
+            if status.startswith("A"):
                 labs_completed += 1
         else:
             status = "-"
         row[f"Lab {lab}"] = status
 
-    row["Created"] = labs_started
-    row["Merged"] = labs_completed
+    row["Start"] = labs_started
+    row["Done"] = labs_completed
     row["Total"] = len(LAB_RANGE)
     row["Percent"] = f"{(labs_completed / len(LAB_RANGE)) * 100:.2f}%"
     summary.append(row)
@@ -222,7 +225,7 @@ attendance_df = attendance_df.applymap(
 )
 
 # keep NaN as "-" for clarity
-attendance_df = attendance_df.fillna("-")
+attendance_df = attendance_df.fillna("n/a")
 
 # Prepare PR DataFrame
 pr_latex_df = df.copy()[["PR Number","PRN","Title","User","Labels","State","Created At","Closed At","Merged At"]]
@@ -249,6 +252,19 @@ for col in ["Created At","Closed At","Merged At"]:
     
 # --- remove Unicode from Labels ---
 pr_latex_df["Labels"] = pr_latex_df["Labels"].str.encode("ascii","ignore").str.decode("ascii")
+
+def sort_labels(label_str):
+    if pd.isna(label_str) or label_str.strip() == "":
+        return "-"
+    labels = [lbl.strip() for lbl in label_str.split(",")]
+    def label_key(lbl):
+        match = re.search(r"Lab\s*0*([0-9]+)", lbl, re.IGNORECASE)
+        if match:
+            return (0, int(match.group(1)))  # Lab labels come first, sorted by number
+        return (1, lbl.lower())  # Other labels come later, sorted alphabetically
+    labels.sort(key=label_key)
+    return ", ".join(labels)
+pr_latex_df["Labels"] = pr_latex_df["Labels"].apply(sort_labels)
 
 pr_latex_df = pr_latex_df.applymap(escape_latex)
 pr_latex_df["User"] = pr_latex_df["User"].apply(format_github_user)
@@ -296,6 +312,15 @@ This table shows the attendance record for each student.
     f.write(r"""
 \section*{2. Summary of Lab Submissions}
 This table summarizes the lab submissions for each student, including their PR status and overall performance.
+\begin{longtable}{ll}
+\toprule
+Abbreviation & Meaning \\
+\midrule
+Acc & Accepted (Merged) \\
+Wip & Work in Progress (Open) \\
+Err & Error (Closed without merge) \\
+\bottomrule
+\end{longtable}
 """)
     f.write(latex_df.to_latex(index=False, longtable=True, escape=False, caption="Summary of Lab Submissions"))
     f.write(r"""
