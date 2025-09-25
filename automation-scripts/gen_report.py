@@ -300,7 +300,7 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \begin{landscape}
 \small
 \begin{center}
-    {\LARGE \textbf{DAA Labs Attendance and Submission Report - August 2025}}
+    {\LARGE \textbf{DAA Labs} Attendance and Submission Report - \textbf{September 2025}}
 \end{center}
 \vspace{1em} % small space before first table
 """)
