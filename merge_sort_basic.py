@@ -1,6 +1,8 @@
+#BT23F05F042
 def merge(left, right):
     """Merge two sorted lists into one sorted list."""
     result = []
+
     i = j = 0
     while i < len(left) and j < len(right):
         if left[i] <= right[j]:
