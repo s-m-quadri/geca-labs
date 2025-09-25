@@ -1,0 +1,6 @@
+*
+!.gitignore
+!check_pull_requests.py
+!fetch_pull_requests.py
+!gen_report.py
+!gen_attendance.py
