@@ -25,3 +25,14 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+def prim_iteration(graph, key, parent, mstSet):
+    # Step 1: pick the vertex with minimum key not in MST
+    u = min_key_vertex(key, mstSet)
+    
+    # Step 2: include it in MST
+    mstSet[u] = True
+    
+    # Step 3: update neighbors
+    update_keys(graph, u, key, parent, mstSet)
+    
+    return key, parent, mstSet
