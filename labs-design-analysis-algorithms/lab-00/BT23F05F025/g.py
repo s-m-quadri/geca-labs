@@ -1,0 +1,16 @@
+# Print the numbers from 1 to 10 using:
+#  - a for loop
+#  - a while loop
+
+# 💡 TIP:
+# `range(1, 11)` gives 1 through 10.
+# Use `while` with a counter.
+
+print("For loop")
+for i in range(1,11):
+    print(i)
+print("While loop")
+count = 1
+while count <= 10:
+    print(count)
+    count += 1

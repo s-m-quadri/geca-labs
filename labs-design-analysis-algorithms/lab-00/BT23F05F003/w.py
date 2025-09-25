@@ -1,0 +1,14 @@
+# Use `random` to simulate:
+#  - A dice roll (1 to 6)
+#  - A coin toss (Heads or Tails)
+
+# 💡 TIP:
+# Use `random.randint()` for numbers, and `random.choice()` for custom options.
+
+import random
+
+dice_roll = random.randint(1,6)
+coin_toss = random.choice(["Heads","Tails"])
+
+print(dice_roll)
+print(coin_toss)
