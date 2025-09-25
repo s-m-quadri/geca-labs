@@ -19,3 +19,6 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+key = [inf, inf, inf, inf]
+parent = [-1, -1, -1, -1]
+mstSet = [False, False, False, False]
