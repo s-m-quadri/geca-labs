@@ -1,4 +1,4 @@
-# Task 4.6: Challenge – Activity Selection Problem
+## Task 4.6: Challenge – Activity Selection Problem
 # ----------------------------------------------
 # This is a classic greedy scheduling problem.
 #
