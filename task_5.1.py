@@ -19,3 +19,20 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+
+def initialize_arrays(V):
+    # Infinity for key values
+    key = [float('inf')] * V
+    # -1 means no parent initially
+    parent = [-1] * V
+    # False means no vertex is included in MST yet
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+
+# Test case
+V = 4
+key, parent, mstSet = initialize_arrays(V)
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
