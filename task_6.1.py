@@ -10,3 +10,15 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+n = int(input("enter the number of edges: "))
+
+list=[]
+
+for i in range(n):
+    u = int(input("enter u: "))
+    v = int(input("enter v: "))
+    w = int(input("enter w: "))
+    list.append((u,v,w))
+
+print(list)
+
