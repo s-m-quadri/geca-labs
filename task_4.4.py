@@ -20,37 +20,3 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
-
-
-# Function to solve Fractional Knapsack
-def fractional_knapsack(W, items):
-    """
-    W: capacity of knapsack
-    items: list of tuples (value, weight)
-    Returns maximum achievable value
-    """
-
-    # Step 1: Calculate value-to-weight ratio and sort by it (descending)
-    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
-
-    total_value = 0.0
-    for value, weight in items:
-        if W == 0:
-            break
-        if weight <= W:
-            # Take the whole item
-            total_value += value
-            W -= weight
-        else:
-            # Take fraction of item
-            total_value += value * (W / weight)
-            W = 0  # Knapsack is full
-
-    return total_value
-
-
-# Example usage
-capacity = 50
-items = [(60, 10), (100, 20), (120, 30)]
-print("Maximum value in Knapsack =", fractional_knapsack(capacity, items))  
-# Output: 240.0
