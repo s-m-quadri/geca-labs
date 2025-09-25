@@ -20,7 +20,7 @@ def binary_search_iterative_steps(arr, target):
     return -1
 
 # Example usage
-arr = [1, 3, 5, 7, 9, 11]
+arr = [1, 3, 5, 7, 9, 11,13]
 target = 7
 binary_search_iterative_steps(arr, target)
 
