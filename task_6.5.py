@@ -1,4 +1,4 @@
-# Task 6.5: Building MST using Kruskal’s Algorithm
+## Task 6.5: Building MST using Kruskal’s Algorithm
 # -------------------------------------------------
 # Write Kruskal’s algorithm using edges list and union-find.
 # Iterate over sorted edges, add edge if it doesn’t form a cycle.

@@ -1,4 +1,4 @@
-# Task 6.6: Challenge - Visualize MST
+## Task 6.6: Challenge - Visualize MST
 # -------------------------------------
 # Extend Kruskal’s algorithm:
 # 1. Input edges and build MST.

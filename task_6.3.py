@@ -1,4 +1,4 @@
-# Task 6.3: Union-Find Data Structure (Basics)
+# #Task 6.3: Union-Find Data Structure (Basics)
 # ---------------------------------------------
 # Implement a simple parent[] array for union-find.
 # Only create parent[] such that parent[i] = i initially.

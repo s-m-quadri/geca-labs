@@ -1,5 +1,5 @@
 # Task 6.1: Representing Graph Edges
-# -----------------------------------
+# ------------------------_-----------
 # Write a function that accepts edges as tuples (u, v, w).
 # u, v are vertices, w is the weight.
 # Store all edges in a list of tuples.

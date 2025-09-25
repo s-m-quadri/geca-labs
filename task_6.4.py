@@ -1,4 +1,4 @@
-# Task 6.4: Find and Union Functions
+# #Task 6.4: Find and Union Functions
 # -----------------------------------
 # Extend union-find with:
 # 1. find(x) -> returns root parent of x.

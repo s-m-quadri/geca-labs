@@ -1,4 +1,4 @@
-# Task 6.2: Sorting Edges
+## Task 6.2: Sorting Edges
 # ------------------------
 # Write a function that sorts edges by their weight.
 # Use Python's built-in sorted().
