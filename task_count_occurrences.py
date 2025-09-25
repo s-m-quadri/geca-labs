@@ -1,4 +1,4 @@
-# Puzzle / Learning focus:
+# Puzzle / Learning focus:#
 # - You have a sorted array with repeated elements.
 # - Count how many times a target number appears using binary search logic.
 # - Consider how to find the first and last occurrence efficiently.

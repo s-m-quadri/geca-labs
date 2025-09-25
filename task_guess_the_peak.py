@@ -1,4 +1,4 @@
-# Puzzle / Learning focus:
+# Puzzle / Learning focus:#
 # - You are given a “mountain array” (numbers increase then decrease).
 # - Your task is to find the peak element using binary search ideas.
 # - Think carefully about how to compare neighbors to detect the peak.

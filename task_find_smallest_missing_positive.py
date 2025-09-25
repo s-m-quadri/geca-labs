@@ -1,4 +1,4 @@
-# Puzzle / Learning focus:
+# Puzzle / Learning focus:#
 # - Given a sorted array of positive numbers, find the smallest missing positive integer.
 # - Use binary search thinking to locate the “gap” without checking every element.
 # - Challenge: handle edge cases at the start and end of the array.
