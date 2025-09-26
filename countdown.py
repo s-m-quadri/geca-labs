@@ -2,7 +2,7 @@
 # Problem: Print numbers from n to 1
 # -------------------------------------------
 # Goal: Practice recursion vs iteration
-# -------------------------------------------
+# -- -----------------------------------------
 
 # Recursive version
 def countdown_recursive(n):
