@@ -31,7 +31,6 @@ def prim_mst(graph, start):
     key[start] = 0
 
     for _ in range(V):
-        # Find the vertex with the minimum key not yet in MST
         min_key = float('inf')
         u = -1
         for v in range(V):
@@ -44,14 +43,11 @@ def prim_mst(graph, start):
 
         mstSet[u] = True
 
-        # Update key and parent for neighbors of u
         for v in range(V):
             if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
                 key[v] = graph[u][v]
                 parent[v] = u
 
-    # Prepare MST edges as (parent, vertex, weight)
-    mst_edges = []
     for v in range(V):
         if parent[v] != -1:
             mst_edges.append((parent[v], v, graph[parent[v]][v]))
