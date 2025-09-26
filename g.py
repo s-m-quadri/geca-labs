@@ -5,3 +5,13 @@
 # 💡 TIP:
 # `range(1, 11)` gives 1 through 10.
 # Use `while` with a counter.
+
+# For loop
+for i in range(1, 11):
+    print(i)
+
+# While loop
+count = 1
+while count <= 10:
+    print(count)
+    count += 1

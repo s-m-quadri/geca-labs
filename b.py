@@ -7,3 +7,9 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+
+name = "Mustang"
+age = 9
+is_student = False
+
+print(name, age, is_student)
