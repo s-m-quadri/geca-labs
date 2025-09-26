@@ -1,5 +1,3 @@
-
-# Recursive factorial
 def factorial_recursive(n):
     if n == 0:
         return 1
@@ -16,15 +14,3 @@ def factorial_iterative(n):
 n = 5
 print("Recursive:", factorial_recursive(n))
 print("Iterative:", factorial_iterative(n))
-
-# recursive factorial
-
-
-def factorial_recursive(n):
-    if n==0:
-        return 1
-    return n*factorial_recursive(n-1)
-
-n=5
-print("Recursion : ", factorial_recursive(n))
-
