@@ -10,15 +10,20 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
-n = int(input("enter the number of edges: "))
+def represent_edges(edges):
+    """
+    Accepts edges as tuples (u, v, w) and stores them in a list.
+    
+    Args:
+        edges: List of tuples (u, v, w) where u, v are vertices and w is weight
+    
+    Returns:
+        List of edge tuples
+    """
+    return edges
 
-list=[]
-
-for i in range(n):
-    u = int(input("enter u: "))
-    v = int(input("enter v: "))
-    w = int(input("enter w: "))
-    list.append((u,v,w))
-
-print(list)
-
+# Test the function
+if __name__ == "__main__":
+    edges = [(0,1,4), (0,2,3), (1,2,1)]
+    result = represent_edges(edges)
+    print("Original edges:", result)
