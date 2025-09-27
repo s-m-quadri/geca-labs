@@ -9,3 +9,28 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
+def smallest_missing_positive(arr):
+    low, high = 0, len(arr) - 1
+
+    # Edge case: if the very first number > 1, then 1 is missing
+    if arr[0] != 1:
+        return 1
+
+    while low <= high:
+        mid = (low + high) // 2
+
+        # If arr[mid] matches its expected position
+        if arr[mid] == mid + 1:
+            low = mid + 1  # gap must be to the right
+        else:
+            high = mid - 1  # gap must be to the left
+
+    # When loop ends, low is at the first missing index
+    return low + 1
+
+
+# Example test cases
+print(smallest_missing_positive([1, 2, 3, 5, 6]))  # Output: 4
+print(smallest_missing_positive([2, 3, 4, 5]))     # Output: 1
+print(smallest_missing_positive([1, 2, 3, 4, 5]))  # Output: 6
+
