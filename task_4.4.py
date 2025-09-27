@@ -1,4 +1,4 @@
-# Task 4.4: Fractional Knapsack
+# #Task 4.4: Fractional Knapsack
 # ---------------------------
 # Implement the greedy algorithm for the Fractional Knapsack problem.
 # Steps:
@@ -20,3 +20,36 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+def fractional_knapsack(W, items):
+    """
+    W: capacity of knapsack
+    items: list of tuples (value, weight)
+    Returns maximum achievable value (float)
+    """
+    # Calculate value-to-weight ratio for each item
+    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
+    
+    total_value = 0.0
+    for value, weight in items:
+        if W == 0:
+            break
+        if weight <= W:
+            # Take full item
+            total_value += value
+            W -= weight
+        else:
+            # Take fraction of item
+            fraction = W / weight
+            total_value += value * fraction
+            W = 0  # knapsack is full
+
+    return total_value
+
+
+# -------------------------
+# Example usage
+# -------------------------
+capacity = 50
+items = [(60, 10), (100, 20), (120, 30)]
+max_value = fractional_knapsack(capacity, items)
+print("Maximum achievable value:", max_value)  # Output: 240.0
