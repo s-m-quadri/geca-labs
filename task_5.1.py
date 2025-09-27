@@ -19,3 +19,23 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+def initialize_prim(V):
+    """
+    Initialize key[], parent[], mstSet[] for Prim's algorithm
+    V: number of vertices
+    """
+    key = [float('inf')] * V     # ∞ for all vertices
+    parent = [-1] * V            # -1 means no parent yet
+    mstSet = [False] * V         # No vertex included in MST yet
+    return key, parent, mstSet
+
+
+# -------------------------
+# Example usage
+# -------------------------
+V = 4
+key, parent, mstSet = initialize_prim(V)
+
+print("key =", key)         # [inf, inf, inf, inf]
+print("parent =", parent)   # [-1, -1, -1, -1]
+print("mstSet =", mstSet)   # [False, False, False, False]
