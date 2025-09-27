@@ -1,4 +1,4 @@
-## Task 4.6: Challenge – Activity Selection Problem
+# Task 4.6: Challenge – Activity Selection Problem
 # ----------------------------------------------
 # This is a classic greedy scheduling problem.
 #
@@ -20,30 +20,3 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
-def activity_selection(activities):
-    """
-    activities: list of tuples (start_time, finish_time)
-    Returns list of selected activities and their count
-    """
-    # Sort activities by finish time
-    activities.sort(key=lambda x: x[1])
-    
-    selected = []
-    last_finish_time = -1
-
-    for start, finish in activities:
-        if start >= last_finish_time:
-            selected.append((start, finish))
-            last_finish_time = finish
-
-    return selected, len(selected)
-
-
-# -------------------------
-# Example usage
-# -------------------------
-activities = [(1,2), (3,4), (0,6), (5,7), (8,9), (5,9)]
-selected_activities, count = activity_selection(activities)
-
-print(f"Maximum activities: {count}")
-print(f"Selected activities: {selected_activities}")
