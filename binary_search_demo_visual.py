@@ -1,6 +1,8 @@
 # binary_search_demo_visual.py
+#
 # Illustration: Represent the search space as a visual slice
 # Focus: Show the part of the array being considered at each step
+
 
 def binary_search_visual(arr, target):
     low, high = 0, len(arr) - 1
