@@ -4,6 +4,17 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+words = []
+words.append("zebra")
+words.append("apple")
+words.append("monkey")
+
+words.sort()
+print("Sorted:", words)
+
+words.reverse()
+print("Reversed:", words)
+
 
 my_list = []
 my_list.append("zebra")
