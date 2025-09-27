@@ -9,3 +9,13 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+def initialize_union_find(V):
+    parent = [i for i in range(V)]
+    return parent
+
+# Example usage
+V = 5
+parent = initialize_union_find(V)
+print(parent)
+# Output: [0, 1, 2, 3, 4]
+
