@@ -1,4 +1,4 @@
-# #Task 6.4: Find and Union Functions
+# Task 6.4: Find and Union Functions
 # -----------------------------------
 # Extend union-find with:
 # 1. find(x) -> returns root parent of x.
@@ -11,22 +11,3 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
-def find(parent, x):
-    if parent[x] != x:
-        parent[x] = find(parent, parent[x])
-    return parent[x]
-
-def union(parent, x, y):
-    x_root = find(parent, x)
-    y_root = find(parent, y)
-    if x_root != y_root:
-        parent[y_root] = x_root
-
-# Example usage
-parent = [0, 1, 2, 3]
-union(parent, 0, 1)
-union(parent, 1, 2)
-
-print("Parent array:", parent)     # e.g., [0, 0, 0, 3]
-print("Find(2):", find(parent, 2)) # 0
-
