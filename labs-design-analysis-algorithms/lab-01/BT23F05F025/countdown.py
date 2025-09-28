@@ -1,8 +1,3 @@
-# -------------------------------------------
-# Problem: Print numbers from n to 1
-# -------------------------------------------
-# Goal: Practice recursion vs iteration
-# -------------------------------------------
 
 # Recursive version
 def countdown_recursive(n):
@@ -17,7 +12,6 @@ def countdown_iterative(n):
         print(n)
         n -= 1
 
-# Try both
 n = 5
 print("Recursive countdown:")
 countdown_recursive(n)
