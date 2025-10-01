@@ -1,6 +1,8 @@
 # GECA Labs
 
-This repository hosts a structured collection of laboratory resources aligned with advanced undergraduate and postgraduate coursework in Computer Science and Engineering. The materials are curated and adapted from GECA Aurangabad's official instructional site: [https://www.s-m-quadri.me/geca](https://www.s-m-quadri.me/geca).
+This repository provides a structured collection of laboratory resources for advanced undergraduate and postgraduate courses in Computer Science and Engineering.  
+
+The materials are authored and maintained on [https://www.s-m-quadri.me/geca](https://www.s-m-quadri.me/geca), a personal academic site that hosts lab manuals and supporting resources. While the author is affiliated with Government College of Engineering, Aurangabad (GECA), this is not an official institutional repository.
 
 ## Visualization
 
@@ -27,6 +29,8 @@ ffmpeg -y -r 25 -f image2pipe -vcodec ppm -i dump.ppm -c:v libx265 -preset slow 
 This repository is licensed under the GPL-3.0 license. See the [LICENSE](./LICENSE) file for details.
 
 ## Contributors and Learners
+
+The repository is authored and maintained primarily by the owner, with contributions from students, colleagues, and collaborators from GECA and other institutions.
 
 <a href="https://github.com/s-m-quadri/geca-labs/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=s-m-quadri/geca-labs&anon=1" />
