@@ -89,16 +89,79 @@ if __name__ == "__main__":
     print("Fetching PRs from GitHub...")
     prs = get_all_prs()
     print(f"Total PRs retrieved: {len(prs)}")
-
-    processed = process_prs(prs)
-
-    # Sort by PRN
-    processed.sort(key=lambda x: x["PRN"])
-
-    # Save to CSV
-    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=processed[0].keys())
-        writer.writeheader()
-        writer.writerows(processed)
-
-    print(f"Data saved to {OUTPUT_FILE}")
+    
+    # Filter to only merged PRs for file changes and commits processing
+    merged_prs = filter_merged_prs(prs)
+    
+    print("\n" + "="*50)
+    print("GENERATING PULL REQUESTS CSV")
+    print("="*50)
+    
+    # Process basic PR data (all PRs for complete record)
+    processed_prs = process_prs(prs)
+    processed_prs.sort(key=lambda x: x["PRN"])
+    
+    # Save PR data to CSV
+    if processed_prs:
+        with open(PR_OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=processed_prs[0].keys())
+            writer.writeheader()
+            writer.writerows(processed_prs)
+        print(f"✓ Pull requests data saved to {PR_OUTPUT_FILE}")
+    
+    print("\n" + "="*50)
+    print("GENERATING FILE CHANGES CSV (MERGED PRs ONLY)")
+    print("="*50)
+    
+    # Process file changes data (only merged PRs)
+    file_changes = process_file_changes(merged_prs)
+    file_changes.sort(key=lambda x: (x["PRN"], x["File Path"]))
+    
+    # Save file changes to CSV
+    if file_changes:
+        with open(FILES_OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=file_changes[0].keys())
+            writer.writeheader()
+            writer.writerows(file_changes)
+        print(f"✓ File changes data saved to {FILES_OUTPUT_FILE}")
+        print(f"  Total file changes recorded: {len(file_changes)}")
+    
+    print("\n" + "="*50)
+    print("GENERATING COMMITS CSV (MERGED PRs ONLY)")
+    print("="*50)
+    
+    # Process commits data (only merged PRs)
+    commits = process_commits(merged_prs)
+    commits.sort(key=lambda x: (x["PRN"], x["Commit Date"]))
+    
+    # Save commits to CSV
+    if commits:
+        with open(COMMITS_OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=commits[0].keys())
+            writer.writeheader()
+            writer.writerows(commits)
+        print(f"✓ Commits data saved to {COMMITS_OUTPUT_FILE}")
+        print(f"  Total commits recorded: {len(commits)}")
+    
+    print("\n" + "="*50)
+    print("SUMMARY")
+    print("="*50)
+    print(f"📁 Pull Requests: {len(processed_prs)} records → {PR_OUTPUT_FILE}")
+    print(f"📄 File Changes: {len(file_changes)} records → {FILES_OUTPUT_FILE}")
+    print(f"💾 Commits: {len(commits)} records → {COMMITS_OUTPUT_FILE}")
+    print("\nAll data has been successfully exported!")
+    
+    # Show some statistics
+    if processed_prs:
+        unique_students = len(set(pr["PRN"] for pr in processed_prs))
+        print(f"\n📊 Statistics:")
+        print(f"   • Unique students: {unique_students}")
+        print(f"   • Total PRs: {len(processed_prs)}")
+        if file_changes:
+            unique_files = len(set(fc["File Path"] for fc in file_changes))
+            print(f"   • Unique files modified: {unique_files}")
+        if commits:
+            total_additions = sum(c["Total Additions"] for c in commits)
+            total_deletions = sum(c["Total Deletions"] for c in commits)
+            print(f"   • Total lines added: {total_additions}")
+            print(f"   • Total lines deleted: {total_deletions}")
