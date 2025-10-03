@@ -19,10 +19,15 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
-# NEED TO COMPLETE
-def initialize_prim_arrays(V):
-    INF = float('inf')  # Represents ∞
-    key = [INF] * V
+#to do 
+def initialize_graph_arrays(V):
+    key = [float('inf')] * V
     parent = [-1] * V
     mstSet = [False] * V
     return key, parent, mstSet
+
+V = 4
+key, parent, mstSet = initialize_graph_arrays(V)
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
