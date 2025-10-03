@@ -82,6 +82,96 @@ def process_prs(prs):
         })
     return processed
 
+def process_file_changes(merged_prs):
+    """Process file changes for merged PRs only"""
+    all_file_changes = []
+    
+    for pr in merged_prs:
+        pr_number = pr["number"]
+        pr_title = pr["title"]
+        pr_user = pr["user"]["login"]
+        prn = extract_prn(pr_title)
+        
+        print(f"Processing file changes for PR #{pr_number} ({prn})...")
+        
+        try:
+            files = get_pr_files(pr_number)
+            
+            for file_data in files:
+                all_file_changes.append({
+                    "PR Number": pr_number,
+                    "PRN": prn,
+                    "User": pr_user,
+                    "File Path": file_data["filename"],
+                    "Status": file_data["status"],  # added, modified, removed, renamed
+                    "Additions": file_data["additions"],
+                    "Deletions": file_data["deletions"],
+                    "Changes": file_data["changes"],
+                    "Patch": file_data.get("patch", "")[:500] + "..." if file_data.get("patch", "") and len(file_data.get("patch", "")) > 500 else file_data.get("patch", ""),  # Truncate patch for CSV
+                    "Previous Filename": file_data.get("previous_filename", ""),
+                })
+        except Exception as e:
+            print(f"Error processing files for PR #{pr_number}: {e}")
+            continue
+    
+    return all_file_changes
+
+def process_commits(merged_prs):
+    """Process commit data for merged PRs only"""
+    all_commits = []
+    
+    for pr in merged_prs:
+        pr_number = pr["number"]
+        pr_title = pr["title"]
+        pr_user = pr["user"]["login"]
+        prn = extract_prn(pr_title)
+        
+        print(f"Processing commits for PR #{pr_number} ({prn})...")
+        
+        try:
+            commits = get_pr_commits(pr_number)
+            
+            for commit in commits:
+                commit_sha = commit["sha"]
+                commit_message = commit["commit"]["message"]
+                commit_author = commit["commit"]["author"]["name"]
+                commit_email = commit["commit"]["author"]["email"]
+                commit_date = commit["commit"]["author"]["date"]
+                
+                # Get detailed commit info for file statistics
+                try:
+                    commit_details = get_commit_details(commit_sha)
+                    files_changed = len(commit_details.get("files", []))
+                    total_additions = sum(f.get("additions", 0) for f in commit_details.get("files", []))
+                    total_deletions = sum(f.get("deletions", 0) for f in commit_details.get("files", []))
+                    affected_files = ", ".join([f["filename"] for f in commit_details.get("files", [])])
+                except Exception as e:
+                    print(f"Error getting details for commit {commit_sha}: {e}")
+                    files_changed = 0
+                    total_additions = 0
+                    total_deletions = 0
+                    affected_files = ""
+                
+                all_commits.append({
+                    "PR Number": pr_number,
+                    "PRN": prn,
+                    "PR User": pr_user,
+                    "Commit SHA": commit_sha,
+                    "Commit Author": commit_author,
+                    "Commit Email": commit_email,
+                    "Commit Message": commit_message.split('\n')[0][:200],  # First line, truncated
+                    "Commit Date": commit_date,
+                    "Files Changed": files_changed,
+                    "Total Additions": total_additions,
+                    "Total Deletions": total_deletions,
+                    "Affected Files": affected_files[:500] + "..." if len(affected_files) > 500 else affected_files
+                })
+        except Exception as e:
+            print(f"Error processing commits for PR #{pr_number}: {e}")
+            continue
+    
+    return all_commits
+
 # -----------------------------
 # MAIN SCRIPT
 # -----------------------------
