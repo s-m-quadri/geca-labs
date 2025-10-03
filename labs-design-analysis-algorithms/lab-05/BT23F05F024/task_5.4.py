@@ -34,14 +34,29 @@ def prim_iteration(graph, key, parent, mstSet):
             u = v
 
     if u == -1:
-        return  # All vertices are included or no reachable vertex
+        return
 
-    
     mstSet[u] = True
 
-    
     for v in range(len(graph)):
         if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
             key[v] = graph[u][v]
             parent[v] = u
+
+
+
+graph = [
+    [0, 1, 4],
+    [1, 0, 2],
+    [4, 2, 0]
+]
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+prim_iteration(graph, key, parent, mstSet)
+
+print("key:", key)       # Expected: [0, 1, 2]
+print("parent:", parent) # Expected: [-1, 0, 1]
+
 

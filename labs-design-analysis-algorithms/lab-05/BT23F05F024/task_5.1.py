@@ -19,10 +19,19 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
-# NEED TO COMPLETE
+# completed 24
+
 def initialize_prim_arrays(V):
-    INF = float('inf')  # Represents ∞
-    key = [INF] * V
-    parent = [-1] * V
-    mstSet = [False] * V
+    INF = float('inf')  
+    key = [INF] * V         # Initialize all keys as ∞
+    parent = [-1] * V       # Initialize all parents as -1
+    mstSet = [False] * V    # Initialize all mstSet values as False
     return key, parent, mstSet
+
+
+# Test case
+V = 4
+key, parent, mstSet = initialize_prim_arrays(V)
+print("key:", key)
+print("parent:", parent)
+print("mstSet:", mstSet)
