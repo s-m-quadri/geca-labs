@@ -3,6 +3,8 @@ import csv
 import re
 from dotenv import load_dotenv
 import os
+from datetime import datetime
+import time
 
 # -----------------------------
 # CONFIGURATION
@@ -46,13 +48,75 @@ def get_all_prs():
     return prs
 
 # -----------------------------
-# FUNCTION TO GET PR DETAILS
+# UTILITY FUNCTIONS
 # -----------------------------
 def extract_prn(title):
     match = re.search(r"(BT[0-9A-Z]+)", title, re.IGNORECASE)
     return match.group(1).upper() if match else "UNKNOWN"
 
+def filter_merged_prs(prs):
+    """Filter to only include merged PRs for processing"""
+    merged_prs = [pr for pr in prs if pr.get("merged_at") is not None]
+    print(f"Filtered to {len(merged_prs)} merged PRs out of {len(prs)} total PRs")
+    return merged_prs
+
+def rate_limit_sleep():
+    """Add a small delay to avoid hitting GitHub API rate limits"""
+    time.sleep(0.1)
+
+# -----------------------------
+# FUNCTION TO GET PR FILE CHANGES
+# -----------------------------
+def get_pr_files(pr_number):
+    """Get all file changes for a specific PR"""
+    files = []
+    page = 1
+    while True:
+        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/pulls/{pr_number}/files"
+        params = {"per_page": 100, "page": page}
+        rate_limit_sleep()
+        resp = requests.get(url, headers=headers, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        if not data:
+            break
+        files.extend(data)
+        page += 1
+    return files
+
+# -----------------------------
+# FUNCTION TO GET PR COMMITS
+# -----------------------------
+def get_pr_commits(pr_number):
+    """Get all commits for a specific PR"""
+    commits = []
+    page = 1
+    while True:
+        url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/pulls/{pr_number}/commits"
+        params = {"per_page": 100, "page": page}
+        rate_limit_sleep()
+        resp = requests.get(url, headers=headers, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        if not data:
+            break
+        commits.extend(data)
+        page += 1
+    return commits
+
+# -----------------------------
+# FUNCTION TO GET COMMIT DETAILS
+# -----------------------------
+def get_commit_details(commit_sha):
+    """Get detailed information about a specific commit"""
+    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/commits/{commit_sha}"
+    rate_limit_sleep()
+    resp = requests.get(url, headers=headers)
+    resp.raise_for_status()
+    return resp.json()
+
 def process_prs(prs):
+    """Process PR data for the main pull requests CSV"""
     processed = []
     for pr in prs:
         pr_number = pr["number"]
