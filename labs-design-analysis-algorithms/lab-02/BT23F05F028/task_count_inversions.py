@@ -13,21 +13,21 @@
 
 # Write your solution here
 def count_inversions(arr):
-    def merge_sort(nums):
-        if len(nums) <= 1:
-            return nums, 0
+    def merge_sort_and_count(arr):
+        if len(arr) <= 1:
+            return arr, 0
 
-        mid = len(nums) // 2
-        left, inv_left = merge_sort(nums[:mid])
-        right, inv_right = merge_sort(nums[mid:])
-        merged, inv_split = merge(left, right)
+        mid = len(arr) // 2
+        left, left_inv = merge_sort_and_count(arr[:mid])
+        right, right_inv = merge_sort_and_count(arr[mid:])
+        merged, split_inv = merge_and_count(left, right)
 
-        return merged, inv_left + inv_right + inv_split
+        return merged, left_inv + right_inv + split_inv
 
-    def merge(left, right):
-        i = j = inv_count = 0
+    def merge_and_count(left, right):
         merged = []
-        
+        i = j = inv_count = 0
+
         while i < len(left) and j < len(right):
             if left[i] <= right[j]:
                 merged.append(left[i])
@@ -35,18 +35,16 @@ def count_inversions(arr):
             else:
                 merged.append(right[j])
                 j += 1
-                # All remaining elements in left are greater than right[j]
-                inv_count += len(left) - i
+                inv_count += len(left) - i  # Count all remaining elements in left
 
-        merged.extend(left[i:])
-        merged.extend(right[j:])
+        # Append remaining elements
+        merged += left[i:]
+        merged += right[j:]
+
         return merged, inv_count
 
-    _, total_inversions = merge_sort(arr)
+    _, total_inversions = merge_sort_and_count(arr)
     return total_inversions
 
-
-# Example Usage
 arr = [2, 4, 1, 3, 5]
-print("Number of inversions:", count_inversions(arr))  # Output: 3
-
+print(count_inversions(arr))  # Output: 3
