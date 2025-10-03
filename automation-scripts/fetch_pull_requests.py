@@ -11,7 +11,13 @@ load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_OWNER = "s-m-quadri"
 REPO_NAME = "geca-labs"
-OUTPUT_FILE = "output/pull_requests.csv"
+OUTPUT_DIR = "output"
+PR_OUTPUT_FILE = f"{OUTPUT_DIR}/pull_requests.csv"
+FILES_OUTPUT_FILE = f"{OUTPUT_DIR}/file_changes.csv"
+COMMITS_OUTPUT_FILE = f"{OUTPUT_DIR}/commits.csv"
+
+# Create output directory if it doesn't exist
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # -----------------------------
 # HEADERS FOR AUTHENTICATION
