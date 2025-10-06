@@ -1,4 +1,3 @@
-#merge sort
 def merge(left, right):
     """Merge two sorted lists into one sorted list."""
     result = []

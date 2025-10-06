@@ -1,4 +1,3 @@
-#merge sort
 def merge(left, right):
     """Merge two sorted lists into one sorted list."""
     result = []
@@ -28,3 +27,4 @@ if __name__ == "__main__":
     print("Original:", arr)
     sorted_arr = merge_sort(arr)
     print("Sorted:", sorted_arr)
+#to do done

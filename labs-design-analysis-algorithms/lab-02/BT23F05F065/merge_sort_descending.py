@@ -1,10 +1,8 @@
-#merge sort
 def merge(left, right):
-    """Merge two sorted lists into one sorted list."""
     result = []
     i = j = 0
     while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
+        if left[i] >= right[j]:  # descending order
             result.append(left[i])
             i += 1
         else:
@@ -14,17 +12,16 @@ def merge(left, right):
     result.extend(right[j:])
     return result
 
-def merge_sort(arr):
-    """Basic recursive merge sort."""
+def merge_sort_desc(arr):
     if len(arr) <= 1:
         return arr
     mid = len(arr) // 2
-    left = merge_sort(arr[:mid])
-    right = merge_sort(arr[mid:])
+    left = merge_sort_desc(arr[:mid])
+    right = merge_sort_desc(arr[mid:])
     return merge(left, right)
 
 if __name__ == "__main__":
-    arr = [38, 27, 43, 3, 9, 82, 10]
+    arr = [5, 3, 8, 6, 2, 7, 4, 1]
     print("Original:", arr)
-    sorted_arr = merge_sort(arr)
-    print("Sorted:", sorted_arr)
+    sorted_desc = merge_sort_desc(arr)
+    print("Sorted (descending):", sorted_desc)

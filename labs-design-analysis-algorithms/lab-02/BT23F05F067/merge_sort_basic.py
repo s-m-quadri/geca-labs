@@ -1,4 +1,3 @@
-#merge sort
 def merge(left, right):
     """Merge two sorted lists into one sorted list."""
     result = []
@@ -15,7 +14,7 @@ def merge(left, right):
     return result
 
 def merge_sort(arr):
-    """Basic recursive merge sort."""
+    """Basic recursive merge sort"""
     if len(arr) <= 1:
         return arr
     mid = len(arr) // 2
