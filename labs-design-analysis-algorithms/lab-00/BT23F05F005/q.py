@@ -6,11 +6,10 @@
 # Outer loop → rows; Inner loop → columns.
 
 
-rows = int(input(" number of rows: "))
-cols = int(input(" number of columns: "))
-
+#solution
+rows = int(input("Enter number of rows: "))
+cols = int(input("Enter number of columns: "))
 for i in range(rows):
-    
     for j in range(cols):
-        print("*", end="") 
-    print()  
+        print("*", end="")
+    print()

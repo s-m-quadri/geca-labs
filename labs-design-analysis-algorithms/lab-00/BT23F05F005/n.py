@@ -4,8 +4,9 @@
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
 
-def fun(a,b):
-    return a+b
+#solution
+def add(x, y):
+    return x + y
 
-result = fun(5,3)
+result = add(2, 3)
 print(result)

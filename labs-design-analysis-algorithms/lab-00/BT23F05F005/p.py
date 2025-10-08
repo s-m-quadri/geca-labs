@@ -6,14 +6,13 @@
 # 💡 TIP:
 # All Python functions return something, even if it's just `None`.
 # Function that prints but doesn't return anything
+
+#solution
 def void_function():
     print("Running")
 
 def add(a, b):
     return a + b
 
-result_void = void_function()  
-result_add = add(5, 3)
-
-print("Return value of void_function():", result_void)
-print("Return value of add(5, 3):", result_add)
+print(void_function())
+print(add(2, 3))

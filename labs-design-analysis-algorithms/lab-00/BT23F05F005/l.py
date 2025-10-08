@@ -5,17 +5,8 @@
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
 
+#solution
 students = {"Alice": 85, "Bob": 92, "Charlie": 78}
-
-print("Alice's marks:", students["Alice"])
-
+print("Bob's marks:", students["Bob"])
 for name, marks in students.items():
-    print(f"{name}: {marks}")
-
-
-students = {"Alice": 85, "Bob": 92, "Charlie": 78}
-
-print("Alice's marks:", students["Alice"])
-
-for name, marks in students.items():
-    print(f"{name}: {marks}")
+	print(f"{name}: {marks}")

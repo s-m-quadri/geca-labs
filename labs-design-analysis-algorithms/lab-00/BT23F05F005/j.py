@@ -5,11 +5,11 @@
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
 
-my_list = []
-my_list.append("zebra")
-my_list.append("apple")
-my_list.append("banana")
-
-my_list.sort()
-my_list.reverse()
-print(my_list)
+#solution
+words = []
+words.append("banana")
+words.append("apple")
+words.append("cherry")
+words.sort()
+words.reverse()
+print(words)

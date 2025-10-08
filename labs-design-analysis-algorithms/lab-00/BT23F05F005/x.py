@@ -5,10 +5,9 @@
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
 
+#solution
 import random
-dice_roll = random.randint(1, 6)
-
-coin_toss = random.choice(["Heads", "Tails"])
-
-print("Dice roll:", dice_roll)
-print("Coin toss:", coin_toss)
+dice = random.randint(1, 6)
+coin = random.choice(["Heads", "Tails"])
+print("Dice roll:", dice)
+print("Coin toss:", coin)
