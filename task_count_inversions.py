@@ -1,17 +1,4 @@
-# Given an array of integers, count the number of inversions in the array.
-# An inversion is a pair (i, j) such that i < j and arr[i] > arr[j].
 
-# Example:
-# Input: [2, 4, 1, 3, 5]
-# Output: 3
-# Explanation: The inversions are (2,1), (4,1), (4,3)
-
-# INSTRUCTIONS:
-# - Implement a function using Merge Sort modification to count inversions efficiently.
-# - Target time complexity: O(n log n)
-# - Do not use brute force O(n^2) method.
-
-# Write your solution here
 def count_inversions(arr):
     def merge_sort(nums):
         if len(nums) <= 1:
@@ -22,12 +9,13 @@ def count_inversions(arr):
         right, inv_right = merge_sort(nums[mid:])
         merged, inv_split = merge(left, right)
 
+        # Total inversions = left + right + split
         return merged, inv_left + inv_right + inv_split
 
     def merge(left, right):
         i = j = inv_count = 0
         merged = []
-        
+
         while i < len(left) and j < len(right):
             if left[i] <= right[j]:
                 merged.append(left[i])
@@ -46,7 +34,17 @@ def count_inversions(arr):
     return total_inversions
 
 
-# Example Usage
-arr = [2, 4, 1, 3, 5]
-print("Number of inversions:", count_inversions(arr))  # Output: 3
+# Example test cases
+if __name__ == "__main__":
+    # Test 1: basic example only
+    arr = [2, 4, 1, 3, 5]
+    print("Number of inversions:", count_inversions(arr))  
+
+    # Test 2: this one is Already sorted
+    arr = [1, 2, 3, 4, 5]
+    print("Number of inversions:", count_inversions(arr))  
+
+    # Test 3: what if we do it Reverse sorted?
+    arr = [5, 4, 3, 2, 1]
+    print("Number of inversions:", count_inversions(arr))  
 
