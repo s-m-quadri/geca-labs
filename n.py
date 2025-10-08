@@ -3,3 +3,10 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+
+#solution
+def add(x, y):
+    return x + y
+
+result = add(2, 3)
+print(result)
