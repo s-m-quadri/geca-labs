@@ -20,3 +20,23 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+def fractional_knapsack(W, items):
+    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
+    total_value = 0.0
+    for value, weight in items:
+        if W >= weight:
+            W -= weight
+            total_value += value
+        else:
+            total_value += value * (W / weight)
+            break
+    return total_value
+
+W = int(input())
+n = int(input())
+items = []
+for _ in range(n):
+    value, weight = map(int, input().split())
+    items.append((value, weight))
+
+print(fractional_knapsack(W, items))
