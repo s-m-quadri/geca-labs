@@ -4,14 +4,12 @@
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
 
+#solution
+with open('output.txt', 'w') as f:
+    f.write('Line 1\n')
+    f.write('Line 2\n')
+    f.write('Line 3\n')
 
-with open("output.txt", "w") as f:
-    f.write("This is line 1.\n")
-    f.write("This is line 2.\n")
-    f.write("This is line 3.\n")
-
-
-with open("output.txt", "r") as f:
+with open('output.txt', 'r') as f:
     content = f.read()
-    print("File content:\n")
     print(content)

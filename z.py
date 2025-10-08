@@ -5,20 +5,26 @@
 # 💡 TIP:
 # Combine `if`, `math`, `random`, and type conversion.
 
+#solution
 import math
 import random
 
 quotes = [
-    "Believe in yourself and all that you are.",
-    "You are stronger than you think.",
-    "Every day is a second chance.",
-    "Push yourself, because no one else is going to do it for you.",
-    "Great things never come from comfort zones."
+	"Keep going!",
+	"You can do it!",
+	"Never give up!",
+	"Success is near!"
 ]
 
-num = int(input("Enter a number: "))
-if num % 2 == 0:
-    print("Even number")
-print("Square root:", math.sqrt(num))
-if num > 10:
-    print(random.choice(quotes))
+num = input("Enter a number: ")
+if num.isdigit():
+	n = int(num)
+	if n % 2 == 0:
+		print(f"{n} is even.")
+	else:
+		print(f"{n} is odd.")
+	print("Square root:", math.sqrt(n))
+	if n > 10:
+		print(random.choice(quotes))
+else:
+	print("Invalid input")

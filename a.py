@@ -5,4 +5,7 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("hi")
+
+#solution
+print("Hello Python")
+print("This is Lab A")

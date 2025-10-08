@@ -7,11 +7,11 @@
 # 💡 TIP:
 # Use `if`, `elif`, and `else`.
 
-number = float(input("Enter a number: "))
-
-if number > 0:
+#solution
+num = int(input("Enter a number: "))
+if num > 0:
     print("Positive")
-elif number < 0:
+elif num < 0:
     print("Negative")
 else:
     print("Zero")
