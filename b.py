@@ -8,7 +8,6 @@
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
 
-
 #solution
 # Declare three variables:
 name = "Alice"

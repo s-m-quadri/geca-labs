@@ -5,6 +5,7 @@
 
 # 💡 TIP:
 # All Python functions return something, even if it's just `None`.
+# Function that prints but doesn't return anything
 
 #solution
 def void_function():
