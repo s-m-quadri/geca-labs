@@ -9,3 +9,16 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+
+def create_parent_array(num_vertices):
+    
+    parent = [i for i in range(num_vertices)]
+    return parent
+
+vertices = 5
+parent = create_parent_array(vertices)
+
+print("Number of vertices:", vertices)
+print("Initial parent array:", parent)
+

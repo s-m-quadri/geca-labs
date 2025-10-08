@@ -12,3 +12,17 @@
 # Tip: Print the list to verify edges.
 
 #TO DO
+
+def store_edges(edge_list):
+   
+    edges = []  
+    
+    for edge in edge_list:
+        edges.append(edge)
+    
+    return edges
+
+input_edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+stored_edges = store_edges(input_edges)
+
+print("Stored Edges:", stored_edges)
