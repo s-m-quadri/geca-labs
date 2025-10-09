@@ -5,3 +5,15 @@
 
 # 💡 TIP:
 # All Python functions return something, even if it's just `None`.
+#code
+def void_function():
+    print("Running")
+    return None
+
+def add(a, b):
+    return a + b
+# Testing the functions
+result_void = void_function()
+result_add = add(3, 5)
+print("Return value of void_function():", result_void)
+print("Return value of add(3, 5):", result_add)

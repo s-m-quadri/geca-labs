@@ -5,3 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
+#code
+print("Hello, Python!")
