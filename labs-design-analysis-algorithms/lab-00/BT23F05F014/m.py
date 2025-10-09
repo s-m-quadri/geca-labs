@@ -4,9 +4,8 @@
 
 # 💡 TIP:
 # Sets remove duplicates automatically. Use `.add()` to insert.
-
-numbers = {1, 2, 3, 2, 4, 3, 5}
-print("Set with duplicates removed:", numbers)
-
-numbers.add(6)
-print("Updated set:", numbers)
+#code
+numbers = {1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 9}
+print("Unique numbers:", numbers)
+numbers.add(10)
+print("Updated numbers:", numbers)

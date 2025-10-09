@@ -4,13 +4,11 @@
 
 # 💡 TIP:
 # Use `f"{name} scored {marks}"` or `"{} scored {}".format(...)`
-#code
-def student_info(name, marks):
-    # Using f-strings
-    print(f"Student {name} scored {marks} marks.")
-    
-    # Using .format()
-    print("Student {} scored {} marks.".format(name, marks))
-    
-    # Using %s
-    print("Student %s scored %s marks." % (name, marks))
+
+def student_info(name,marks):
+    print(f"Student {name} scored {marks}  marks.")
+    print("Student {} scored {} marks.".format(name,marks))
+    print("Student %s scored %d marks."%(name,marks))
+
+
+student_info("aditya",64)

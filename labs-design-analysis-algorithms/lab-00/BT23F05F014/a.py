@@ -5,4 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-print("hi")
+#code
+print("Hello, Python!")

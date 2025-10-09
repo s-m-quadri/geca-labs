@@ -6,9 +6,8 @@
 
 # 💡 TIP:
 # Use `if`, `elif`, and `else`.
-
+#code
 number = float(input("Enter a number: "))
-
 if number > 0:
     print("Positive")
 elif number < 0:

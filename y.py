@@ -3,10 +3,18 @@
 
 # 💡 TIP:
 # Use `.isdigit()` or handle exceptions using try-except.
-#code
-user_input = input("Enter a number: ")
+
+num = input("Enter a number: ")
+
+if num.isdigit():
+    num = int(num)
+    print(f"You entered: {num}")
+else:
+    print("Invalid input")
+
+
 try:
-    number = int(user_input)
-    print(f"You entered the number: {number}")
+    num = int(input("Enter a number: "))
+    print(f"You entered: {num}")
 except ValueError:
     print("Invalid input")

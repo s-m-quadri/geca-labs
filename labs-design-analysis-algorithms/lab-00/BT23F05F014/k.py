@@ -4,13 +4,11 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
-
-my_tuple = ("red", "green", "blue")
-
+#code
+my_tuple = (10, 20, 30)
 try:
-    my_tuple[1] = "yellow"  # type: ignore # This will raise a TypeError
+    my_tuple[1] = 25
 except TypeError as e:
-    print("Error:", e)
-
+    print(f"Error: {e}")
 for item in my_tuple:
     print(item)
