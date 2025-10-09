@@ -3,7 +3,7 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
-
+#code
 with open('output.txt', 'w') as f:
     f.write("Line 1: Hello, World!\n")
     f.write("Line 2: This is a test file.\n")

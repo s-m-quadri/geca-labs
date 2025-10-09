@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 #  Use `def greet(name, msg="Hello"):` to set a default value.
-
+#code
 def greet(name, msg="Hello"):
     return f"{msg}, {name}!"
 

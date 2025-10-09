@@ -13,4 +13,4 @@ initials = ''.join([name[0].upper() + '.' for name in full_name.split()])
 
 print("Lowercase:", lower_name)
 print("Uppercase:", upper_name)
-print("Initials:", initials)
+print("Initialls:", initials)

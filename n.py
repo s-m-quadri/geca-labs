@@ -3,7 +3,7 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
-
+#code
 def f(a, b):
     return a + b
 result = f(2, 3)

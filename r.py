@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 # Use `f"{name} scored {marks}"` or `"{} scored {}".format(...)`
-
+#code
 def student_info(name, marks):
     # Using f-strings
     print(f"Student {name} scored {marks} marks.")

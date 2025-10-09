@@ -3,6 +3,7 @@
 # 💡 TIP:
 # Use `input()` for numbers and operator, then `if-elif` to select operation.
 
+#code
 def calculator():
     # Get user input
     num1 = float(input("Enter first number: "))
@@ -22,7 +23,7 @@ def calculator():
         else:
             return "Error: Division by zero is not allowed."
     else:
-        return "Error: Invalid operator."
+        return " Error: Invalid operator."
 
     return f"The result of {num1} {operator} {num2} is: {result}"
 

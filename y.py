@@ -3,7 +3,7 @@
 
 # 💡 TIP:
 # Use `.isdigit()` or handle exceptions using try-except.
-
+#code
 user_input = input("Enter a number: ")
 try:
     number = int(user_input)

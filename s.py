@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
-
+#code
 def divide_numbers():
     try:
         num1 = int(input("Enter the first number (numerator): "))

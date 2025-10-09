@@ -25,7 +25,7 @@ while True:
         print("Current time:", current_time)
 
     elif choice == '3':
-        print("Exiting program... Goodbye!")
+        print("Exiting program...Goodbye!")
         break
 
     else:

@@ -7,7 +7,7 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
-
+#code
 name = "Mustang"
 age = 9
 is_student = False

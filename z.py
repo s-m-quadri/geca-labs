@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 # Combine `if`, `math`, `random`, and type conversion.
-
+#code
 import math
 import random
 

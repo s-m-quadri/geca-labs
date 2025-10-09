@@ -9,7 +9,7 @@
 
 # 💡 TIP:
 # Use `+`, `-`, `*`, `/`, `%`, and `**`.
-
+#code
 x = int(input("Enter first number: "))
 y = int(input("Enter second number: "))
 print(f"Sum: {x + y}")

@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 # Use `random.randint()` for numbers, and `random.choice()` for custom options.
-
+#code
 import random
 dice_roll = random.randint(1, 6)
 coin_toss = random.choice(['Heads', 'Tails'])

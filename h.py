@@ -4,7 +4,7 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
-
+#code
 numbers = [10, 20, 30, 40, 50]
 print("First element:", numbers[0])
 print("Middle element:", numbers[2])
