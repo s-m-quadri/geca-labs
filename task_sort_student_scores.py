@@ -13,6 +13,7 @@
 # - Do not use Python's built-in sort().
 
 # Write your solution here
+
 def compare(a, b):
     
     return (a[1] > b[1]) or (a[1] == b[1] and a[0] < b[0])
@@ -46,3 +47,4 @@ def merge(left, right):
 
 students = [("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 92)]
 print(merge_sort_students(students))
+

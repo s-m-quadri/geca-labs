@@ -12,6 +12,7 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
+
 def count_inversions(arr):
     def merge_sort(nums):
         if len(nums) <= 1:
@@ -48,4 +49,5 @@ def count_inversions(arr):
 
 arr = [2, 4, 1, 3, 5]
 print("Number of inversions:", count_inversions(arr))  
+
 
