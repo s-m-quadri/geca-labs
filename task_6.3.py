@@ -9,3 +9,11 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def create_parent(n):
+    parent = [i for i in range(n)]
+    return parent
+
+
+vertices = 5
+print("Parent array:", create_parent(vertices))
