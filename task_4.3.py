@@ -10,27 +10,5 @@
 # Example:
 # Input: "hello"
 # Output: "olleh"
-
-#solution
-def reverse_recursive(s):
-    """Reverse a string using recursion."""
-    if len(s) <= 1:
-        return s
-    return reverse_recursive(s[1:]) + s[0]
-
-def reverse_iterative(s):
-    """Reverse a string using iteration (without slicing)."""
-    reversed_str = ""
-    for char in s:
-        reversed_str = char + reversed_str
-    return reversed_str
-
-
-#Example (very important)
-print("Recursive Reverse:")
-print('Input: "Siddhesh" ->', reverse_recursive("Siddhesh")) 
-print('Input: "Maria" ->', reverse_recursive("Maria"))  
-
-print("\nIterative Reverse:")
-print('Input: "Shivam" ->', reverse_iterative("Shivam"))  
-print('Input: "Sarkaar" ->', reverse_iterative("Sarkaar"))  
+#
+# Bonus: Try solving without using Python slicing [::-1].
