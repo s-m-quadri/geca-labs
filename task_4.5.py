@@ -17,39 +17,3 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
-# ----------------------------
-# Task 4.5: Coin Change (Greedy)
-# ----------------------------
-
-def coin_change_greedy(coins, amount):
-    """Greedy algorithm to make change using the fewest coins."""
-    
-    # Step 1: Sort coins in descending order
-    coins.sort(reverse=True)
-    
-    result = []  # To store coins used
-    remaining = amount
-    
-    # Step 2: Pick the largest possible coin each time
-    for coin in coins:
-        if coin <= remaining:
-            count = remaining // coin  # Number of coins of this denomination
-            remaining -= count * coin
-            result.append((coin, count))
-    
-    # Step 3: Check if exact change was possible
-    if remaining != 0:
-        print("Exact change cannot be made with given denominations.")
-    else:
-        print(f"Change for {amount}:")
-        for coin, count in result:
-            print(f"{coin} x {count}")
-    
-    return result
-
-
-# Example usage:
-coins = [10, 5, 2, 1]   # Coin denominations
-amount = 27              # Amount to make change for
-
-coin_change_greedy(coins, amount)
