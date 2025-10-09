@@ -24,6 +24,8 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]
 """
+
+#solution
 import heapq
 
 def prim_mst_heap(graph, start=0):
@@ -33,7 +35,7 @@ def prim_mst_heap(graph, start=0):
     in_mst = [False] * V
 
     key[start] = 0
-    min_heap = [(0, start)]  # (key, vertex)
+    min_heap = [(0, start)]
 
     while min_heap:
         current_key, u = heapq.heappop(min_heap)
@@ -57,3 +59,14 @@ def prim_mst_heap(graph, start=0):
 
     return mst_edges
 
+# Example (very important)
+graph = [
+    [0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0]
+]
+start = 0
+mst = prim_mst_heap(graph, start)
+print("MST edges:", mst)
