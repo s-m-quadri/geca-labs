@@ -26,3 +26,32 @@ parent = [-1, -1, -1]
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
 """
+def update_keys(graph, u, key, parent, mstSet):
+    """
+    Update key[] and parent[] for neighbors of vertex u.
+    """
+    V = len(graph)
+    for v in range(V):
+        weight = graph[u][v]
+        if weight > 0 and not mstSet[v] and weight < key[v]:
+            key[v] = weight
+            parent[v] = u
+
+
+# -------------------------
+# Example usage
+# -------------------------
+graph = [
+    [0, 2, 0],
+    [2, 0, 3],
+    [0, 3, 0]
+]
+u = 0
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+update_keys(graph, u, key, parent, mstSet)
+
+print("Updated key:", key)      # [0, 2, inf]
+print("Updated parent:", parent) # [-1, 0, -1]
