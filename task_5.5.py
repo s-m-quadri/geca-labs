@@ -22,11 +22,14 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(0,3,6)]
 """
+
+#solution
 def prim_mst(graph, start):
     V = len(graph)
     key = [float('inf')] * V
     parent = [-1] * V
     mstSet = [False] * V
+    mst_edges = []
 
     key[start] = 0
 
@@ -39,7 +42,7 @@ def prim_mst(graph, start):
                 u = v
 
         if u == -1:
-            break  # Disconnected graph
+            break
 
         mstSet[u] = True
 
@@ -54,3 +57,13 @@ def prim_mst(graph, start):
 
     return mst_edges
 
+# Example (very important)
+graph = [
+    [0, 2, 0, 6],
+    [2, 0, 3, 8],
+    [0, 3, 0, 0],
+    [6, 8, 0, 0]
+]
+start = 0
+mst = prim_mst(graph, start)
+print("MST edges:", mst) 
