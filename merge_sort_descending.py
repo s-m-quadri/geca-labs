@@ -1,4 +1,3 @@
-#merge_sort_descending.py
 def merge(left, right):
     result = []
     i = j = 0
