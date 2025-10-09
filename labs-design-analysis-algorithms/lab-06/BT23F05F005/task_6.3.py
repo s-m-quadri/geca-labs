@@ -9,3 +9,13 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+#solution
+def initialize_parent(V):
+    parent = [i for i in range(V)]
+    return parent
+
+# Example (very important)
+V = 15
+parent = initialize_parent(V)
+print("Parent Array:", parent)
