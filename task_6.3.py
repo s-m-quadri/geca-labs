@@ -10,7 +10,7 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
-
+#
 def create_parent_array(n):
 	"""
 	Creates a parent array for union-find with n vertices.
