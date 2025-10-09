@@ -22,3 +22,28 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(0,3,6)]
 """
+def minKey(key, mstSet):
+    min_val = float('inf')
+    min_index = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_val:
+            min_val = key[i]
+            min_index = i
+    return min_index
+
+
+def primMST(graph, start=0):
+    n = len(graph)
+    
+    key = [float('inf')] * n
+    parent = [-1] * n
+    mstSet = [False] * n
+
+    key[start] = 0  # Start vertex
+
+    for _ in range(n):
+        # Step 1: Select min-key vertex not yet in MST
+        u = minKey(key, mstSet)
+        mstSet[u] = True
+
+        # Step 2: Update ke
