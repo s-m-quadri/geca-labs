@@ -20,3 +20,31 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+# Task 4.4: Fractional Knapsack
+# -----------------------------
+
+def fractional_knapsack(items, capacity):
+    
+    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
+    
+    total_value = 0.0
+    remaining_capacity = capacity
+    
+    for value, weight in items:
+        if remaining_capacity >= weight:
+            total_value += value
+            remaining_capacity -= weight
+        else:
+            fraction = remaining_capacity / weight
+            total_value += value * fraction
+            remaining_capacity = 0
+            
+    return total_value
+
+
+capacity = 50
+items = [(60,10), (100,20), (120,30)]
+
+max_value = fractional_knapsack(items, capacity)
+print("Maximum value achievable:", max_value)
+

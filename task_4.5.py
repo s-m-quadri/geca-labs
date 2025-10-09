@@ -17,3 +17,30 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
+# Task 4.5: Coin Change (Greedy)
+# ------------------------------
+
+def coin_change_greedy(denominations, amount):
+   
+    denominations = sorted(denominations, reverse=True)
+    
+    coins_used = []
+    remaining_amount = amount
+    
+    for coin in denominations:
+        while remaining_amount >= coin:
+            remaining_amount -= coin
+            coins_used.append(coin)
+    
+    if remaining_amount != 0:
+        print("Warning: Exact change not possible with given denominations.")
+    
+    return coins_used, len(coins_used)
+
+denominations = [1, 2, 5, 10, 20, 50, 100]
+amount = 93
+
+coins, num_coins = coin_change_greedy(denominations, amount)
+print(f"Amount: {amount}")
+print(f"Coins used ({num_coins} coins): {coins}")
+

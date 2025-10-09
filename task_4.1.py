@@ -14,4 +14,22 @@
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
 
-#TO DO
+
+def factorial_recursive(n):
+   
+    if n == 0:
+        return 1
+    else:
+        return n * factorial_recursive(n - 1)
+
+def factorial_iterative(n):
+  
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+n = 5
+print("Input:", n)
+print("Factorial (Recursive):", factorial_recursive(n))
+print("Factorial (Iterative):", factorial_iterative(n))
