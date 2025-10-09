@@ -46,7 +46,6 @@ def count_inversions(arr):
     return total_inversions
 
 
-# Example Usage
 arr = [2, 4, 1, 3, 5]
-print("Number of inversions:", count_inversions(arr))  # Output: 3
+print("Number of inversions:", count_inversions(arr))  
 

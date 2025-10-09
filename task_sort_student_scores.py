@@ -14,7 +14,7 @@
 
 # Write your solution here
 def compare(a, b):
-    # Returns True if a should come before b
+    
     return (a[1] > b[1]) or (a[1] == b[1] and a[0] < b[0])
 
 def merge_sort_students(students):
@@ -43,6 +43,6 @@ def merge(left, right):
     return merged
 
 
-# Example usage
+
 students = [("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 92)]
 print(merge_sort_students(students))
