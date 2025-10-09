@@ -1,5 +1,14 @@
-# lab-daa-03
-
+# Puzzle / Learning focus:
+# - You have a sorted array with repeated elements.
+# - Count how many times a target number appears using binary search logic.
+# - Consider how to find the first and last occurrence efficiently.
+#
+# Example test cases:
+# Input: arr = [1, 2, 2, 2, 3, 4], target = 2
+# Output: 3
+#
+# Input: arr = [5, 5, 5, 5, 5], target = 5
+# Output: 5
 
 def count_occurrences(arr, target):
     n = len(arr)
@@ -41,16 +50,3 @@ def count_occurrences(arr, target):
 arr = [1, 2, 2, 2, 3, 4, 5]
 target = 2
 print(count_occurrences(arr, target))  # Output: 3
-
-# Puzzle / Learning focus:
-# - You have a sorted array with repeated elements.
-# - Count how many times a target number appears using binary search logic.
-# - Consider how to find the first and last occurrence efficiently.
-#
-# Example test cases:
-# Input: arr = [1, 2, 2, 2, 3, 4], target = 2
-# Output: 3
-#
-# Input: arr = [5, 5, 5, 5, 5], target = 5
-# Output: 5
- sub-lab-daa-03
