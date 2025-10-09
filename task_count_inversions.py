@@ -67,3 +67,8 @@ def merge_sort(arr, temp, left, right):
 def count_inversions(arr):
     temp = arr.copy()  # Temporary array for merging
     return merge_sort(arr, temp, 0, len(arr) - 1)
+    list1 = [1, 3, 5]
+    
+list2 = [2, 4, 6]
+print(merge_sorted_lists(list1, list2))
+
