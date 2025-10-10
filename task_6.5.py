@@ -1,12 +1,30 @@
-# Task 6.5: Building MST using Kruskal’s Algorithm
-# -------------------------------------------------
-# Write Kruskal’s algorithm using edges list and union-find.
-# Iterate over sorted edges, add edge if it doesn’t form a cycle.
+#def initialize_parent(n):
+    return [i for i in range(n)]
 
-# Example:
-# Graph: [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]
-# Expected MST edges: [(2,3,4), (0,3,5), (0,1,10)]
-# MST weight = 19
+def find(parent, x):
+    """
+    Finds the root parent of x using recursion.
+    
+    Parameters:
+    parent (list): The parent array.
+    x (int): The element to find the root of.
+    
+    Returns:
+    int: Root parent of x.
+    """
+    if parent[x] == x:
+        return x
+    return find(parent, parent[x])
 
-# Hint: Use union-find to check cycle.
-# Tip: Keep track of total weight and chosen edges.
+def union(parent, x, y):
+    """
+    Merges the sets that contain x and y.
+
+    Parameters:
+    parent (list): The parent array.
+    x (int), y (int): Elements to union.
+    """
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        parent[root_y] = root_x  # Attach y's root to x's root
