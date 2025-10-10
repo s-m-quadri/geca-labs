@@ -1,6 +1,4 @@
-# binary_search_demo_visual.py
-# Illustration: Represent the search space as a visual slice
-# Focus: Show the part of the array being considered at each step
+
 
 def binary_search_visual(arr, target):
     low, high = 0, len(arr) - 1
@@ -17,7 +15,7 @@ def binary_search_visual(arr, target):
     print(f"{target} not found")
     return -1
 
-# Example usage
+
 arr = [1, 2, 3, 4, 5, 6, 7]
 target = 4
 binary_search_visual(arr, target)
