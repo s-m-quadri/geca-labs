@@ -23,7 +23,7 @@ def merge_sort(arr):
     return merge(left, right)
 
 if __name__ == "__main__":
-    arr = [43,56,78,12,34]
+    arr = [38, 27, 43, 3, 9, 82, 10]
     print("Original:", arr)
     sorted_arr = merge_sort(arr)
     print("Sorted:", sorted_arr)
