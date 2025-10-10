@@ -1,6 +1,6 @@
 # Task 6.1: Representing Graph Edges
 # -----------------------------------
-# Write a function that accepts edges as tuples (u, v, w).
+# Write a functidefon that accepts edges as tuples (u, v, w).
 # u, v are vertices, w is the weight.
 # Store all edges in a list of tuples.
 
@@ -10,7 +10,7 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
-def store_edges(edge_list):
+ store_edges(edge_list):
     """
     Accepts a list of edges where each edge is represented as a tuple (u, v, w),
     with u and v as vertices and w as the weight of the edge.
