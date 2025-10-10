@@ -20,37 +20,3 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
-# ---------------- Activity Selection Problem ----------------
-
-def activity_selection(activities):
-    """
-    activities: list of tuples (start_time, finish_time)
-    Returns: list of selected activities
-    """
-    # Step 1: Sort activities by finish time
-    sorted_activities = sorted(activities, key=lambda x: x[1])
-
-    selected = []
-    last_finish_time = -1
-
-    for activity in sorted_activities:
-        start, finish = activity
-        if start >= last_finish_time:
-            selected.append(activity)
-            last_finish_time = finish
-
-    return selected
-
-
-# -------------------- Main Program --------------------
-if __name__ == "__main__":
-   
-    activities_input = input("Enter activities as start,finish pairs separated by space (e.g., 1,2 3,4 0,6): ")
-    activities = []
-    for pair in activities_input.split():
-        start, finish = pair.split(",")
-        activities.append((int(start), int(finish)))
-
-    selected_activities = activity_selection(activities)
-    print(f"\nMaximum number of activities that can be performed: {len(selected_activities)}")
-    print(f"Selected activities: {selected_activities}")
