@@ -9,3 +9,16 @@
 
 # Hint: Sort using key = lambda x: x[2]
 # Tip: Test with 5-6 edges to check order.
+
+# Task 6.2: Sorting Edges
+# ------------------------
+
+def sort_edges_by_weight(edges):
+    sorted_edges = sorted(edges, key=lambda x: x[2])
+    return sorted_edges
+
+if __name__ == "__main__":
+    edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1), (2, 3, 2), (1, 3, 5)]
+    sorted_edges = sort_edges_by_weight(edges)
+    print("Original edges:", edges)
+    print("Edges sorted by weight:", sorted_edges)
