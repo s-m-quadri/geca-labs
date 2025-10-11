@@ -12,3 +12,27 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
+
+# Task 4.3: Reverse a String
+# --------------------------
+
+# 1. Recursive approach
+def reverse_recursive(s):
+    if len(s) == 0:
+        return s
+    else:
+        return reverse_recursive(s[1:]) + s[0]
+
+# 2. Iterative approach
+def reverse_iterative(s):
+    reversed_str = ""
+    for char in s:
+        reversed_str = char + reversed_str 
+    return reversed_str
+
+# Bonus: Print reversed string without using [::-1]
+if __name__ == "__main__":
+    s = input("Enter a string: ")
+    print(f"Reversed string (recursive): {reverse_recursive(s)}")
+    print(f"Reversed string (iterative): {reverse_iterative(s)}")
+
