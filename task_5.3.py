@@ -26,3 +26,57 @@ parent = [-1, -1, -1]
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
 """
+
+def update_neighbors(graph, u, key, parent, mstSet):
+    """
+    Update key[] and parent[] arrays for neighbors of selected vertex u.
+    
+    Args:
+        graph: Adjacency matrix representation of the graph
+        u: Selected vertex (just added to MST)
+        key: Array of key values for each vertex
+        parent: Array of parent vertices in MST
+        mstSet: Array indicating which vertices are in MST
+    """
+    V = len(graph)  
+
+    
+    for v in range(V):
+       
+        if (not mstSet[v] and 
+            graph[u][v] > 0 and 
+            graph[u][v] < key[v]):
+
+            
+            key[v] = graph[u][v]
+            parent[v] = u
+
+
+if __name__ == "__main__":
+    
+    graph = [
+        [0, 2, 0],
+        [2, 0, 3],
+        [0, 3, 0]
+    ]
+    u = 0
+    key = [0, float('inf'), float('inf')]
+    mstSet = [True, False, False]
+    parent = [-1, -1, -1]
+
+    print("Before update:")
+    print(f"key = {key}")
+    print(f"parent = {parent}")
+
+    update_neighbors(graph, u, key, parent, mstSet)
+
+    print("\nAfter update:")
+    print(f"key = {key}")
+    print(f"parent = {parent}")
+
+    
+    expected_key = [0, 2, float('inf')]
+    expected_parent = [-1, 0, -1]
+
+    assert key == expected_key, f"Expected key {expected_key}, got {key}"
+    assert parent == expected_parent, f"Expected parent {expected_parent}, got {parent}"
