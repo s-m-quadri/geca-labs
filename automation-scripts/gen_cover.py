@@ -208,7 +208,9 @@ def infer_lab(commit: CommitRow) -> Optional[int]:
 # LaTeX rendering
 # -----------------------------
 
-SUBJECT_LINE = "CSPCC3004: Lab Design and Analysis of Algorithms"
+COURSE_CODE = "CSPCC3004"
+COURSE_NAME = "Lab Design and Analysis of Algorithms"
+HOMEPAGE_URL = "https://s-m-quadri.me/geca/daa"
 
 
 def latex_preamble(student: Student, lab: int, title: str) -> str:
@@ -222,6 +224,7 @@ def latex_preamble(student: Student, lab: int, title: str) -> str:
     head.append("\\usepackage{parskip}")
     head.append("\\usepackage{fancyhdr}")
     head.append("\\usepackage[most]{tcolorbox}")
+    head.append("\\usepackage{qrcode}")
     head.append("% Slightly tighter line spacing to help fit one page")
     head.append("\\linespread{0.98}")
     head.append("% No paragraph indent")
@@ -232,18 +235,42 @@ def latex_preamble(student: Student, lab: int, title: str) -> str:
     head.append("\\fancyhf{}")
     head.append(f"{b}fancyhead[L]{{Lab {lab:02d}}}")
     head.append(f"{b}fancyhead[R]{{PRN: {escape_latex(student.prn)}}}")
+    head.append(f"{b}fancyfoot[L]{{{b}url{{{HOMEPAGE_URL}}}}}")
     head.append(f"{b}fancyfoot[C]{{{b}thepage}}")
-    head.append(f"{b}title{{Lab {lab:02d}: {escape_latex(title)}}}")
-    head.append(f"{b}author{{{escape_latex(student.name)} ({escape_latex(student.prn)})}}")
-    head.append(f"{b}date{{}}")
     head.append("\\begin{document}")
-    head.append("\\maketitle")
-    head.append("\\vspace{0.25em}")
-    # Subject line and lab manual (bold the value)
-    head.append(f"Subject: \\textbf{{{escape_latex(SUBJECT_LINE)}}}\\\\")
-    head.append(f"Lab manual: \\textbf{{\\url{{{latex_manual_url(lab)}}}}}")
+    # Custom title block
+    head.append("\\begin{center}")
+    head.append("\\vspace{0.4em}")
+    head.append(f"{{\\large \\textbf{{Lab {lab:02d}}}}}\\\\")
+    head.append("\\vspace{0.4em}")
+    head.append(f"{{\\LARGE {escape_latex(title)}}}")
+    head.append("\\end{center}")
     head.append("\\vspace{0.6em}")
     return "\n".join(head) + "\n"
+
+
+def latex_course_block(lab: int) -> str:
+    lines: List[str] = []
+    lines.append(f"Course code: \\textbf{{{COURSE_CODE}}}\\\\")
+    lines.append(f"Course name: \\textbf{{{escape_latex(COURSE_NAME)}}}\\\\")
+    lines.append(f"Lab manual: \\textbf{{\\url{{{latex_manual_url(lab)}}}}}")
+    lines.append("\\vspace{0.6em}")
+    return "\n".join(lines) + "\n"
+
+
+def latex_student_block(student: Student, status: str, pr_users: Iterable[str], emails: Iterable[str]) -> str:
+    pr_users_s = sorted({u for u in pr_users if u})
+    emails_s = sorted({e for e in emails if e})
+    lines: List[str] = []
+    lines.append(f"Student name: \\textbf{{{escape_latex(student.name)}}}\\\\")
+    lines.append(f"Student PRN: \\textbf{{{escape_latex(student.prn)}}}\\\\")
+    lines.append(f"Submission status: \\textbf{{{escape_latex(status)}}}\\\\")
+    if pr_users_s:
+        lines.append(f"GitHub username(s): \\textbf{{{escape_latex(', '.join(pr_users_s))}}}\\\\")
+    if emails_s:
+        lines.append(f"Commit email(s): \\textbf{{{escape_latex(', '.join(emails_s))}}}\\\\")
+    lines.append("\\vspace{0.6em}")
+    return "\n".join(lines) + "\n"
 
 
 def latex_submission_block(pr_users: Iterable[str], emails: Iterable[str], pr_numbers: Iterable[int], files_changed: Iterable[str]) -> str:
@@ -251,19 +278,13 @@ def latex_submission_block(pr_users: Iterable[str], emails: Iterable[str], pr_nu
     emails_s = sorted({e for e in emails if e})
     prs = sorted({int(p) for p in pr_numbers if p is not None})
     files = sorted({os.path.basename(f) for f in files_changed if f})
-    status = "Submitted" if prs else "Not submitted"
     lines: List[str] = []
-    lines.append(f"Submission status: \\textbf{{{escape_latex(status)}}}\\\\")
     if prs:
-        lines.append(f"Attached PR number(s): \\textbf{{{', '.join(str(p) for p in prs)}}}\\\\")
-    if pr_users_s:
-        lines.append(f"GitHub username(s) used: \\textbf{{{escape_latex(', '.join(pr_users_s))}}}\\\\")
-    if emails_s:
-        lines.append(f"Commit email(s): \\textbf{{{escape_latex(', '.join(emails_s))}}}\\\\")
+        lines.append(f"Pull request number(s): \\textbf{{{', '.join(str(p) for p in prs)}}}\\\\")
     if files:
         # Chips as comma-separated rounded boxes; smaller font to save space
         chips = [f"\\chip{{{escape_latex(f)}}}" for f in files]
-        lines.append("Files changed (unique): {\small " + " \, ".join(chips) + "}")
+        lines.append("Files changed (unique): {\\small " + " \\, ".join(chips) + "}")
     lines.append("\\vspace{0.4em}")
     return "\n".join(lines) + "\n"
 
@@ -276,6 +297,7 @@ def latex_commit_table(commits: List[CommitRow]) -> str:
     br = "\\\\"
     lines.append("\\begin{table}[!ht]")
     lines.append("\\centering")
+    lines.append("\\caption{Commit details}")
     lines.append("{\\small")
     lines.append("\\begin{tabular}{@{}l c l p{9cm} r r@{}}")
     lines.append("\\toprule")
@@ -322,16 +344,37 @@ def latex_verification_block(pr_numbers: Iterable[int]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def latex_signature_block() -> str:
+def latex_signature_block(pr_numbers: Iterable[int]) -> str:
+    prs = sorted({int(p) for p in pr_numbers if p is not None})
+    first_url = None
+    if prs:
+        first_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/pull/{prs[0]}"
     lines: List[str] = []
-    lines.append("\\vspace{0.6em}")
-    lines.append("\\noindent\\textbf{Signature (Student)}: \\rule{6cm}{0.4pt}\\hfill \\textbf{Date}: \\rule{3cm}{0.4pt}\\\\")
-    lines.append("\\vspace{0.6em}")
-    lines.append("\\noindent\\textbf{Signature (Instructor)}: \\rule{6cm}{0.4pt}\\hfill \\textbf{Date}: \\rule{3cm}{0.4pt}\\\\")
-    lines.append("\\vspace{0.6em}")
-    lines.append("\\noindent\\textbf{Remarks}:\\\\")
-    for _ in range(3):
-        lines.append("\\rule{\\textwidth}{0.4pt}")
+    lines.append("\\vspace{0.4em}")
+    # Two stacked boxes for S/D | S/D
+    lines.append("\\noindent")
+    lines.append("\\begin{tabular}{@{}p{0.49\\textwidth} p{0.49\\textwidth}@{}}")
+    lines.append("\\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.3pt,height=2.4cm]")
+    lines.append("\\textbf{Student Signature}\\\\[0.8cm]")
+    lines.append("\\textbf{Date:} \\rule{3cm}{0.4pt}")
+    lines.append("\\end{tcolorbox}")
+    lines.append("&")
+    lines.append("\\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.3pt,height=2.4cm]")
+    lines.append("\\textbf{Instructor Signature}\\\\[0.8cm]")
+    lines.append("\\textbf{Date:} \\rule{3cm}{0.4pt}")
+    lines.append("\\end{tcolorbox}\\\\")
+    lines.append("\\end{tabular}")
+    lines.append("\\vspace{0.4em}")
+    # QR + Remarks grid
+    lines.append("\\noindent")
+    lines.append("\\begin{tabular}{@{}p{0.18\\textwidth} p{0.80\\textwidth}@{}}")
+    if first_url:
+        lines.append("\\centering \\qrcode[hyperlink,height=2.2cm]{" + first_url + "} &")
+    else:
+        lines.append(" \\vspace{0pt} &")
+    lines.append("\\begin{tcolorbox}[title=Remarks,colback=white,colframe=black!30,boxrule=0.3pt,height=3.0cm]")
+    lines.append("\\end{tcolorbox}\\\\")
+    lines.append("\\end{tabular}")
     lines.append("\\end{document}")
     return "\n".join(lines) + "\n"
 
@@ -385,11 +428,13 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
 
             parts: List[str] = []
             parts.append(latex_preamble(stu, lab, title))
+            # Sections in requested order
+            parts.append(latex_course_block(lab))
+            parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
             parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
-            parts.append("\\textbf{Commit summary:}")
             parts.append(latex_commit_table(commits_lab))
             parts.append(latex_verification_block(pr_numbers))
-            parts.append(latex_signature_block())
+            parts.append(latex_signature_block(pr_numbers))
 
             base = f"{stu.prn}-{slugify(stu.name)}-lab-{lab:02d}-cover"
             tex_path = os.path.join(stu_dir, base + ".tex")
