@@ -247,7 +247,7 @@ def latex_global_preamble(student: Student) -> str:
     # Header left will be set per page (lab number). Header right is PRN (constant per student)
     head.append(f"{b}fancyhead[R]{{PRN: {escape_latex(student.prn)}}}")
     head.append(f"{b}fancyfoot[L]{{{b}url{{{HOMEPAGE_URL}}}}}")
-    head.append(f"{b}fancyfoot[C]{{{b}thepage}}")
+    # Omit center page number to avoid interfering with main write-up pagination
     head.append("\\begin{document}")
     return "\n".join(head) + "\n"
 
@@ -289,7 +289,14 @@ def latex_student_block(student: Student, status: str, pr_users: Iterable[str], 
         if emails_s:
             lines.append("\\\\")
     if emails_s:
-        lines.append(f"Commit email(s): \\textbf{{{escape_latex(', '.join(emails_s))}}}")
+        emails_joined = ", ".join(emails_s)
+        # Prevent overflow by breaking into separate lines when long or too many emails
+        if len(emails_joined) > 55 or len(emails_s) > 2:
+            lines.append("Commit email(s):")
+            for e in emails_s:
+                lines.append(f"\\\\ \\textbullet\\, \\textbf{{{escape_latex(e)}}}")
+        else:
+            lines.append(f"Commit email(s): \\textbf{{{escape_latex(emails_joined)}}}")
     lines.append("\\vspace{0.6em}")
     return "\n".join(lines) + "\n"
 
@@ -303,16 +310,24 @@ def latex_submission_block(pr_users: Iterable[str], emails: Iterable[str], pr_nu
     if prs:
         lines.append(f"Pull request number(s): \\textbf{{{', '.join(str(p) for p in prs)}}}\\\\")
     if files:
-        # Chips as comma-separated rounded boxes; smaller font to save space
         chips = [f"\\chip{{{escape_latex(f)}}}" for f in files]
-        lines.append("Files changed (unique): {\\small " + " \\, ".join(chips) + "}")
+        lines.append("Files changed (unique): \\\\{\\small " + " ".join(chips) + "}")
     lines.append("\\vspace{0.4em}")
     return "\n".join(lines) + "\n"
 
 
-def latex_commit_table(commits: List[CommitRow]) -> str:
+def latex_commit_table(commits: List[CommitRow], lab: Optional[int] = None) -> str:
     if not commits:
-        return "\\textit{No commits found for this lab.}\n\n"
+        lines: List[str] = []
+        lines.append("\\begin{tcolorbox}[colback=yellow!8,colframe=yellow!50!black,boxrule=0.3pt,title={No submission on Github repository found!}]")
+        lines.append("\\textbf{For Student:} Attach your complete source code for this lab along with this write-up. If you improved the code after the printing, add a short note about it.")
+        lines.append("\\\\\\\\\n\\textbf{For Student:} If you've already submitted via GitHub, or completed locally, but couldn't push to GitHub, or faced technical issues, or don't see here, please add a short note explaining the situation.")
+        lines.append("\\\\\\\\\n\\textbf{For Instructor:} The student has not submitted code on GitHub for this lab. Please review the attached source code in the write-up. Verification links and commit details are omitted here.")
+        if lab is not None and lab >= 7:
+            lines.append("\\\\\\\\\n\\textbf{Note on Lab 07+:} \\textit{These labs were conducted in short time frames; many students may not have GitHub submissions. Attaching source code in the write-up is acceptable.}")
+        lines.append("\\end{tcolorbox}")
+        lines.append("\\vspace{0.4em}")
+        return "\n".join(lines) + "\n"
     commits_sorted = sorted(commits, key=lambda c: (c.date or datetime.min))
     lines: List[str] = []
     br = "\\\\"
@@ -370,7 +385,7 @@ def latex_verification_block(pr_numbers: Iterable[int]) -> str:
     lines.append("\\vspace{0.6em}")
     lines.append("\\noindent\\textbf{Verification}:\n")
     lines.append("\\vspace{0.4em}")
-    lines.append("To verify the submission, open the verification link below or scan the QR code.\\\\")
+    lines.append("To verify the submission, open the pull request link below or scan the QR code.\\\\")
     if first_url:
         lines.append("\\href{" + first_url + "}{" + escape_latex(display_label) + "}")
     else:
@@ -389,7 +404,7 @@ def latex_bottom_row(height_cm: float = 3.0) -> str:
         box.append("\\vspace{1.2cm}")
         box.append("\\rule{\\linewidth}{0.4pt}\\\\")
         box.append(f"\\textbf{{{escape_latex(label)}}}\\\\")
-        box.append("Date: \\rule{3cm}{0.4pt}")
+        box.append("Date: \\rule{3cm}{0pt}")
         box.append("\\end{tcolorbox}")
         return box
 
@@ -452,18 +467,22 @@ def _print_progress(current: int, total: int, prefix: str = "") -> None:
 
 
 def _cleanup_keep_only(pdf_path: str, folder: str) -> None:
-    # Remove everything in folder except the final merged PDF
+    # Remove files in folder that share the same base filename as pdf_path
+    base = os.path.basename(pdf_path)
+    prefix = base.split(".")[0]
     for name in os.listdir(folder):
         p = os.path.join(folder, name)
         if os.path.isdir(p):
-            # Skip directories
             continue
+        # Keep the final merged PDF itself
         if os.path.abspath(p) == os.path.abspath(pdf_path):
             continue
-        try:
-            os.remove(p)
-        except Exception:
-            pass
+        # Remove only files that share the same prefix to avoid deleting other students' files
+        if os.path.basename(name).startswith(prefix):
+            try:
+                os.remove(p)
+            except Exception:
+                pass
 
 
 def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns: Optional[List[str]], labs: Optional[List[int]], compile_pdf: bool) -> int:
@@ -480,8 +499,9 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
     ensure_dir(out_dir)
     total_students = len(students)
     processed = 0
-    for stu in students:
-        stu_dir = os.path.join(out_dir, stu.prn)
+    for stu_idx, stu in enumerate(students, start=1):
+        # Write files directly into out_dir (no per-PRN subfolder)
+        stu_dir = out_dir
         ensure_dir(stu_dir)
         # Build single LaTeX doc for this student with one page per lab
         doc_parts: List[str] = []
@@ -497,7 +517,7 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
             doc_parts.append(latex_course_block(lab))
             doc_parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
             doc_parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
-            doc_parts.append(latex_commit_table(commits_lab))
+            doc_parts.append(latex_commit_table(commits_lab, lab))
             doc_parts.append(latex_verification_block(pr_numbers))
             # Push bottom row to page end and set footer-right summary for this page
             doc_parts.append("\\vspace*{\\fill}")
@@ -520,7 +540,8 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write("\n".join(doc_parts))
 
-        _print_progress(processed + 1, total_students, prefix="Generating ")
+        # Progress: one line per student to avoid inline progress bar that interferes logs
+        print(f"Generating {stu_idx}/{total_students}: {stu.prn}")
 
         if compile_pdf:
             try:
@@ -529,7 +550,7 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
                 print(f"\nLaTeX compile failed for {tex_path}")
             # Clean all other files except the merged PDF
             _cleanup_keep_only(pdf_path, stu_dir)
-        processed += 1
+    processed += 1
 
     # Finish the progress line
     if total_students:
