@@ -10,3 +10,12 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+def store_graph_edges(edges):
+    edge_list = []
+    for edge in edges:
+        edge_list.append(edge)
+    return edge_list
+
+edges_input = [(0,1,4), (0,2,3), (1,2,1)]
+stored_edges = store_graph_edges(edges_input)
+print("Stored graph edges:", stored_edges)
