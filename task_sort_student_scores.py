@@ -13,3 +13,48 @@
 # - Do not use Python's built-in sort().
 
 # Write your solution here
+
+def merge_sort_students(students):
+    if len(students) <= 1:
+        return students
+    
+    mid = len(students) // 2
+    left = merge_sort_students(students[:mid])
+    right = merge_sort_students(students[mid:])
+    
+    return merge(left, right)
+
+def merge(left, right):
+    merged = []
+    i = j = 0
+    
+    while i < len(left) and j < len(right):
+        # Compare based on score descending
+        if left[i][1] > right[j][1]:
+            merged.append(left[i])
+            i += 1
+        elif left[i][1] < right[j][1]:
+            merged.append(right[j])
+            j += 1
+        else:
+            # Scores equal, sort by name ascending
+            if left[i][0] < right[j][0]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+    
+    while i < len(left):
+        merged.append(left[i])
+        i += 1
+    while j < len(right):
+        merged.append(right[j])
+        j += 1
+    
+    return merged
+
+# Example usage
+students = [("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 92)]
+sorted_students = merge_sort_students(students)
+print(sorted_students)
