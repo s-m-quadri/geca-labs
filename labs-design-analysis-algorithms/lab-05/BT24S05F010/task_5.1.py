@@ -6,8 +6,8 @@ Task:
 Write a function that initializes key[], parent[], mstSet[] arrays for a graph with V vertices.
 
 Instruction:
-- Use Python lists.
-- Do not implement the full MST yet.
+- Use Python lists .
+- Do not implem   ent the full MST yet.
 
 Tip:
 Focus only on initialization. Use ∞ for key values and -1 for parent.
@@ -19,3 +19,18 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+
+def initialize_prim(V):
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+
+
+V = 4
+key, parent, mstSet = initialize_prim(V)
+
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
