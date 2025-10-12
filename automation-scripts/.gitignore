@@ -4,3 +4,4 @@
 !fetch_pull_requests.py
 !gen_report.py
 !gen_attendance.py
+!gen_writeup.py
