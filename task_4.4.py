@@ -20,3 +20,20 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+def fractional_knapsack(items, W):
+    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
+    total_value = 0.0
+    for value, weight in items:
+        if W >= weight:
+            W -= weight
+            total_value += value
+        else:
+            total_value += value * (W / weight)
+            break
+    return total_value
+
+W = 50
+items = [(60, 10), (100, 20), (120, 30)]
+max_value = fractional_knapsack(items, W)
+print("Maximum achievable value in knapsack:", max_value)
