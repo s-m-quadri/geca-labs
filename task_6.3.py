@@ -9,19 +9,3 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
-# Task 6.3: Union-Find Data Structure (Basics)
-# ---------------------------------------------
-
-def initialize_parent(n):
-    """
-    Creates a parent array for Union-Find with n vertices.
-    Initially, each vertex is its own parent.
-    """
-    parent = [i for i in range(n)]
-    return parent
-
-
-# Example usage
-vertices = 5
-parent = initialize_parent(vertices)
-print("Initial Parent Array:", parent)

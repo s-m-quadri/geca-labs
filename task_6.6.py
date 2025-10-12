@@ -1,36 +1,17 @@
 # Task 6.6: Challenge - Visualize MST
 # -------------------------------------
+# Extend Kruskal’s algorithm:
+# 1. Input edges and build MST.
+# 2. Print MST edges in adjacency list format.
+# 3. (Optional for extra) Use networkx + matplotlib to plot MST.
 
-import networkx as nx
-import matplotlib.pyplot as plt
+# Example:
+# MST edges: [(2,3,4), (0,3,5), (0,1,10)]
+# Expected adjacency list:
+# 0: [1, 3]
+# 1: [0]
+# 2: [3]
+# 3: [0, 2]
 
-# --- Step 1: Union-Find helper functions ---
-def find(parent, x):
-    if parent[x] == x:
-        return x
-    return find(parent, parent[x])
-
-def union(parent, x, y):
-    root_x = find(parent, x)
-    root_y = find(parent, y)
-    if root_x != root_y:
-        parent[root_y] = root_x
-
-
-# --- Step 2: Kruskal’s MST Function ---
-def kruskal(n, edges):
-    edges = sorted(edges, key=lambda x: x[2])
-    parent = [i for i in range(n)]
-    mst_edges = []
-    mst_weight = 0
-
-    for u, v, w in edges:
-        if find(parent, u) != find(parent, v):
-            union(parent, u, v)
-            mst_edges.append((u, v, w))
-            mst_weight += w
-
-    return mst_edges, mst_weight
-
-
-# --- Step 3: Build adj
+# Hint: Use dictionary for adjacency list.
+# Tip: Visualization part is optional, but fun for testing.

@@ -10,31 +10,3 @@
 
 # Hint: Use union-find to check cycle.
 # Tip: Keep track of total weight and chosen edges.
-# Task 6.5: Building MST using Kruskal’s Algorithm
-# -------------------------------------------------
-
-# --- Step 1: Find function ---
-def find(parent, x):
-    """
-    Finds the root parent of x recursively.
-    """
-    if parent[x] == x:
-        return x
-    return find(parent, parent[x])
-
-
-# --- Step 2: Union function ---
-def union(parent, x, y):
-    """
-    Merges sets containing x and y.
-    """
-    root_x = find(parent, x)
-    root_y = find(parent, y)
-    if root_x != root_y:
-        parent[root_y] = root_x  # connect one root to another
-
-
-# --- Step 3: Kruskal’s algorithm ---
-def kruskal(n, edges):
-    """
-    Builds the Minimum Spanning Tree (MST) using Kruskal’s Algorithm.
