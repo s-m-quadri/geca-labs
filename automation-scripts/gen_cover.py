@@ -107,6 +107,17 @@ def _to_int_default(s: str, default: int = 0) -> int:
     return v if v is not None else default
 
 
+# -----------------------------
+# Small helpers
+# -----------------------------
+
+def _ellipsize(text: str, max_len: int) -> str:
+    if text is None:
+        return ""
+    s = str(text)
+    return s if len(s) <= max_len else s[: max_len - 1] + "…"
+
+
 def read_commits(csv_path: str) -> List[CommitRow]:
     rows: List[CommitRow] = []
     with open(csv_path, newline="", encoding="utf-8") as f:
@@ -266,9 +277,11 @@ def latex_student_block(student: Student, status: str, pr_users: Iterable[str], 
     lines.append(f"Student PRN: \\textbf{{{escape_latex(student.prn)}}}\\\\")
     lines.append(f"Submission status: \\textbf{{{escape_latex(status)}}}\\\\")
     if pr_users_s:
-        lines.append(f"GitHub username(s): \\textbf{{{escape_latex(', '.join(pr_users_s))}}}\\\\")
+        lines.append(f"GitHub username(s): \\textbf{{{escape_latex(', '.join(pr_users_s))}}}")
+        if emails_s:
+            lines.append("\\\\")
     if emails_s:
-        lines.append(f"Commit email(s): \\textbf{{{escape_latex(', '.join(emails_s))}}}\\\\")
+        lines.append(f"Commit email(s): \\textbf{{{escape_latex(', '.join(emails_s))}}}")
     lines.append("\\vspace{0.6em}")
     return "\n".join(lines) + "\n"
 
@@ -295,9 +308,10 @@ def latex_commit_table(commits: List[CommitRow]) -> str:
     commits_sorted = sorted(commits, key=lambda c: (c.date or datetime.min))
     lines: List[str] = []
     br = "\\\\"
+    # Subheading before table instead of caption
+    lines.append("\\textbf{Commit details}")
     lines.append("\\begin{table}[!ht]")
     lines.append("\\centering")
-    lines.append("\\caption{Commit details}")
     lines.append("{\\small")
     lines.append("\\begin{tabular}{@{}l c l p{9cm} r r@{}}")
     lines.append("\\toprule")
@@ -318,6 +332,7 @@ def latex_commit_table(commits: List[CommitRow]) -> str:
         else:
             date_s = c.date_iso or ""
         msg = c.message or ""
+        msg = _ellipsize(msg, 90)
         lines.append(
             f"{escape_latex(short)} & {escape_latex(pr_s)} & {escape_latex(date_s)} & {escape_latex(msg)} & {c.additions} & {c.deletions} {br}"
         )
@@ -330,52 +345,64 @@ def latex_commit_table(commits: List[CommitRow]) -> str:
 
 def latex_verification_block(pr_numbers: Iterable[int]) -> str:
     prs = sorted({int(p) for p in pr_numbers if p is not None})
+    first_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/pull/{prs[0]}" if prs else None
+    display_url = first_url or "—"
+    display_label = _ellipsize(display_url, 80)
     lines: List[str] = []
-    lines.append("\\textbf{Verification link(s)}:")
-    if prs:
-        lines.append("\\begin{itemize}")
-        for p in prs:
-            url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/pull/{p}"
-            lines.append(f"  \\item \\url{{{url}}}")
-        lines.append("\\end{itemize}")
+    lines.append("\\begin{tabular}{@{}p{0.23\\textwidth} p{0.74\\textwidth}@{}}")
+    # Left QR
+    if first_url:
+        lines.append("\\begin{minipage}[t]{\\linewidth}\\centering\\vspace{0pt}\\qrcode[hyperlink,height=2.4cm]{" + first_url + "}\\end{minipage}")
     else:
-        lines.append("\\textit{—}")
+        # Keep column height consistent even when there's no URL
+        lines.append("\\begin{minipage}[t]{\\linewidth}\\vspace{2.4cm}\\end{minipage}")
+    lines.append("&")
+    # Right instruction + link
+    lines.append("\\begin{minipage}[t]{\\linewidth}")
+    lines.append("\\vspace{0.6em}")
+    lines.append("\\noindent\\textbf{Verification}:\n")
+    lines.append("\\vspace{0.4em}")
+    lines.append("To verify the submission, open the verification link below or scan the QR code.\\\\")
+    if first_url:
+        lines.append("\\href{" + first_url + "}{" + escape_latex(display_label) + "}")
+    else:
+        lines.append("—")
+    lines.append("\\end{minipage}\\\\")
+    lines.append("\\end{tabular}")
     lines.append("\\vspace{0.6em}")
     return "\n".join(lines) + "\n"
 
 
-def latex_signature_block(pr_numbers: Iterable[int]) -> str:
-    prs = sorted({int(p) for p in pr_numbers if p is not None})
-    first_url = None
-    if prs:
-        first_url = f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/pull/{prs[0]}"
+def latex_bottom_row(height_cm: float = 3.0) -> str:
+    # Three columns: Student S/D, Instructor S/D, Remarks
+    def sign_box(label: str) -> List[str]:
+        box: List[str] = []
+        box.append(f"\\begin{{tcolorbox}}[colback=white,colframe=black!30,boxrule=0.3pt,height={height_cm}cm]")
+        box.append("\\vspace{1.2cm}")
+        box.append("\\rule{\\linewidth}{0.4pt}\\\\")
+        box.append(f"\\textbf{{{escape_latex(label)}}}\\\\")
+        box.append("Date: \\rule{3cm}{0.4pt}")
+        box.append("\\end{tcolorbox}")
+        return box
+
+    def remarks_box() -> List[str]:
+        box: List[str] = []
+        box.append(f"\\begin{{tcolorbox}}[colback=white,colframe=black!30,boxrule=0.3pt,height={height_cm}cm]")
+        box.append("\\textbf{Remarks}\\\\")
+        box.append("\\vspace{1.6cm}")
+        box.append("\\end{tcolorbox}")
+        return box
+
     lines: List[str] = []
-    lines.append("\\vspace{0.4em}")
-    # Two stacked boxes for S/D | S/D
     lines.append("\\noindent")
-    lines.append("\\begin{tabular}{@{}p{0.49\\textwidth} p{0.49\\textwidth}@{}}")
-    lines.append("\\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.3pt,height=2.4cm]")
-    lines.append("\\textbf{Student Signature}\\\\[0.8cm]")
-    lines.append("\\textbf{Date:} \\rule{3cm}{0.4pt}")
-    lines.append("\\end{tcolorbox}")
+    lines.append("\\begin{tabular}{@{}p{0.32\\textwidth} p{0.32\\textwidth} p{0.32\\textwidth}@{}}")
+    lines.extend(sign_box("Student Signature"))
     lines.append("&")
-    lines.append("\\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.3pt,height=2.4cm]")
-    lines.append("\\textbf{Instructor Signature}\\\\[0.8cm]")
-    lines.append("\\textbf{Date:} \\rule{3cm}{0.4pt}")
-    lines.append("\\end{tcolorbox}\\\\")
+    lines.extend(sign_box("Instructor Signature"))
+    lines.append("&")
+    lines.extend(remarks_box())
+    lines.append("\\\\")
     lines.append("\\end{tabular}")
-    lines.append("\\vspace{0.4em}")
-    # QR + Remarks grid
-    lines.append("\\noindent")
-    lines.append("\\begin{tabular}{@{}p{0.18\\textwidth} p{0.80\\textwidth}@{}}")
-    if first_url:
-        lines.append("\\centering \\qrcode[hyperlink,height=2.2cm]{" + first_url + "} &")
-    else:
-        lines.append(" \\vspace{0pt} &")
-    lines.append("\\begin{tcolorbox}[title=Remarks,colback=white,colframe=black!30,boxrule=0.3pt,height=3.0cm]")
-    lines.append("\\end{tcolorbox}\\\\")
-    lines.append("\\end{tabular}")
-    lines.append("\\end{document}")
     return "\n".join(lines) + "\n"
 
 
@@ -428,13 +455,19 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
 
             parts: List[str] = []
             parts.append(latex_preamble(stu, lab, title))
-            # Sections in requested order
             parts.append(latex_course_block(lab))
             parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
             parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
             parts.append(latex_commit_table(commits_lab))
             parts.append(latex_verification_block(pr_numbers))
-            parts.append(latex_signature_block(pr_numbers))
+            # Push bottom row to page end and set footer-right summary
+            parts.append("\\vspace*{\\fill}")
+            parts.append(latex_bottom_row(3.0))
+            first_pr = pr_numbers[0] if pr_numbers else None
+            pr_text = f"PR: {first_pr}" if first_pr is not None else "PR: —"
+            files_count = len(set(files))
+            parts.append(f"\\fancyfoot[R]{{{escape_latex(pr_text)}\\,\\, Files: {files_count}}}")
+            parts.append("\\end{document}")
 
             base = f"{stu.prn}-{slugify(stu.name)}-lab-{lab:02d}-cover"
             tex_path = os.path.join(stu_dir, base + ".tex")
