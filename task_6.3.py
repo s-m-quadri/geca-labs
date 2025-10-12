@@ -9,3 +9,17 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+
+def initialize_union_find(V):
+    """
+    Initialize parent array for union-find.
+    Each vertex is its own parent initially.
+    """
+    parent = [i for i in range(V)]
+    return parent
+
+# Example 
+V = 5
+parent = initialize_union_find(V)
+print("Parent array:", parent)
