@@ -30,6 +30,7 @@ import random
 import re
 import subprocess
 import sys
+import unicodedata
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
@@ -38,6 +39,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(ROOT, "output", "writeups")
 STUDENTS_CSV = os.path.join(ROOT, "output", "students.csv")
 LABS_INDEX = os.path.join(ROOT, "labs", "index.md")
+LABS_DIR = os.path.join(ROOT, "labs")
 
 
 # -----------------------------
@@ -75,6 +77,44 @@ def escape_latex(text: str) -> str:
     for k, v in repl.items():
         text = text.replace(k, v)
     return text
+
+
+def to_ascii(text: str) -> str:
+    if text is None:
+        return ""
+    if not isinstance(text, str):
+        text = str(text)
+    # Map common unicode punctuation/symbols to ASCII equivalents BEFORE stripping
+    replacements = {
+        "→": "->",
+        "←": "<-",
+        "↔": "<->",
+        "≤": "<=",
+        "≥": ">=",
+        "≠": "!=",
+        "×": "x",
+        "·": "-",
+        "•": "-",
+        "–": "-",
+        "—": "-",
+        "−": "-",
+        "’": "'",
+        "‘": "'",
+        "“": '"',
+        "”": '"',
+        " ": " ",  # non-breaking space
+    }
+    for k, v in replacements.items():
+        text = text.replace(k, v)
+    # Strip remaining accents/symbols
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    # Collapse excessive whitespace
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def latex_text(text: str) -> str:
+    return escape_latex(to_ascii(text))
 
 
 def seeded_rng_for(prn: str) -> random.Random:
@@ -131,7 +171,8 @@ def read_lab_titles(index_path: str) -> Dict[int, str]:
         for line in f:
             m = re.match(r"\s*Lab\s*0*([0-9]+)\s*:\s*(.+)$", line.strip())
             if m:
-                mapping[int(m.group(1))] = m.group(2).strip()
+                # Normalize to ASCII to avoid LaTeX unicode issues later
+                mapping[int(m.group(1))] = to_ascii(m.group(2).strip())
     return mapping
 
 
@@ -399,48 +440,77 @@ def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
 # -----------------------------
 
 def latex_preamble(title: str, student: Student) -> str:
-    return f"""\\documentclass[11pt]{{article}}
-\\usepackage[a4paper,margin=0.8in]{{geometry}}
-\\usepackage[hidelinks]{{hyperref}}
-\\usepackage{{enumitem}}
-\\usepackage{{titlesec}}
-\\usepackage{{parskip}}
-\\setlist[itemize]{{noitemsep, topsep=2pt}}
-\\setlist[enumerate]{{noitemsep, topsep=2pt}}
-\\title{{{escape_latex(title)}}}
-\\author{{PRN: {escape_latex(student.prn)}\\\\Name: {escape_latex(student.name)}}}
-\\date{{}}
-\\begin{{document}}
-\\maketitle
-\\small
-\\textbf{{Instructions}}: Keep answers brief (1–3 lines) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.
+        b = "\\"
+        lines = []
+        lines.append("\\documentclass[11pt]{article}")
+        lines.append("\\usepackage[a4paper,margin=0.8in]{geometry}")
+        lines.append("\\usepackage[hidelinks]{hyperref}")
+        lines.append("\\usepackage{enumitem}")
+        lines.append("\\usepackage{titlesec}")
+        lines.append("\\usepackage{parskip}")
+        lines.append("\\usepackage{xcolor}")
+        lines.append("\\usepackage{listings}")
+        # listings style (avoid \t sequences by inserting backslash via variable)
+        lines.append("\\lstdefinestyle{py}{")
+        lines.append("  language=Python,")
+        lines.append(f"  basicstyle={b}ttfamily{b}small,")
+        lines.append("  keywordstyle=\\color[rgb]{0.0,0.0,0.6}\\bfseries,")
+        lines.append("  commentstyle=\\color[rgb]{0.0,0.5,0.0}\\itshape,")
+        lines.append("  stringstyle=\\color[rgb]{0.6,0.0,0.0},")
+        lines.append("  numbers=left,")
+        lines.append(f"  numberstyle={b}tiny\\color{{gray}},")
+        lines.append("  stepnumber=1,")
+        lines.append("  numbersep=8pt,")
+        lines.append("  showstringspaces=false,")
+        lines.append("  breaklines=true,")
+        lines.append("  frame=single,")
+        lines.append("  tabsize=4,")
+        lines.append("  keepspaces=true")
+        lines.append("}")
+        lines.append("\\setlist[itemize]{noitemsep, topsep=2pt}")
+        lines.append("\\setlist[enumerate]{noitemsep, topsep=2pt}")
+        lines.append(f"{b}title{{{latex_text(title)}}}")
+        lines.append(f"{b}author{{PRN: {latex_text(student.prn)}{b}{b}{b}{b}Name: {latex_text(student.name)}}}")
+        lines.append(f"{b}date{{}}")
+        lines.append(f"{b}begin{{document}}")
+        lines.append(f"{b}maketitle")
+        lines.append(f"{b}small")
+        lines.append(f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (1-3 lines) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}")
+        lines.append("")
+        return "\n".join(lines) + "\n"
 
-"""
 
-
-def latex_lab_section(lab_num: int, title: str, subj: List[str], obj: List[str], code_qs: List[str]) -> str:
+def latex_lab_section(lab_num: int, title: str, subj: List[str], obj: List[str], code_qs: List[str], source_tuple: Tuple[str, str] | None) -> str:
     lab_title = f"Lab {lab_num:02d}: {title}"
-    parts = [f"\\section*{{{escape_latex(lab_title)}}}"]
+    parts = [f"\\section*{{{latex_text(lab_title)}}}"]
     # Subjective
     parts.append("\\subsection*{Subjective}")
-    parts.append("Answer in 1–3 lines each.")
+    parts.append(latex_text("Answer in 1-3 lines each."))
     parts.append("\\begin{enumerate}")
     for q in subj:
-        parts.append(f"  \\item {escape_latex(q)}")
+        parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     # Objective
     parts.append("\\subsection*{Objective}")
-    parts.append("Very short answers, often numeric or a phrase.")
+    parts.append(latex_text("Very short answers, often numeric or a phrase."))
     parts.append("\\begin{enumerate}")
     for q in obj:
-        parts.append(f"  \\item {escape_latex(q)}")
+        parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
+    # Source code (if available)
+    if source_tuple is not None:
+        fname, code = source_tuple
+        parts.append("\\subsection*{Source code}")
+        parts.append(f"\\noindent\\textit{{{latex_text(fname)}}}")
+        parts.append("\\begin{lstlisting}[style=py]")
+        parts.append(code)
+        parts.append("\\end{lstlisting}")
     # Code digest
     parts.append("\\subsection*{Code Digest}")
-    parts.append("Hand-run or compute using the lab’s source code behavior.")
+    parts.append(latex_text("Hand-run or compute using the lab's source code behavior."))
     parts.append("\\begin{enumerate}")
     for q in code_qs:
-        parts.append(f"  \\item {escape_latex(q)}")
+        parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     parts.append("\\vspace{0.5em}")
     parts.append("\\hrule\\vspace{0.5em}")
@@ -466,7 +536,8 @@ def build_writeup_for_student(student: Student, lab_titles: Dict[int, str], comp
         subj = subjective_questions(lab, title)
         obj = objective_questions(lab, rng)
         code_qs = code_digest_questions(lab, rng)
-        content.append(latex_lab_section(lab, title, subj, obj, code_qs))
+        source = lab_source_tuple(lab)
+        content.append(latex_lab_section(lab, title, subj, obj, code_qs, source))
 
     content.append(latex_footer())
     tex_text = "\n".join(content)
@@ -482,6 +553,79 @@ def build_writeup_for_student(student: Student, lab_titles: Dict[int, str], comp
         compile_tex(tex_path, OUT_DIR)
 
     return tex_path, pdf_path
+
+
+def lab_source_tuple(lab_num: int) -> Tuple[str, str] | None:
+    """Return (filename, code) for the lab, or None if not available."""
+    mapping = {
+        1: "1.recursion.py",
+        2: "2.merge_sort.py",
+        3: "3.binary_search.py",
+        4: "4.fractional_knapsack.py",
+        5: "5.prims.py",
+        6: "6.kruskal.py",
+        7: "7.multistage_graph.py",
+        8: "8.multistage_graph.py",
+        9: "9.huffman.py",
+        10: "10.eight_queens.py",
+    }
+    fname = mapping.get(lab_num)
+    if not fname:
+        return None
+    path = os.path.join(LABS_DIR, fname)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            code = f.read()
+        # Ensure ASCII-only for LaTeX engine compatibility, preserving newlines and indentation
+        code_clean = sanitize_code_for_latex(code)
+        return fname, code_clean
+    except Exception:
+        return None
+
+
+def sanitize_code_for_latex(src: str) -> str:
+    """Normalize code to ASCII while preserving newlines and reasonable spacing.
+
+    - Map common unicode punctuation to ASCII first
+    - Normalize to NFKD and drop non-ASCII
+    - Normalize line endings to \n
+    - Remove control chars except tab/newline
+    - Optionally expand tabs to 4 spaces for consistent rendering
+    """
+    if not isinstance(src, str):
+        src = str(src)
+    replacements = {
+        "→": "->",
+        "←": "<-",
+        "↔": "<->",
+        "≤": "<=",
+        "≥": ">=",
+        "≠": "!=",
+        "×": "x",
+        "·": "-",
+        "•": "-",
+        "–": "-",
+        "—": "-",
+        "−": "-",
+        "’": "'",
+        "‘": "'",
+        "“": '"',
+        "”": '"',
+        " ": " ",
+    }
+    for k, v in replacements.items():
+        src = src.replace(k, v)
+    # Keep original newlines; normalize CRLF/CR to LF
+    src = src.replace("\r\n", "\n").replace("\r", "\n")
+    # Normalize to ASCII; this drops remaining non-ASCII
+    src = unicodedata.normalize("NFKD", src).encode("ascii", "ignore").decode("ascii")
+    # Remove control characters except tab and newline
+    src = "".join(ch for ch in src if ch in ("\n", "\t") or ord(ch) >= 32)
+    # Expand tabs to 4 spaces for stable typesetting
+    src = src.replace("\t", "    ")
+    return src
 
 
 def compile_tex(tex_path: str, out_dir: str) -> None:
