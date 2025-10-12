@@ -10,3 +10,18 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+
+# Task 6.1: Representing Graph Edges
+# -----------------------------------
+
+def represent_graph_edges(edges):
+    edge_list = []
+    for edge in edges:
+        edge_list.append(edge)
+    return edge_list
+
+if __name__ == "__main__":
+    edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+    stored_edges = represent_graph_edges(edges)
+    print("Stored edges:", stored_edges)
+
