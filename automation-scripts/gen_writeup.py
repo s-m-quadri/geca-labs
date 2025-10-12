@@ -184,18 +184,21 @@ def subjective_questions(lab_num: int, title: str) -> List[str]:
     # Common, concise theory Qs per lab
     common = {
         0: [
-            "State two submission guidelines you will strictly follow.",
-            "Define an invariant in your own words (1–2 lines).",
-            "What is a docstring? Give a short example (≤2 lines).",
+            "What are lists and tuples in Python?",
+            "What are functions and how do you define one in Python?",
+            "Explain the difference between mutable and immutable types in Python.",
+            "What is a lambda function in Python?",
+            "What is list comprehension in Python? Give a brief example.",
         ],
         1: [
-            "Define recursion and iteration in 1–2 lines each.",
+            "Define recursion and iteration.",
             "State the base case and inductive step for factorial(n).",
-            "Explain stack overflow risk in recursive calls (concise).",
+            "Explain stack overflow risk in recursive calls.",
+            "What makes iteration safer than recursion in Python?",
         ],
         2: [
             "Define Divide-and-Conquer. Where does merge sort use it?",
-            "State merge sort’s time and space complexity (short).",
+            "State merge sort's time and space complexity.",
             "When does the iterative (bottom-up) variant help?",
         ],
         3: [
@@ -205,18 +208,20 @@ def subjective_questions(lab_num: int, title: str) -> List[str]:
         ],
         4: [
             "Define fractional knapsack and density (value/weight).",
-            "Why sorting by ratio is optimal (1–2 lines intuition).",
-            "State when item is taken partially (≤1 line).",
+            "Why sorting by ratio is optimal.",
+            "State when item is taken partially.",
         ],
         5: [
-            "Define MST and Prim’s choice rule (short).",
-            "What is a key[] array used for in Prim’s?",
+            "Define MST and Prim's choice rule.",
+            "Why MST called 'spanning' and 'tree'?",
+            "What's difference between Graph and Tree? Are all trees graphs? Are the terms fuzzy?",
+            "What is a key[] array used for in Prim's?",
             "How many edges are in an MST of V vertices?",
         ],
         6: [
-            "Define union–find with path compression (concise).",
+            "Define union-find with path compression.",
             "What does union by rank prevent?",
-            "Kruskal’s sorting criterion for edges (≤1 line).",
+            "Kruskal's sorting criterion for edges.",
         ],
         7: [
             "Define multistage graph and stages concept.",
@@ -224,19 +229,19 @@ def subjective_questions(lab_num: int, title: str) -> List[str]:
             "What value is set at the sink initially and why?",
         ],
         8: [
-            "Contrast 1-indexed vs 0-indexed DP tables (brief).",
+            "Contrast 1-indexed vs 0-indexed DP tables.",
             "What is recorded in the path[] array?",
             "When is an edge considered absent in cost matrix?",
         ],
         9: [
-            "Define prefix-free code in 1 line.",
+            "Define prefix-free code.",
             "Why does Huffman pick two least-frequent nodes?",
-            "What determines a symbol’s code length?",
+            "What determines a symbol's code length?",
         ],
         10: [
             "State the N-Queens constraint succinctly.",
             "What does is_safe check (3 checks, one phrase)?",
-            "How many solutions exist for N=8 (state number only).",
+            "How many solutions exist for N=8?",
         ],
     }
     return common.get(lab_num, [f"Briefly state two key concepts of: {title}."])
@@ -307,7 +312,7 @@ def objective_questions(lab_num: int, rng: random.Random) -> List[str]:
             "Name the three conflict directions checked before placing a queen (≤1 line).",
         ]
     else:
-        Q += ["State two short properties relevant to this lab."]
+        Q += ["State any two key learnings from this lab."]
     return Q
 
 
@@ -539,7 +544,7 @@ def latex_preamble(title: str, student: Student) -> str:
     # horizontal rule
     lines.append(f"{b}hrule")
     lines.append(f"{b}vspace{{0.5em}}")
-    lines.append(f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (1-3 lines) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}")
+    lines.append(f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (3-5 sentences) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}")
     lines.append("")
     return "\n".join(lines) + "\n"
 
@@ -551,14 +556,14 @@ def latex_lab_section(lab_num: int, title: str, subj: List[str], obj: List[str],
     parts.append(f"\\noindent\\textit{{Lab Manual: \\url{{{lab_manual_url(lab_num)}}}}}")
     # Subjective
     parts.append(f"\\subsection*{{{lab_num}.1: Subjective}}")
-    parts.append(latex_text("Answer in 1-3 lines each."))
+    parts.append(latex_text("Answer in 3-5 sentences each."))
     parts.append("\\begin{enumerate}")
     for q in subj:
         parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     # Objective
     parts.append(f"\\subsection*{{{lab_num}.2: Objective}}")
-    parts.append(latex_text("Very short answers, often numeric or a phrase. Write justifications in 1-3 lines as needed."))
+    parts.append(latex_text("Very short answers, often numeric or a phrase. Write justifications in 3-5 sentences as needed."))
     parts.append("\\begin{enumerate}")
     for q in obj:
         # If q is a LaTeX math block (e.g., matrix string starting with \[), insert raw
@@ -587,6 +592,8 @@ def latex_lab_section(lab_num: int, title: str, subj: List[str], obj: List[str],
         else:
             parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
+    parts.append(f"\\subsection*{{{lab_num}.4: Conclusion}}")
+    parts.append(latex_text("Briefly summarize your key learnings from this lab in a paragraph."))
     parts.append("\\vspace{0.5em}")
     parts.append("\\hrule\\vspace{0.5em}")
     return "\n".join(parts) + "\n"
