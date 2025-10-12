@@ -11,3 +11,36 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
+
+
+# Task 6.4: Find and Union Functions
+# -----------------------------------
+
+def initialize_union_find(n):
+    return [i for i in range(n)]
+
+def find(parent, x):
+    if parent[x] == x:
+        return x
+    else:
+        return find(parent, parent[x])
+
+def union(parent, x, y):
+    x_root = find(parent, x)
+    y_root = find(parent, y)
+    if x_root != y_root:
+        parent[y_root] = x_root 
+
+if __name__ == "__main__":
+    n = 4
+    parent = initialize_union_find(n)
+    print("Initial parent array:", parent)
+
+    union(parent, 0, 1)
+    print("Parent array after union(0,1):", parent)
+
+    union(parent, 1, 2)
+    print("Parent array after union(1,2):", parent)
+
+    print("Find(2):", find(parent, 2))
+    print("Find(3):", find(parent, 3))

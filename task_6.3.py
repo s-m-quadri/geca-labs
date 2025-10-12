@@ -9,3 +9,16 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+
+# Task 6.3: Union-Find Data Structure (Basics)
+# ---------------------------------------------
+
+def initialize_union_find(n):
+    parent = [i for i in range(n)]
+    return parent
+
+if __name__ == "__main__":
+    n = 5  
+    parent = initialize_union_find(n)
+    print("Initial parent array:", parent)
