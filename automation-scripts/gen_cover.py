@@ -224,7 +224,7 @@ COURSE_NAME = "Lab Design and Analysis of Algorithms"
 HOMEPAGE_URL = "https://s-m-quadri.me/geca/daa"
 
 
-def latex_preamble(student: Student, lab: int, title: str) -> str:
+def latex_global_preamble(student: Student) -> str:
     b = "\\"
     head: List[str] = []
     head.append("\\documentclass[11pt]{article}")
@@ -244,20 +244,28 @@ def latex_preamble(student: Student, lab: int, title: str) -> str:
     head.append("\\newtcbox{\\chip}{on line, arc=3pt, colback=gray!15,colframe=gray!50, boxrule=0.2pt, left=3pt,right=3pt,top=1pt,bottom=1pt}")
     head.append("\\pagestyle{fancy}")
     head.append("\\fancyhf{}")
-    head.append(f"{b}fancyhead[L]{{Lab {lab:02d}}}")
+    # Header left will be set per page (lab number). Header right is PRN (constant per student)
     head.append(f"{b}fancyhead[R]{{PRN: {escape_latex(student.prn)}}}")
     head.append(f"{b}fancyfoot[L]{{{b}url{{{HOMEPAGE_URL}}}}}")
     head.append(f"{b}fancyfoot[C]{{{b}thepage}}")
     head.append("\\begin{document}")
-    # Custom title block
-    head.append("\\begin{center}")
-    head.append("\\vspace{0.4em}")
-    head.append(f"{{\\large \\textbf{{Lab {lab:02d}}}}}\\\\")
-    head.append("\\vspace{0.4em}")
-    head.append(f"{{\\LARGE {escape_latex(title)}}}")
-    head.append("\\end{center}")
-    head.append("\\vspace{0.6em}")
     return "\n".join(head) + "\n"
+
+
+def latex_set_header_lab(lab: int) -> str:
+    return f"\\fancyhead[L]{{Lab {lab:02d}}}\n"
+
+
+def latex_title_block(lab: int, title: str) -> str:
+    lines: List[str] = []
+    lines.append("\\begin{center}")
+    lines.append("\\vspace{0.4em}")
+    lines.append(f"{{\\large \\textbf{{Lab {lab:02d}}}}}\\\\")
+    lines.append("\\vspace{0.4em}")
+    lines.append(f"{{\\LARGE {escape_latex(title)}}}")
+    lines.append("\\end{center}")
+    lines.append("\\vspace{0.6em}")
+    return "\n".join(lines) + "\n"
 
 
 def latex_course_block(lab: int) -> str:
@@ -433,6 +441,31 @@ def aggregate_for_student_lab(student: Student, lab: int, all_commits: List[Comm
 # Main generation logic
 # -----------------------------
 
+def _print_progress(current: int, total: int, prefix: str = "") -> None:
+    # Simple in-place progress bar
+    width = 30
+    done = int(width * current / max(total, 1))
+    bar = "#" * done + "." * (width - done)
+    msg = f"\r{prefix}[{bar}] {current}/{total}"
+    sys.stdout.write(msg)
+    sys.stdout.flush()
+
+
+def _cleanup_keep_only(pdf_path: str, folder: str) -> None:
+    # Remove everything in folder except the final merged PDF
+    for name in os.listdir(folder):
+        p = os.path.join(folder, name)
+        if os.path.isdir(p):
+            # Skip directories
+            continue
+        if os.path.abspath(p) == os.path.abspath(pdf_path):
+            continue
+        try:
+            os.remove(p)
+        except Exception:
+            pass
+
+
 def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns: Optional[List[str]], labs: Optional[List[int]], compile_pdf: bool) -> int:
     students = read_students(students_csv)
     if only_prns:
@@ -445,42 +478,64 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
     lab_list = [i for i in range(0, 11)] if not labs else [l for l in labs if 0 <= l <= 10]
 
     ensure_dir(out_dir)
-    total_files = 0
+    total_students = len(students)
+    processed = 0
     for stu in students:
         stu_dir = os.path.join(out_dir, stu.prn)
         ensure_dir(stu_dir)
-        for lab in lab_list:
+        # Build single LaTeX doc for this student with one page per lab
+        doc_parts: List[str] = []
+        doc_parts.append(latex_global_preamble(stu))
+        pages_written = 0
+        for idx, lab in enumerate(lab_list):
             title = lab_titles.get(lab, f"Lab {lab:02d}")
             commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(stu, lab, commits)
 
-            parts: List[str] = []
-            parts.append(latex_preamble(stu, lab, title))
-            parts.append(latex_course_block(lab))
-            parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
-            parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
-            parts.append(latex_commit_table(commits_lab))
-            parts.append(latex_verification_block(pr_numbers))
-            # Push bottom row to page end and set footer-right summary
-            parts.append("\\vspace*{\\fill}")
-            parts.append(latex_bottom_row(3.0))
+            # Set per-page header (lab), title, and content
+            doc_parts.append(latex_set_header_lab(lab))
+            doc_parts.append(latex_title_block(lab, title))
+            doc_parts.append(latex_course_block(lab))
+            doc_parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
+            doc_parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
+            doc_parts.append(latex_commit_table(commits_lab))
+            doc_parts.append(latex_verification_block(pr_numbers))
+            # Push bottom row to page end and set footer-right summary for this page
+            doc_parts.append("\\vspace*{\\fill}")
+            doc_parts.append(latex_bottom_row(3.0))
             first_pr = pr_numbers[0] if pr_numbers else None
             pr_text = f"PR: {first_pr}" if first_pr is not None else "PR: —"
             files_count = len(set(files))
-            parts.append(f"\\fancyfoot[R]{{{escape_latex(pr_text)}\\,\\, Files: {files_count}}}")
-            parts.append("\\end{document}")
+            doc_parts.append(f"\\fancyfoot[R]{{{escape_latex(pr_text)}\\,\\, Files: {files_count}}}")
+            # Page break after each lab except the last
+            if idx != len(lab_list) - 1:
+                doc_parts.append("\\newpage")
+            pages_written += 1
 
-            base = f"{stu.prn}-{slugify(stu.name)}-lab-{lab:02d}-cover"
-            tex_path = os.path.join(stu_dir, base + ".tex")
-            with open(tex_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(parts))
-            if compile_pdf:
-                try:
-                    compile_tex(tex_path, stu_dir)
-                except Exception:
-                    print(f"LaTeX compile failed for {tex_path}")
-            total_files += 1
+        doc_parts.append("\\end{document}")
 
-    print(f"Generated {total_files} cover file(s) in {out_dir}")
+        # Write combined tex and compile
+        base = f"{stu.prn}_{slugify(stu.name)}_covers"
+        tex_path = os.path.join(stu_dir, base + ".tex")
+        pdf_path = os.path.join(stu_dir, base + ".pdf")
+        with open(tex_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(doc_parts))
+
+        _print_progress(processed + 1, total_students, prefix="Generating ")
+
+        if compile_pdf:
+            try:
+                compile_tex(tex_path, stu_dir)
+            except Exception:
+                print(f"\nLaTeX compile failed for {tex_path}")
+            # Clean all other files except the merged PDF
+            _cleanup_keep_only(pdf_path, stu_dir)
+        processed += 1
+
+    # Finish the progress line
+    if total_students:
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+    print(f"Generated {total_students} merged cover PDF(s) in {out_dir}")
     return 0
 
 
