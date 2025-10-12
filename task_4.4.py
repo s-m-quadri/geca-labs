@@ -20,3 +20,33 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+def fractional_knapsack(capacity, items):
+    
+    items = sorted(items, key=lambda x: x[0] / x[1], reverse=True)
+    
+    total_value = 0.0  # Total value in knapsack
+    remaining_capacity = capacity
+
+    for value, weight in items:
+        if remaining_capacity == 0:
+            break
+        
+        if weight <= remaining_capacity:
+            # Take the whole item
+            total_value += value
+            remaining_capacity -= weight
+        else:
+            # Take a fraction of the next item
+            fraction = remaining_capacity / weight
+            total_value += value * fraction
+            remaining_capacity = 0  # Knapsack is full
+
+    return total_value
+
+
+
+capacity = 50
+items = [(60, 10), (100, 20), (120, 30)]
+print(fractional_knapsack(capacity, items))  # Output: 240.0
+

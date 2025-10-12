@@ -13,3 +13,29 @@
 #
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
+
+
+# Recursive approach
+def factorial_recursive(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers.")
+    if n == 0:
+        return 1
+    else:
+        return n * factorial_recursive(n - 1)
+
+
+# Iterative approach
+def factorial_iterative(n):
+    if n < 0:
+        raise ValueError("Factorial is not defined for negative numbers.")
+    
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+
+# Example usage:
+print(factorial_recursive(5))  
+print(factorial_iterative(5)) 
