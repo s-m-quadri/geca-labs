@@ -319,6 +319,26 @@ def make_int_array(rng: random.Random, n: int, lo: int, hi: int, distinct: bool 
     return [rng.randint(lo, hi) for _ in range(n)]
 
 
+def format_matrix_rows(rows: List[List[int | float | str]], inf_token: str = "\\infty") -> str:
+    """Return a LaTeX bmatrix string from a numeric/INF 2D list.
+    Any value equal to 'INF' or math.inf is rendered as \\infty.
+    Uses '&' between columns and '\\' to break rows.
+    """
+    def cell(v):
+        if isinstance(v, (int, float)) and (v == math.inf or v == float("inf")):
+            return inf_token
+        s = str(v)
+        if s.upper() == "INF":
+            return inf_token
+        return latex_text(s)
+    # '&' separates columns; '\\' separates rows
+    lines = [" & ".join(cell(v) for v in row) for row in rows]
+    row_sep = " \\\\\
+"
+    body = row_sep.join(lines)
+    return f"\\[\\begin{{bmatrix}}\n{body}\n\\end{{bmatrix}}\\]"
+
+
 def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
     Q: List[str] = []
     if lab_num == 0:
@@ -367,9 +387,13 @@ def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
                     if i == j - 1:
                         w = rng.randint(1, 9)
                 graph[i][j] = graph[j][i] = w
+        # Build a rendered matrix view for readability
+        mat_rows = [[graph[i][j] if graph[i][j] != 0 else "INF" if i != j else 0 for j in range(V)] for i in range(V)]
+        mat_latex = format_matrix_rows(mat_rows)
         Q += [
-            f"Run Prim’s algorithm starting at vertex 0 on graph={graph}. List edges picked in order with weights.",
-            "State the final MST total weight.",
+            "Run Prim’s algorithm starting at vertex 0 on the following adjacency matrix (use 0 on diagonal, \\infty for no edge):",
+            mat_latex,
+            "List the edges picked in order with weights and state the final MST total weight.",
         ]
     elif lab_num == 6:
         V = rng.randint(4, 6)
@@ -399,9 +423,14 @@ def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
             for j in targets:
                 cost[i][j] = rng.randint(1, 12)
         cost[n - 1][n - 1] = 0
+        # Render cost matrix with \infty
+        mat_rows = [[(0 if (i == j == n - 1) else (cost[i][j] if cost[i][j] != INF else "INF")) for j in range(n)] for i in range(n)]
+        mat_latex = format_matrix_rows(mat_rows)
         Q += [
-            f"Using backward DP on cost-matrix (INF={INF}), compute dist[0] and the path from 0→{n-1}. Matrix={cost}.",
-            "List dist[i] for all i.",
+            "Using backward DP on the following cost matrix (\\infty = no edge), compute dist[0] and the path from 0->(sink).",
+            mat_latex,
+            "If no feasible path exists due to missing edges, explicitly state it and explain why (in 1-2 lines).",
+            "List dist[i] for all i (or mark unreachable with ∞).",
         ]
     elif lab_num == 8:
         N = rng.randint(6, 9)
@@ -412,8 +441,16 @@ def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
             targets = rng.sample(range(i + 1, N + 1), out_deg)
             for j in targets:
                 edges.append((i, j, rng.randint(1, 9)))
+        # Build and render 1-indexed matrix
+        matrix = [[0]*(N+1) for _ in range(N+1)]
+        for u,v,w in edges:
+            matrix[u][v] = w
+        mat_rows = [row[1:] for row in matrix[1:]]
+        mat_latex = format_matrix_rows([[c if c!=0 else "INF" for c in row] for row in mat_rows])
         Q += [
-            f"For N={N} and edges (u,v,w)={edges}, compute cost[1] and the 1→N path as in the lab code.",
+            f"For N={N} with the following 1-indexed cost matrix (\\infty = no edge), compute cost[1] and the 1->N path as in the lab code:",
+            mat_latex,
+            "If no feasible path exists, state so and justify briefly.",
             "Write cost[i] for i=1..N.",
         ]
     elif lab_num == 9:
@@ -440,77 +477,115 @@ def code_digest_questions(lab_num: int, rng: random.Random) -> List[str]:
 # -----------------------------
 
 def latex_preamble(title: str, student: Student) -> str:
-        b = "\\"
-        lines = []
-        lines.append("\\documentclass[11pt]{article}")
-        lines.append("\\usepackage[a4paper,margin=0.8in]{geometry}")
-        lines.append("\\usepackage[hidelinks]{hyperref}")
-        lines.append("\\usepackage{enumitem}")
-        lines.append("\\usepackage{titlesec}")
-        lines.append("\\usepackage{parskip}")
-        lines.append("\\usepackage{xcolor}")
-        lines.append("\\usepackage{listings}")
-        # listings style (avoid \t sequences by inserting backslash via variable)
-        lines.append("\\lstdefinestyle{py}{")
-        lines.append("  language=Python,")
-        lines.append(f"  basicstyle={b}ttfamily{b}small,")
-        lines.append("  keywordstyle=\\color[rgb]{0.0,0.0,0.6}\\bfseries,")
-        lines.append("  commentstyle=\\color[rgb]{0.0,0.5,0.0}\\itshape,")
-        lines.append("  stringstyle=\\color[rgb]{0.6,0.0,0.0},")
-        lines.append("  numbers=left,")
-        lines.append(f"  numberstyle={b}tiny\\color{{gray}},")
-        lines.append("  stepnumber=1,")
-        lines.append("  numbersep=8pt,")
-        lines.append("  showstringspaces=false,")
-        lines.append("  breaklines=true,")
-        lines.append("  frame=single,")
-        lines.append("  tabsize=4,")
-        lines.append("  keepspaces=true")
-        lines.append("}")
-        lines.append("\\setlist[itemize]{noitemsep, topsep=2pt}")
-        lines.append("\\setlist[enumerate]{noitemsep, topsep=2pt}")
-        lines.append(f"{b}title{{{latex_text(title)}}}")
-        lines.append(f"{b}author{{PRN: {latex_text(student.prn)}{b}{b}{b}{b}Name: {latex_text(student.name)}}}")
-        lines.append(f"{b}date{{}}")
-        lines.append(f"{b}begin{{document}}")
-        lines.append(f"{b}maketitle")
-        lines.append(f"{b}small")
-        lines.append(f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (1-3 lines) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}")
-        lines.append("")
-        return "\n".join(lines) + "\n"
+    b = "\\"
+    lines: List[str] = []
+    # Packages
+    lines.append("\\documentclass[11pt]{article}")
+    lines.append("\\usepackage[a4paper,margin=0.8in]{geometry}")
+    lines.append("\\usepackage[hidelinks]{hyperref}")
+    lines.append("\\usepackage{enumitem}")
+    lines.append("\\usepackage{titlesec}")
+    lines.append("\\usepackage{titling}")
+    lines.append("\\usepackage{parskip}")
+    lines.append("\\usepackage{xcolor}")
+    lines.append("\\usepackage{listings}")
+    lines.append("\\usepackage{fancyhdr}")
+    lines.append("\\usepackage{url}")
+    lines.append("\\usepackage{amsmath}")
+    # Page style
+    lines.append("\\pagestyle{fancy}")
+    lines.append("\\fancyhf{}")
+    # Colors and heading styles (dark yellowish color)
+    lines.append("\\definecolor{headercolor}{RGB}{26,26,0}")
+    lines.append("\\titleformat{\\section}[hang]{\\color{headercolor}\\Large\\bfseries}{}{0pt}{}")
+    lines.append("\\titleformat{\\subsection}[hang]{\\color{headercolor}\\large\\bfseries}{}{0pt}{}")
+    # Header/Footer (small, colored)
+    prof_title = latex_text("Design and Analysis of Algorithms Lab Writeup")
+    lines.append(f"{b}fancyhead[L]{{{b}color{{headercolor}} {b}small {prof_title}}}")
+    lines.append(f"{b}fancyhead[R]{{{b}color{{headercolor}} {b}small {latex_text(student.name)}}}")
+    lines.append(f"{b}fancyfoot[L]{{{b}color{{headercolor}} {b}small Manual: {b}url{{https://s-m-quadri.me/geca/daa}}}}")
+    lines.append(f"{b}fancyfoot[C]{{{b}color{{headercolor}} {b}small {b}thepage}}")
+    lines.append(f"{b}fancyfoot[R]{{{b}color{{headercolor}} {b}small PRN: {latex_text(student.prn)}}}")
+    # Listings style
+    lines.append("\\lstdefinestyle{py}{")
+    lines.append("  language=Python,")
+    lines.append(f"  basicstyle={b}ttfamily{b}small,")
+    lines.append("  keywordstyle=\\color[rgb]{0.0,0.0,0.6}\\bfseries,")
+    lines.append("  commentstyle=\\color[rgb]{0.0,0.5,0.0}\\itshape,")
+    lines.append("  stringstyle=\\color[rgb]{0.6,0.0,0.0},")
+    lines.append("  numbers=left,")
+    lines.append(f"  numberstyle={b}tiny\\color{{gray}},")
+    lines.append("  stepnumber=1,")
+    lines.append("  numbersep=8pt,")
+    lines.append("  showstringspaces=false,")
+    lines.append("  breaklines=true,")
+    lines.append("  frame=single,")
+    lines.append("  tabsize=4,")
+    lines.append("  keepspaces=true")
+    lines.append("}")
+    # Lists
+    lines.append("\\setlist[itemize]{noitemsep, topsep=2pt}")
+    lines.append("\\setlist[enumerate]{noitemsep, topsep=2pt}")
+    # Title block (make it pop)
+    lines.append(f"{b}pretitle{{{b}begin{{center}}{b}color{{headercolor}} {b}Huge {b}bfseries}}")
+    lines.append(f"{b}posttitle{{{b}par{b}end{{center}}{b}vspace{{-0.3em}}{b}color{{headercolor}} {b}vspace{{0.6em}}}}")
+    # Title info
+    lines.append(f"{b}title{{{prof_title}}}")
+    lines.append(f"{b}author{{{latex_text(student.name)} (Enroll: {latex_text(student.prn)})}}")
+    lines.append(f"{b}date{{Date: October 2024}}")
+    lines.append(f"{b}begin{{document}}")
+    lines.append(f"{b}maketitle")
+    lines.append(f"{b}small")
+    # horizontal rule
+    lines.append(f"{b}hrule")
+    lines.append(f"{b}vspace{{0.5em}}")
+    lines.append(f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (1-3 lines) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}")
+    lines.append("")
+    return "\n".join(lines) + "\n"
 
 
 def latex_lab_section(lab_num: int, title: str, subj: List[str], obj: List[str], code_qs: List[str], source_tuple: Tuple[str, str] | None) -> str:
     lab_title = f"Lab {lab_num:02d}: {title}"
     parts = [f"\\section*{{{latex_text(lab_title)}}}"]
+    # Per-lab manual link just below the title
+    parts.append(f"\\noindent\\textit{{Lab Manual: \\url{{{lab_manual_url(lab_num)}}}}}")
     # Subjective
-    parts.append("\\subsection*{Subjective}")
+    parts.append(f"\\subsection*{{{lab_num}.1: Subjective}}")
     parts.append(latex_text("Answer in 1-3 lines each."))
     parts.append("\\begin{enumerate}")
     for q in subj:
         parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     # Objective
-    parts.append("\\subsection*{Objective}")
-    parts.append(latex_text("Very short answers, often numeric or a phrase."))
+    parts.append(f"\\subsection*{{{lab_num}.2: Objective}}")
+    parts.append(latex_text("Very short answers, often numeric or a phrase. Write justifications in 1-3 lines as needed."))
     parts.append("\\begin{enumerate}")
     for q in obj:
-        parts.append(f"  \\item {latex_text(q)}")
+        # If q is a LaTeX math block (e.g., matrix string starting with \[), insert raw
+        if isinstance(q, str) and q.strip().startswith("\\[") and q.strip().endswith("\\]"):
+            parts.append("  \\item ")
+            parts.append(q)
+        else:
+            parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     # Source code (if available)
     if source_tuple is not None:
-        fname, code = source_tuple
+        _fname, code = source_tuple
         parts.append("\\subsection*{Source code}")
-        parts.append(f"\\noindent\\textit{{{latex_text(fname)}}}")
+        parts.append(f"\\noindent\\textit{{Reference implementation — {latex_text(title)} (Python)}}")
         parts.append("\\begin{lstlisting}[style=py]")
         parts.append(code)
         parts.append("\\end{lstlisting}")
     # Code digest
-    parts.append("\\subsection*{Code Digest}")
+    parts.append(f"\\subsection*{{{lab_num}.3: Code Digest}}")
     parts.append(latex_text("Hand-run or compute using the lab's source code behavior."))
     parts.append("\\begin{enumerate}")
     for q in code_qs:
-        parts.append(f"  \\item {latex_text(q)}")
+        if isinstance(q, str) and q.strip().startswith("\\[") and q.strip().endswith("\\]"):
+            parts.append("  \\item ")
+            parts.append(q)
+        else:
+            parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     parts.append("\\vspace{0.5em}")
     parts.append("\\hrule\\vspace{0.5em}")
@@ -527,7 +602,7 @@ def latex_footer() -> str:
 
 def build_writeup_for_student(student: Student, lab_titles: Dict[int, str], compile_pdf: bool) -> Tuple[str, str]:
     rng = seeded_rng_for(student.prn)
-    doc_title = "DAA Labs Writeup (Personalized)"
+    doc_title = "Design and Analysis of Algorithms"
     content = [latex_preamble(doc_title, student)]
 
     # Labs 00..10
@@ -553,6 +628,11 @@ def build_writeup_for_student(student: Student, lab_titles: Dict[int, str], comp
         compile_tex(tex_path, OUT_DIR)
 
     return tex_path, pdf_path
+
+
+def lab_manual_url(lab_num: int) -> str:
+    # 00..10
+    return f"https://s-m-quadri.me/geca/daa/{lab_num:02d}"
 
 
 def lab_source_tuple(lab_num: int) -> Tuple[str, str] | None:
