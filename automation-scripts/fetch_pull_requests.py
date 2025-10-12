@@ -15,8 +15,10 @@ REPO_OWNER = "s-m-quadri"
 REPO_NAME = "geca-labs"
 OUTPUT_DIR = "output"
 PR_OUTPUT_FILE = f"{OUTPUT_DIR}/pull_requests.csv"
-FILES_OUTPUT_FILE = f"{OUTPUT_DIR}/file_changes.csv"
+# FILES_OUTPUT_FILE removed: not generating file_changes.csv anymore
 COMMITS_OUTPUT_FILE = f"{OUTPUT_DIR}/commits.csv"
+INCREMENTAL_COMMITS = os.getenv("INCREMENTAL_COMMITS", "1") == "1"
+SKIP_COMMIT_DETAILS = os.getenv("SKIP_COMMIT_DETAILS", "1") == "1"  # default to fast mode
 
 # Create output directory if it doesn't exist
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -180,9 +182,28 @@ def process_file_changes(merged_prs):
     
     return all_file_changes
 
+def read_existing_commits(path):
+    """Read existing commits.csv and return a set of commit SHAs already captured and a list of existing rows."""
+    existing_rows = []
+    existing_shas = set()
+    if os.path.exists(path):
+        try:
+            with open(path, "r", newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    existing_rows.append(row)
+                    sha = row.get("Commit SHA")
+                    if sha:
+                        existing_shas.add(sha)
+        except Exception as e:
+            print(f"Warning: Failed to read existing commits file '{path}': {e}")
+    return existing_shas, existing_rows
+
 def process_commits(merged_prs):
     """Process commit data for merged PRs only"""
     all_commits = []
+    existing_shas, existing_rows = read_existing_commits(COMMITS_OUTPUT_FILE) if INCREMENTAL_COMMITS else (set(), [])
+    appended = 0
     
     for pr in merged_prs:
         pr_number = pr["number"]
@@ -197,25 +218,30 @@ def process_commits(merged_prs):
             
             for commit in commits:
                 commit_sha = commit["sha"]
+                if INCREMENTAL_COMMITS and commit_sha in existing_shas:
+                    continue  # already captured
+
                 commit_message = commit["commit"]["message"]
                 commit_author = commit["commit"]["author"]["name"]
                 commit_email = commit["commit"]["author"]["email"]
                 commit_date = commit["commit"]["author"]["date"]
-                
-                # Get detailed commit info for file statistics
-                try:
-                    commit_details = get_commit_details(commit_sha)
-                    files_changed = len(commit_details.get("files", []))
-                    total_additions = sum(f.get("additions", 0) for f in commit_details.get("files", []))
-                    total_deletions = sum(f.get("deletions", 0) for f in commit_details.get("files", []))
-                    affected_files = ", ".join([f["filename"] for f in commit_details.get("files", [])])
-                except Exception as e:
-                    print(f"Error getting details for commit {commit_sha}: {e}")
-                    files_changed = 0
-                    total_additions = 0
-                    total_deletions = 0
-                    affected_files = ""
-                
+
+                files_changed = 0
+                total_additions = 0
+                total_deletions = 0
+                affected_files = ""
+
+                if not SKIP_COMMIT_DETAILS:
+                    # Get detailed commit info for file statistics (slower)
+                    try:
+                        commit_details = get_commit_details(commit_sha)
+                        files_changed = len(commit_details.get("files", []))
+                        total_additions = sum(f.get("additions", 0) for f in commit_details.get("files", []))
+                        total_deletions = sum(f.get("deletions", 0) for f in commit_details.get("files", []))
+                        affected_files = ", ".join([f["filename"] for f in commit_details.get("files", [])])
+                    except Exception as e:
+                        print(f"Error getting details for commit {commit_sha}: {e}")
+
                 all_commits.append({
                     "PR Number": pr_number,
                     "PRN": prn,
@@ -223,17 +249,25 @@ def process_commits(merged_prs):
                     "Commit SHA": commit_sha,
                     "Commit Author": commit_author,
                     "Commit Email": commit_email,
-                    "Commit Message": commit_message.split('\n')[0][:200],  # First line, truncated
+                    "Commit Message": commit_message.split('\n')[0][:200],
                     "Commit Date": commit_date,
                     "Files Changed": files_changed,
                     "Total Additions": total_additions,
                     "Total Deletions": total_deletions,
                     "Affected Files": affected_files[:500] + "..." if len(affected_files) > 500 else affected_files
                 })
+                appended += 1
         except Exception as e:
             print(f"Error processing commits for PR #{pr_number}: {e}")
             continue
     
+    # If incremental, prepend existing rows so the output includes both old and new
+    if INCREMENTAL_COMMITS and existing_rows:
+        print(f"Incremental mode: found {len(existing_rows)} existing commits, appending {appended} new commits.")
+        # Maintain chronological order by date after combining
+        combined = existing_rows + all_commits
+        # Ensure consistent fieldnames by returning combined
+        return combined
     return all_commits
 
 # -----------------------------
@@ -263,22 +297,7 @@ if __name__ == "__main__":
             writer.writerows(processed_prs)
         print(f"✓ Pull requests data saved to {PR_OUTPUT_FILE}")
     
-    print("\n" + "="*50)
-    print("GENERATING FILE CHANGES CSV (MERGED PRs ONLY)")
-    print("="*50)
-    
-    # Process file changes data (only merged PRs)
-    file_changes = process_file_changes(merged_prs)
-    file_changes.sort(key=lambda x: (x["PRN"], x["File Path"]))
-    
-    # Save file changes to CSV
-    if file_changes:
-        with open(FILES_OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=file_changes[0].keys())
-            writer.writeheader()
-            writer.writerows(file_changes)
-        print(f"✓ File changes data saved to {FILES_OUTPUT_FILE}")
-        print(f"  Total file changes recorded: {len(file_changes)}")
+    # Skipping file changes generation to speed up and reduce IO
     
     print("\n" + "="*50)
     print("GENERATING COMMITS CSV (MERGED PRs ONLY)")
@@ -286,7 +305,8 @@ if __name__ == "__main__":
     
     # Process commits data (only merged PRs)
     commits = process_commits(merged_prs)
-    commits.sort(key=lambda x: (x["PRN"], x["Commit Date"]))
+    # Guard against missing dates; sort with fallback
+    commits.sort(key=lambda x: (x.get("PRN", ""), x.get("Commit Date", "")))
     
     # Save commits to CSV
     if commits:
@@ -301,7 +321,6 @@ if __name__ == "__main__":
     print("SUMMARY")
     print("="*50)
     print(f"📁 Pull Requests: {len(processed_prs)} records → {PR_OUTPUT_FILE}")
-    print(f"📄 File Changes: {len(file_changes)} records → {FILES_OUTPUT_FILE}")
     print(f"💾 Commits: {len(commits)} records → {COMMITS_OUTPUT_FILE}")
     print("\nAll data has been successfully exported!")
     
@@ -311,11 +330,11 @@ if __name__ == "__main__":
         print(f"\n📊 Statistics:")
         print(f"   • Unique students: {unique_students}")
         print(f"   • Total PRs: {len(processed_prs)}")
-        if file_changes:
-            unique_files = len(set(fc["File Path"] for fc in file_changes))
-            print(f"   • Unique files modified: {unique_files}")
         if commits:
-            total_additions = sum(c["Total Additions"] for c in commits)
-            total_deletions = sum(c["Total Deletions"] for c in commits)
-            print(f"   • Total lines added: {total_additions}")
-            print(f"   • Total lines deleted: {total_deletions}")
+            if not SKIP_COMMIT_DETAILS:
+                total_additions = sum(int(c.get("Total Additions", 0) or 0) for c in commits)
+                total_deletions = sum(int(c.get("Total Deletions", 0) or 0) for c in commits)
+                print(f"   • Total lines added: {total_additions}")
+                print(f"   • Total lines deleted: {total_deletions}")
+            else:
+                print("   • Commit details skipped (fast mode). Set SKIP_COMMIT_DETAILS=0 to include stats.")
