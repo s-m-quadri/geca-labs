@@ -13,5 +13,5 @@ def factorial_iterative(n):
  
 # Driver
 n = 5
-print("Recursive:", factorial_recursive(n))
+print("Recursive:", fac torial_recursive(n))
 print("Iterative:", factorial_iterative(n))
