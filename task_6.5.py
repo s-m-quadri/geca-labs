@@ -10,3 +10,14 @@
 
 # Hint: Use union-find to check cycle.
 # Tip: Keep track of total weight and chosen edges.
+def kruskal_mst(edges, V):
+    edges_sorted = sort_edges(edges)
+    parent = make_parent(V)
+    mst = []
+    total_weight = 0
+    for u, v, w in edges_sorted:
+        if find(parent, u) != find(parent, v):
+            union(parent, u, v)
+            mst.append((u, v, w))
+            total_weight += w
+    return mst, total_weight
