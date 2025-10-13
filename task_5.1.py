@@ -26,4 +26,11 @@ def initialize_prim_arrays(V):
     parent = [-1] * V
     mstSet = [False] * V
     return key, parent, mstSet
-# to do 
+
+V = 4
+key, parent, mstSet = initialize_prim_arrays(V)
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)               
+
+
