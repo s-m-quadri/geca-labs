@@ -54,3 +54,15 @@ def prim_mst(graph, start):
 
     return mst_edges
 
+# Example usage
+if __name__ == "__main__":  
+    graph = [
+        [0, 2, 0, 6],
+        [2, 0, 3, 8],
+        [0, 3, 0, 0],
+        [6, 8, 0, 0]
+    ]
+    start = 0
+    mst_edges = []
+    result = prim_mst(graph, start)
+    print("MST edges (parent, vertex, weight):", result)  # Expected: [(0,1,2),(1,2,3),(0,3,6)]

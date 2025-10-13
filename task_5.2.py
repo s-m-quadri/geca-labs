@@ -27,3 +27,8 @@ def min_key_vertex(key, mstSet):
             min_index = v
 
     return min_index
+
+# Example usage:
+key = [0, 2, 3]
+mstSet = [True, False, False]       
+print("Index of minimum key vertex:", min_key_vertex(key, mstSet))  # Expected: 1   

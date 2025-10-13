@@ -44,4 +44,21 @@ def prim_iteration(graph, key, parent, mstSet):
         if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
             key[v] = graph[u][v]
             parent[v] = u
+    return key, parent, mstSet
+
+# Example usage
+if __name__ == "__main__":          
+    graph = [
+        [0, 1, 4],
+        [1, 0, 2],
+        [4, 2, 0]
+    ]
+    key = [0, float('inf'), float('inf')]
+    mstSet = [True, False, False]
+    parent = [-1, -1, -1]
+
+    updated_key, updated_parent, updated_mstSet = prim_iteration(graph, key, parent, mstSet)
+    print("Updated key:", updated_key)       # Expected: [0, 1, 2]
+    print("Updated parent:", updated_parent) # Expected: [-1, 0, 1]
+    print("Updated mstSet:", updated_mstSet) # Expected: [True, True, False]
 

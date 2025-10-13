@@ -57,3 +57,16 @@ def prim_mst_heap(graph, start=0):
 
     return mst_edges
 
+# Example usage
+if __name__ == "__main__":          
+    graph = [
+        [0, 2, 0, 6, 0],
+        [2, 0, 3, 8, 5],
+        [0, 3, 0, 0, 7],
+        [6, 8, 0, 0, 9],
+        [0, 5, 7, 9, 0]
+    ]
+    start = 0
+    mst_edges = prim_mst_heap(graph, start)
+    print("MST edges (parent, vertex, weight):", mst_edges)  
+    # Expected: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]

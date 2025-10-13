@@ -34,3 +34,20 @@ def update_keys_and_parents(graph, u, key, parent, mstSet):
             key[v] = graph[u][v]
             parent[v] = u
 
+    return key, parent
+
+# Example usage
+if __name__ == "__main__":
+    graph = [
+        [0, 2, 0],
+        [2, 0, 3],
+        [0, 3, 0]
+    ]
+    u = 0
+    key = [0, float('inf'), float('inf')]
+    mstSet = [True, False, False]
+    parent = [-1, -1, -1]
+
+    updated_key, updated_parent = update_keys_and_parents(graph, u, key, parent, mstSet)
+    print("Updated key:", updated_key)       # Expected: [0, 2, inf]
+    print("Updated parent:", updated_parent) # Expected: [-1, 0, -1]
