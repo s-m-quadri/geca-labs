@@ -1,3 +1,4 @@
+#BT23F05F042
 # binary_search_demo_visual.py
 # Illustration: Represent the search space as a visual slice
 # Focus: Show the part of the array being considered at each step
