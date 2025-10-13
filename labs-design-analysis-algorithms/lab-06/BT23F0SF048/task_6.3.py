@@ -9,3 +9,10 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def create_parent_array(n):
+    return [i for i in range(n)]
+
+n = 5
+p = create_parent_array(n)
+print("Initial parent array:", p)
