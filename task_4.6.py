@@ -20,3 +20,24 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+
+def activity_selection(a):
+    a.sort(key=lambda x: x[1])
+    n = len(a)
+    if n == 0:
+        return 0, []
+    c = 1
+    s = [a[0]]
+    lf = a[0][1]
+    for i in range(1, n):
+        if a[i][0] >= lf:
+            s.append(a[i])
+            c += 1
+            lf = a[i][1]
+    return c, s
+
+if __name__ == "__main__":
+    a = [(1, 2), (3, 4), (0, 6), (5, 7), (8, 9), (5, 9)]
+    m, s = activity_selection(a)
+    print(f"Maximum number of non-overlapping activities: {m}")
+    print(f"Selected activities: {s}")

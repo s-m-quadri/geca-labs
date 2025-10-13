@@ -20,3 +20,23 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+def fractional_knapsack(c, it):
+    it = sorted(it, key=lambda x: x[0]/x[1], reverse=True)
+    tv = 0.0
+    for v, w in it:
+        if c <= 0:
+            break
+        if w <= c:
+            tv += v
+            c -= w
+        else:
+            tv += v * (c / w)
+            c = 0
+    return tv
+
+if __name__ == "__main__":
+    c = 50
+    it = [(60, 10), (100, 20), (120, 30)]
+    mv = fractional_knapsack(c, it)
+    print(f"Maximum achievable value in the knapsack: {mv}")
