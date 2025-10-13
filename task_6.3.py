@@ -9,3 +9,14 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def make_parent(n):
+    """
+    Creates a parent array for union-find with n vertices.
+    """
+    return [i for i in range(n)]
+
+if __name__ == "__main__":
+    n = 5
+    parent = make_parent(n)
+    print("Parent array:", parent)
