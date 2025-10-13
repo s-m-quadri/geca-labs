@@ -20,3 +20,20 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+
+def activity_selection_greedy(activities):
+	# Sort activities by finish time
+	activities = sorted(activities, key=lambda x: x[1])
+	selected = []
+	last_finish = -1
+	for start, finish in activities:
+		if start >= last_finish:
+			selected.append((start, finish))
+			last_finish = finish
+	return selected
+
+if __name__ == "__main__":
+	activities = [(1,2), (3,4), (0,6), (5,7), (8,9), (5,9)]
+	selected = activity_selection_greedy(activities)
+	print(f"Selected activities: {selected}")
+	print(f"Total activities: {len(selected)}")
