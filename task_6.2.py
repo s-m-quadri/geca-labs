@@ -9,3 +9,14 @@
 
 # Hint: Sort using key = lambda x: x[2]
 # Tip: Test with 5-6 edges to check order.
+
+def sort_edges_by_weight(edges):
+    return sorted(edges, key=lambda x: x[2])
+
+
+# Example usage
+
+edges_input = [(0,1,4), (0,2,3), (1,2,1)]
+sorted_edges = sort_edges_by_weight(edges_input)
+print("Sorted edges:", sorted_edges)
+
