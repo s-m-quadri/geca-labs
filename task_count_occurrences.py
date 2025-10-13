@@ -10,42 +10,35 @@
 # Input: arr = [5, 5, 5, 5, 5], target = 5
 # Output: 5
 
-def count_inversions(arr):
-    def merge_sort(arr):
-        if len(arr) <= 1:
-            return arr, 0
-
-        mid = len(arr) // 2
-        left, left_inv = merge_sort(arr[:mid])
-        right, right_inv = merge_sort(arr[mid:])
-        merged, merge_inv = merge(left, right)
-
-        return merged, left_inv + right_inv + merge_inv
-
-    def merge(left, right):
-        i = j = inv_count = 0
-        merged = []
-
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                merged.append(left[i])
-                i += 1
+def count_occurrences(arr, target):
+    def first_occurrence(arr, target):
+        low, high = 0, len(arr) - 1
+        first = -1
+        while low <= high:
+            mid = (low + high) // 2
+            if arr[mid] == target:
+                first = mid
+                high = mid - 1
+            elif arr[mid] < target:
+                low = mid + 1
             else:
-                merged.append(right[j])
-                j += 1
-                # All remaining elements in left[i:] form inversions with right[j]
-                inv_count += len(left) - i
+                high = mid - 1
+        return first
 
-        merged.extend(left[i:])
-        merged.extend(right[j:])
-        return merged, inv_count
+    def last_occurrence(arr, target):
+        low, high = 0, len(arr) - 1
+        last = -1
+        while low <= high:
+            mid = (low + high) // 2
+            if arr[mid] == target:
+                last = mid
+                low = mid + 1
+            elif arr[mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return last
 
-    _, total_inversions = merge_sort(arr)
-    return total_inversions
-
-
-arr = [2, 4, 1, 3, 5]
-print("Number of inversions:", count_inversions(arr))  # Output: 3
-
-
-
+    first = first_occurrence(arr, target)
+    last = last_occurrence(arr, target)
+    return 0 if first == -1 else last - first + 1
