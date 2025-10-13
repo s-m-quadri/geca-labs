@@ -13,7 +13,6 @@
 
 # Write your solution here
 
-
 def merge_and_count(arr, temp, left, mid, right):
     i = left
     j = mid + 1

@@ -13,7 +13,6 @@
 # - Do not use Python's built-in sort().
 
 # Write your solution here
-
 def merge(arr, left, mid, right):
     i = left
     j = mid + 1

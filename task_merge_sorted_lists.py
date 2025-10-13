@@ -13,7 +13,6 @@
 # - Implement your own merge function (similar to merge sort's merge step).
 # - No recursion required.
 
-# Write your solution here
 
 def merge_sorted_lists(list1, list2):
     i = j = 0
