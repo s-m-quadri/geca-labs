@@ -36,4 +36,4 @@ def activity_selection(activities):
 activities = [(1, 2), (3, 4), (0, 6), (5, 7), (8, 9), (5, 9)]
 selected_activities = activity_selection(activities)
 print("Maximum number of activities:", len(selected_activities))
-print("Selected activities:", selected_activities)
+print("Selected activities:", selected_activities )
