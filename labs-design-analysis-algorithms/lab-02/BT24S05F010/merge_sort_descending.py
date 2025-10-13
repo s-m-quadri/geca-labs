@@ -2,7 +2,7 @@ def merge(left, right):
     result = []
     i = j = 0
     while i < len(left) and j < len(right):
-        if left[i].lower() <= right[j].lower():  # case-insensitive compare
+        if left[i] >= right[j]:  # descending order
             result.append(left[i])
             i += 1
         else:
@@ -12,16 +12,16 @@ def merge(left, right):
     result.extend(right[j:])
     return result
 
-def merge_sort_strings(arr):
+def merge_sort_desc(arr):
     if len(arr) <= 1:
         return arr
     mid = len(arr) // 2
-    left = merge_sort_strings(arr[:mid])
-    right = merge_sort_strings(arr[mid:])
+    left = merge_sort_desc(arr[:mid])
+    right = merge_sort_desc(arr[mid:])
     return merge(left, right)
 
 if __name__ == "__main__":
-    names = ["Charlie", "alice", "Bob", "david"]
-    print("Original:", names)
-    sorted_names = merge_sort_strings(names)
-    print("Sorted (case-insensitive):", sorted_names)
+    arr = [5, 3, 8, 6, 2, 7, 4, 1]
+    print("Original:", arr)
+    sorted_desc = merge_sort_desc(arr)
+    print("Sorted (descending):", sorted_desc)
