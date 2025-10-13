@@ -236,24 +236,41 @@ def latex_global_preamble(student: Student) -> str:
     head.append("\\usepackage{fancyhdr}")
     head.append("\\usepackage[most]{tcolorbox}")
     head.append("\\usepackage{qrcode}")
+    head.append("\\usepackage{xcolor}")
+    head.append("\\usepackage{listings}")
+    head.append("\\usepackage{listingsutf8}")
     head.append("% Slightly tighter line spacing to help fit one page")
     head.append("\\linespread{0.98}")
     head.append("% No paragraph indent")
     head.append("\\setlength{\\parindent}{0pt}")
     head.append("% Chip style for files list")
     head.append("\\newtcbox{\\chip}{on line, arc=3pt, colback=gray!15,colframe=gray!50, boxrule=0.2pt, left=3pt,right=3pt,top=1pt,bottom=1pt}")
+    # Listings style for Python
+    head.append("\\definecolor{pykeyword}{RGB}{33,80,162}")
+    head.append("\\definecolor{pycomment}{RGB}{0,128,0}")
+    head.append("\\definecolor{pystring}{RGB}{163,21,21}")
+    head.append("\\lstdefinestyle{pycode}{%")
+    head.append("  language=Python,")
+    head.append("  basicstyle=\\ttfamily\\small,")
+    head.append("  numbers=left,")
+    head.append("  numberstyle=\\tiny, numbersep=6pt,")
+    head.append("  showstringspaces=false,")
+    head.append("  breaklines=true, breakatwhitespace=true,")
+    head.append("  tabsize=4,")
+    head.append("  keywordstyle=\\color{pykeyword}\\bfseries,")
+    head.append("  commentstyle=\\color{pycomment}\\itshape,")
+    head.append("  stringstyle=\\color{pystring},")
+    head.append("  frame=single, framerule=0.2pt, rulecolor=\\color{black!20}")
+    head.append("}")
+    head.append("\\lstset{style=pycode,inputencoding=utf8}")
+    # Fancy header/footer (no page number in center)
     head.append("\\pagestyle{fancy}")
     head.append("\\fancyhf{}")
-    # Header left will be set per page (lab number). Header right is PRN (constant per student)
+    head.append("\\setlength{\\headheight}{14pt}")
     head.append(f"{b}fancyhead[R]{{PRN: {escape_latex(student.prn)}}}")
     head.append(f"{b}fancyfoot[L]{{{b}url{{{HOMEPAGE_URL}}}}}")
-    # Omit center page number to avoid interfering with main write-up pagination
     head.append("\\begin{document}")
     return "\n".join(head) + "\n"
-
-
-def latex_set_header_lab(lab: int) -> str:
-    return f"\\fancyhead[L]{{Lab {lab:02d}}}\n"
 
 
 def latex_title_block(lab: int, title: str) -> str:
@@ -275,6 +292,11 @@ def latex_course_block(lab: int) -> str:
     lines.append(f"Lab manual: \\textbf{{\\url{{{latex_manual_url(lab)}}}}}")
     lines.append("\\vspace{0.6em}")
     return "\n".join(lines) + "\n"
+
+
+def latex_set_header_lab(lab: int) -> str:
+    """Set header-left with current lab label (persists across pages until changed)."""
+    return f"\\fancyhead[L]{{Lab {lab:02d}}}\n"
 
 
 def latex_student_block(student: Student, status: str, pr_users: Iterable[str], emails: Iterable[str]) -> str:
@@ -430,6 +452,105 @@ def latex_bottom_row(height_cm: float = 3.0) -> str:
 
 
 # -----------------------------
+# Source files rendering
+# -----------------------------
+
+def _problem_set_url(lab: int) -> str:
+    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/tree/lab-daa-{lab:02d}"
+
+
+def _student_lab_dir(prn: str, lab: int) -> str:
+    repo_root = os.path.abspath(os.path.join(ROOT, os.pardir))
+    return os.path.join(repo_root, "labs-design-analysis-algorithms", f"lab-{lab:02d}", prn)
+
+
+def _list_source_files_for_lab(prn: str, lab: int) -> List[str]:
+    lab_dir = _student_lab_dir(prn, lab)
+    if not os.path.isdir(lab_dir):
+        return []
+    files: List[str] = []
+    try:
+        for name in sorted(os.listdir(lab_dir)):
+            p = os.path.join(lab_dir, name)
+            if not os.path.isfile(p):
+                continue
+            if lab == 0:
+                if re.fullmatch(r"[a-z]\\.py", name) or name in {"z+.py", "z++.py", "z+++.py"}:
+                    files.append(p)
+            else:
+                if name.startswith("task_") and name.endswith(".py"):
+                    files.append(p)
+    except Exception:
+        return []
+    return files
+
+
+def _file_github_url(lab: int, prn: str, filename: str) -> str:
+    # Link to stable branch for visibility
+    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/blob/stable/labs-design-analysis-algorithms/lab-{lab:02d}/{prn}/{filename}"
+
+
+def latex_sources_for_lab(student: Student, lab: int, output_dir: str) -> str:
+    lines: List[str] = []
+    # Problem set link
+    lines.append("\\vspace{0.4em}")
+    lines.append(f"\\textbf{{Problem set}}: \\url{{{_problem_set_url(lab)}}}")
+    lines.append("\\vspace{0.6em}\\\\")
+
+    abs_files = _list_source_files_for_lab(student.prn, lab)
+    if not abs_files:
+        # Friendly note when no local files exist
+        lines.append("\\begin{tcolorbox}[colback=gray!5,colframe=gray!40,boxrule=0.3pt]")
+        lines.append("No local source files were found for this lab under the course repository folder. If code exists outside Git, please attach it with the write-up.")
+        lines.append("\\end{tcolorbox}")
+        lines.append("\\vspace{0.6em}")
+        return "\n".join(lines) + "\n"
+
+    for i, abs_path in enumerate(abs_files, start=1):
+        filename = os.path.basename(abs_path)
+        # Ensure file is UTF-8 for listings; if not, write a sanitized copy next to TEX
+        rel_path = os.path.relpath(abs_path, start=output_dir)
+        src_for_tex = rel_path
+        try:
+            with open(abs_path, 'r', encoding='utf-8') as _chk:
+                _txt = _chk.read()
+            # listings may choke on certain Unicode (e.g., emoji); sanitize to ASCII if needed
+            if any(ord(ch) > 127 for ch in _txt):
+                safe_base = f"{os.path.splitext(filename)[0]}.__ascii__.py"
+                safe_abs = os.path.join(output_dir, safe_base)
+                sanitized = ''.join(ch if ord(ch) < 128 else '?' for ch in _txt)
+                with open(safe_abs, 'w', encoding='utf-8') as wf:
+                    wf.write(sanitized)
+                src_for_tex = safe_base
+        except Exception:
+            # Fallback: copy bytes decoding with errors replaced
+            safe_base = f"{os.path.splitext(filename)[0]}.__utf8__.py"
+            safe_abs = os.path.join(output_dir, safe_base)
+            try:
+                with open(abs_path, 'rb') as rf:
+                    raw = rf.read()
+                text = raw.decode('utf-8', errors='replace')
+                # Replace non-ASCII with '?'
+                text = ''.join(ch if ord(ch) < 128 else '?' for ch in text)
+                with open(safe_abs, 'w', encoding='utf-8') as wf:
+                    wf.write(text)
+                src_for_tex = safe_base
+            except Exception:
+                src_for_tex = rel_path  # last resort
+        url = _file_github_url(lab, student.prn, filename)
+        # File header with name and clickable URL (URL can wrap)
+        lines.append("\\noindent\\textbf{File}: " + escape_latex(filename))
+        lines.append("\\vspace{0.6em}")
+        lines.append("\\\\\n{\\small \\textbf{Link}: \\url{" + url + "}}")
+        lines.append("\\vspace{0.6em}")
+        lines.append("\\lstinputlisting{" + src_for_tex.replace('\\\\', '/') + "}")
+        if i != len(abs_files):
+            lines.append("\\vspace{0.8em}")
+        # Avoid starting next lab without a page break if the listing is too long; let LaTeX paginate naturally
+    return "\n".join(lines) + "\n"
+
+
+# -----------------------------
 # Aggregation
 # -----------------------------
 
@@ -498,20 +619,16 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
 
     ensure_dir(out_dir)
     total_students = len(students)
-    processed = 0
     for stu_idx, stu in enumerate(students, start=1):
-        # Write files directly into out_dir (no per-PRN subfolder)
         stu_dir = out_dir
         ensure_dir(stu_dir)
-        # Build single LaTeX doc for this student with one page per lab
         doc_parts: List[str] = []
         doc_parts.append(latex_global_preamble(stu))
-        pages_written = 0
         for idx, lab in enumerate(lab_list):
             title = lab_titles.get(lab, f"Lab {lab:02d}")
             commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(stu, lab, commits)
 
-            # Set per-page header (lab), title, and content
+            # Cover page for this lab
             doc_parts.append(latex_set_header_lab(lab))
             doc_parts.append(latex_title_block(lab, title))
             doc_parts.append(latex_course_block(lab))
@@ -519,28 +636,30 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
             doc_parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
             doc_parts.append(latex_commit_table(commits_lab, lab))
             doc_parts.append(latex_verification_block(pr_numbers))
-            # Push bottom row to page end and set footer-right summary for this page
             doc_parts.append("\\vspace*{\\fill}")
             doc_parts.append(latex_bottom_row(3.0))
             first_pr = pr_numbers[0] if pr_numbers else None
             pr_text = f"PR: {first_pr}" if first_pr is not None else "PR: —"
             files_count = len(set(files))
             doc_parts.append(f"\\fancyfoot[R]{{{escape_latex(pr_text)}\\,\\, Files: {files_count}}}")
-            # Page break after each lab except the last
+
+            # Sources section on a fresh page
+            doc_parts.append("\\newpage")
+            doc_parts.append(latex_set_header_lab(lab))
+            doc_parts.append(latex_sources_for_lab(stu, lab, stu_dir))
+
+            # Page break between labs
             if idx != len(lab_list) - 1:
                 doc_parts.append("\\newpage")
-            pages_written += 1
 
         doc_parts.append("\\end{document}")
 
-        # Write combined tex and compile
         base = f"{stu.prn}_{slugify(stu.name)}_covers"
         tex_path = os.path.join(stu_dir, base + ".tex")
         pdf_path = os.path.join(stu_dir, base + ".pdf")
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write("\n".join(doc_parts))
 
-        # Progress: one line per student to avoid inline progress bar that interferes logs
         print(f"Generating {stu_idx}/{total_students}: {stu.prn}")
 
         if compile_pdf:
@@ -548,11 +667,8 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
                 compile_tex(tex_path, stu_dir)
             except Exception:
                 print(f"\nLaTeX compile failed for {tex_path}")
-            # Clean all other files except the merged PDF
             _cleanup_keep_only(pdf_path, stu_dir)
-    processed += 1
 
-    # Finish the progress line
     if total_students:
         sys.stdout.write("\n")
         sys.stdout.flush()
