@@ -50,5 +50,5 @@ def merge(left, right):
 
 students = [("Rohit", 85), ("Joe", 92), ("Harry", 78), ("Virat", 92)]
 sorted_students = merge_sort_students(students)
-print(sorted_students)
+print(sorted_students) 
 
