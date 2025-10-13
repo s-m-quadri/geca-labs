@@ -20,5 +20,6 @@ word = "dog"
 print("Recursive:")
 print_letters_recursive(word)
 
+
 print("\nIterative:")
 print_letters_iterative(word)
