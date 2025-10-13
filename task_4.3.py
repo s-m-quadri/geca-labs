@@ -12,3 +12,17 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
+def r_rec(s):
+    if len(s) == 0:
+        return s
+    return r_rec(s[1:]) + s[0]
+
+def r_itr(s):
+    r = ''
+    for ch in s:
+        r = ch + r
+    return r
+
+s = input()
+print(r_rec(s))
+print(r_itr(s))

@@ -13,3 +13,18 @@
 #
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
+
+def f_rec(n):
+    if n == 0:
+        return 1
+    return n * f_rec(n - 1)
+
+def f_itr(n):
+    r = 1
+    for i in range(1, n + 1):
+        r *= i
+    return r
+
+n = int(input())
+print(f_rec(n))
+print(f_itr(n))

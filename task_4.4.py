@@ -20,3 +20,25 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+class I:
+    def __init__(self, v, w):
+        self.v = v
+        self.w = w
+        self.r = v / w
+
+def knap(W, it):
+    it.sort(key=lambda x: x.r, reverse=True)
+    val = 0
+    for i in it:
+        if W >= i.w:
+            W -= i.w
+            val += i.v
+        else:
+            val += i.v * (W / i.w)
+            break
+    return val
+
+W = int(input())
+it = [I(60,10), I(100,20), I(120,30)]
+print(knap(W, it))

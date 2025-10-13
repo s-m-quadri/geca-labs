@@ -17,3 +17,16 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
+
+def chg(coins, amt):
+    coins.sort(reverse=True)
+    res = []
+    for c in coins:
+        while amt >= c:
+            amt -= c
+            res.append(c)
+    print(len(res), "coins:", "+".join(map(str, res)))
+
+coins = [1, 2, 5, 10, 20, 50, 100]
+amt = int(input())
+chg(coins, amt)

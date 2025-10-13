@@ -20,3 +20,14 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+
+def act(a):
+    a.sort(key=lambda x: x[1])
+    res = [a[0]]
+    for i in a[1:]:
+        if i[0] >= res[-1][1]:
+            res.append(i)
+    print(len(res), "activities:", res)
+
+a = [(1,2), (3,4), (0,6), (5,7), (8,9), (5,9)]
+act(a)
