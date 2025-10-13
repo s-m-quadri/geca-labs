@@ -1,5 +1,5 @@
 # Task 4.5: Coin Change (Greedy)
-# ----------------------------
+# ---------------------------
 # You have coins of certain denominations. 
 # Write a greedy algorithm to make change for an amount using the fewest coins.
 #

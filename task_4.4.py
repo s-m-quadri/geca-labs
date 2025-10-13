@@ -1,5 +1,5 @@
 # Task 4.4: Fractional Knapsack
-# ---------------------------
+# --------------------------
 # Implement the greedy algorithm for the Fractional Knapsack problem.
 # Steps:
 # 1. Define items with (value, weight).

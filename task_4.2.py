@@ -1,5 +1,5 @@
 # Task 4.2: Fibonacci Numbers
-# -------------------------
+# ------------------------
 # Write two versions of Fibonacci sequence generator:
 # 1. fib_recursive(n): Uses recursion to return the nth Fibonacci number.
 # 2. fib_iterative(n): Uses a loop to return the nth Fibonacci number.

@@ -1,5 +1,5 @@
 # Task 4.1: Factorial (Recursive vs Iterative)
-# -----------------------------------------
+# ----------------------------------------
 # Write two functions:
 # 1. factorial_recursive(n): Uses recursion to compute factorial of n.
 # 2. factorial_iterative(n): Uses loops to compute factorial of n.
