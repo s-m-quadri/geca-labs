@@ -9,3 +9,11 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def initialize_union_find(n):
+    parent = [i for i in range(n)]
+    return parent
+
+n_vertices = 5
+parent_array = initialize_union_find(n_vertices)
+print("Initial parent array:", parent_array)
