@@ -25,3 +25,7 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+def prim_iteration(graph, key, parent, mstSet):
+    u = min_key(key, mstSet)
+    mstSet[u] = True
+    update_keys(graph, u, key, parent, mstSet)
