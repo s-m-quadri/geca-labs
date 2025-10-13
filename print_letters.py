@@ -3,7 +3,14 @@
 # Example: "cat" → c a t
 # -------------------------------------------
 
-# Recursive version
+# Recursive version (basic)
+def fun(word, i=0):
+    if i >= len(word):   # base case
+        return
+    print(word[i])
+    fun(word, i+1)       # recursive call
+
+# Recursive version (clear name)
 def print_letters_recursive(word, i=0):
     if i >= len(word):
         return
@@ -19,6 +26,10 @@ def print_letters_iterative(word):
 word = "dog"
 print("Recursive:")
 print_letters_recursive(word)
+
+word = "cat"
+print("\nUsing fun():")
+fun(word)
 
 print("\nIterative:")
 print_letters_iterative(word)

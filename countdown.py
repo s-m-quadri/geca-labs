@@ -5,22 +5,22 @@
 # -------------------------------------------
 
 # Recursive version
-def countdown_recursive(n):
-    if n == 0:
+def fun(n):
+    if n == 0:    # base case
         return
     print(n)
-    countdown_recursive(n - 1)
+    fun(n-1)      # recursive call
 
 # Iterative version
-def countdown_iterative(n):
-    while n > 0:
+def fun2(n):
+    while n >= 1:
         print(n)
         n -= 1
 
 # Try both
-n = 5
+n = 10
 print("Recursive countdown:")
-countdown_recursive(n)
+fun(n)
 
 print("\nIterative countdown:")
-countdown_iterative(n)
+fun2(n)
