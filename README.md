@@ -18,35 +18,48 @@ Then convert the output to a video file using ffmpeg
 ffmpeg -y -r 25 -f image2pipe -vcodec ppm -i dump.ppm -c:v libx265 -preset slow -pix_fmt yuv420p -crf 30 -bf 0 out.mp4
 ```
 
-## Personalized Writeups
+## Automation Scripts
 
-Generate concise, thought-heavy lab writeups (Labs 00–10) for each student.
+Public scripts live in `automation-scripts/` (Python files not ignored by git). Below is a terse guide with typical flags. Run any script with `-h` to see full options.
 
-Each writeup has four sections per lab:
-1. Subjective (short theory)
-2. Objective (short answers, numeric)
-3. Code Digest (hand-run on personalized inputs)
-4. Conclusion (summary of learnings)
+- **Generate covers** (LaTeX/PDF) per student/lab: `automation-scripts/gen_cover.py`
+  - Inputs: `automation-scripts/output/students.csv`, `automation-scripts/output/commits.csv`
+  - Default output: `automation-scripts/output/daa-covers/{PRN}/...`
+  - Examples:
+    - Preview for specific PRNs and labs (no PDF):
+      - `python3 automation-scripts/gen_cover.py --only BT23F05F002 BT23F05F013 --labs 0 1`
+    - Generate all with PDFs (requires pdflatex):
+      - `python3 automation-scripts/gen_cover.py --compile`
 
-**Following is a quick use for script: `automation-scripts/gen_writeup.py`.**
+- **Generate writeups** (LaTeX/PDF): `automation-scripts/gen_writeup.py`
+  - Examples:
+    - Preview first N students: `python3 automation-scripts/gen_writeup.py --limit 2`
+    - Generate all + PDF: `python3 automation-scripts/gen_writeup.py --compile`
 
-Preview for first 2 students (no PDF compile):
+- **Fetch pull requests metadata**: `automation-scripts/fetch_pull_requests.py`
+  - Produces: `automation-scripts/output/pull_requests.csv/.xlsx` and raw commit artifact files
+  - Example: `python3 automation-scripts/fetch_pull_requests.py`
 
-```bash
-python3 automation-scripts/gen_writeup.py --limit 2
-```
+- **Check pull requests** (simple report): `automation-scripts/check_pull_requests.py`
+  - Reads previously fetched artifacts and prints a summary
+  - Example: `python3 automation-scripts/check_pull_requests.py`
 
-Generate all and compile to PDFs (requires pdflatex):
+- **Attendance sheet** from commits: `automation-scripts/gen_attendance.py`
+  - Produces: `automation-scripts/output/attendance.(csv|xlsx)` and `students.(csv|xlsx)` if needed
+  - Example: `python3 automation-scripts/gen_attendance.py`
 
-```bash
-python3 automation-scripts/gen_writeup.py --compile
-```
+- **Lab summary report** (PDF): `automation-scripts/gen_report.py`
+  - Produces: `automation-scripts/output/report-*.pdf`
+  - Example: `python3 automation-scripts/gen_report.py`
 
-Only specific PRNs
+- **Misc student utilities**: `automation-scripts/misc_students.py`
+  - Grab-bag helpers (IDs, quick transformations)
+  - Example: `python3 automation-scripts/misc_students.py -h`
 
-```bash
-python3 automation-scripts/gen_writeup.py --only BT23F05F002 BT23F05F010 --compile
-```
+> [!NOTE]
+> - Some scripts depend on `pdflatex` (TeX Live) to compile PDFs. If unavailable, run without `--compile` or install a LaTeX distribution.
+> - CSVs live under `automation-scripts/output/` and are produced by `fetch_pull_requests.py` and related scripts.
+> - Use `--only <PRN ...>` and `--labs <numbers>` to scope work.
 
 ## Objective
 
