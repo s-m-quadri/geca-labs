@@ -9,3 +9,15 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def initialize_parent(n):
+	"""
+	Initializes parent array for union-find with n vertices.
+	"""
+	return [i for i in range(n)]
+
+# Example usage
+if __name__ == "__main__":
+	num_vertices = 5
+	parent = initialize_parent(num_vertices)
+	print("Initial parent array:", parent)
