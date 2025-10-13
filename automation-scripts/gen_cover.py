@@ -475,7 +475,9 @@ def _list_source_files_for_lab(prn: str, lab: int) -> List[str]:
             if not os.path.isfile(p):
                 continue
             if lab == 0:
-                if re.fullmatch(r"[a-z]\\.py", name) or name in {"z+.py", "z++.py", "z+++.py"}:
+                # Match single-letter files like a.py .. z.py. The previous pattern used a double
+                # backslash which failed to match names like 'a.py'. Use a single escaped dot.
+                if re.fullmatch(r"[a-z]\.py", name) or name in {"z+.py", "z++.py", "z+++.py"}:
                     files.append(p)
             else:
                 if name.startswith("task_") and name.endswith(".py"):
