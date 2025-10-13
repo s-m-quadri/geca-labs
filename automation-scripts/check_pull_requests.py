@@ -7,6 +7,9 @@ from pathlib import Path
 # ------------------------
 INPUT_FILE = "output/pull_requests.csv"
 
+# Resolve project root relative to this script for robust pathing
+PROJ_ROOT = Path(__file__).resolve().parent.parent
+
 # ------------------------
 # HELPER FUNCTIONS
 # ------------------------
@@ -27,7 +30,16 @@ def is_open(row):
 # ------------------------
 # MAIN SCRIPT
 # ------------------------
-df = pd.read_csv(INPUT_FILE)
+input_path = (PROJ_ROOT / INPUT_FILE).resolve()
+if not input_path.exists():
+    # Fallback: try current working directory
+    alt_path = Path(INPUT_FILE)
+    if alt_path.exists():
+        input_path = alt_path
+    else:
+        raise FileNotFoundError(f"Input CSV not found at '{input_path}' or '{alt_path.resolve()}'")
+
+df = pd.read_csv(input_path)
 
 print("\n==== Validity Checks ====\n")
 
@@ -150,4 +162,89 @@ else:
             if (prn_name, lab_num) not in merged_lookup:
                 print(
                     f"[ERROR] Submission folder exists without a merged PR -> PRN '{prn_name}', Lab {lab_num}, path: {prn_folder}"
+                )
+
+    # 6. For every existing PRN folder, enforce minimum file count and report GitHub URL if below threshold
+    print("\n-> Check 6: Minimum file count per submission folder (Lab 0 >= 26, Lab 1+ >= 6)")
+
+    # Build helpers to map (PRN, lab_num) -> set(users) with merged PRs, and PRN -> most common user overall
+    merged_users_lookup = {}
+    prn_user_counts = {}
+    for _, row in df.iterrows():
+        prn_val = str(row.get("PRN", "")).strip().upper()
+        user = str(row.get("User", "")).strip()
+        if not prn_val or not user:
+            continue
+        # PRN -> user frequency
+        if prn_val not in prn_user_counts:
+            prn_user_counts[prn_val] = {}
+        prn_user_counts[prn_val][user] = prn_user_counts[prn_val].get(user, 0) + 1
+
+        # Only consider merged rows for (PRN, lab) mapping
+        if pd.isna(row.get("Merged At")):
+            continue
+        labels_str = str(row.get("Labels", ""))
+        lab_num = extract_lab(labels_str)
+        if lab_num is None:
+            continue
+        key = (prn_val, int(lab_num))
+        merged_users_lookup.setdefault(key, set()).add(user)
+
+    def preferred_user_for(prn_upper: str, lab_number: int):
+        """Return a best-effort GitHub username for a PRN and lab.
+        Prefers users with a merged PR for that (PRN, lab). Falls back to most frequent user for PRN.
+        Returns None if unknown.
+        """
+        users = merged_users_lookup.get((prn_upper, lab_number))
+        if users:
+            # If multiple due to data error, pick one deterministically (sorted)
+            return sorted(users)[0]
+        # Fallback to most frequent user for this PRN across all rows
+        if prn_upper in prn_user_counts and prn_user_counts[prn_upper]:
+            return sorted(prn_user_counts[prn_upper].items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+        return None
+
+    def count_files_in(dir_path: Path) -> int:
+        """Count files recursively in dir_path, skipping hidden files/dirs and common cache directories."""
+        skip_dirs = {"__pycache__", ".git", ".ipynb_checkpoints", ".venv", "venv", "node_modules", ".mypy_cache"}
+        total = 0
+        for p in dir_path.rglob("*"):
+            try:
+                # Skip hidden files/dirs
+                parts = {part for part in p.parts}
+                if any(part.startswith(".") for part in p.parts if part != "."):
+                    # If any path segment is hidden, skip
+                    continue
+                if any(sd in parts for sd in skip_dirs):
+                    continue
+                if p.is_file():
+                    # Skip compiled Python bytecode files
+                    if p.suffix.lower() == ".pyc":
+                        continue
+                    total += 1
+            except Exception:
+                # Best-effort; ignore inaccessible paths
+                continue
+        return total
+
+    # Walk lab directories and validate counts
+    for lab_dir in sorted(LABS_ROOT.glob("lab-*")):
+        if not lab_dir.is_dir():
+            continue
+        m = re.search(r"lab-0*([0-9]+)$", lab_dir.name, re.IGNORECASE)
+        if not m:
+            continue
+        lab_num = int(m.group(1))
+        min_required = 26 if lab_num == 0 else 6
+
+        for prn_folder in sorted(lab_dir.iterdir()):
+            if not prn_folder.is_dir():
+                continue
+            prn_name = prn_folder.name.strip().upper()
+            file_count = count_files_in(prn_folder)
+            if file_count < min_required:
+                user = preferred_user_for(prn_name, lab_num)
+                profile_url = f"https://github.com/{user}" if user else "(unknown)"
+                print(
+                    f"[ERROR] Insufficient files -> PRN '{prn_name}', Lab {lab_num}: {file_count} files < {min_required} required | Path: {prn_folder} | GitHub: {profile_url}"
                 )
