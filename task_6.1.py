@@ -11,3 +11,8 @@
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
 #i will do later
+def store_edges(edges):
+    return edges
+
+edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+print(edges)
