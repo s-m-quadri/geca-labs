@@ -13,3 +13,27 @@
 #
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
+
+
+# Task 4.1: Factorial (Recursive vs Iterative)
+# --------------------------------------------
+
+# 1. Recursive version
+def factorial_recursive(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial_recursive(n - 1)
+
+# 2. Iterative version
+def factorial_iterative(n):
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+# Example usage:
+n = int(input("Enter a number: "))
+
+print("Factorial using recursion:", factorial_recursive(n))
+print("Factorial using iteration:", factorial_iterative(n))
