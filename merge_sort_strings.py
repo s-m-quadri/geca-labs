@@ -1,3 +1,4 @@
+#BT23F05F042
 def merge(left, right):
     result = []
     i = j = 0
