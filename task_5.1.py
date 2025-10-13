@@ -20,16 +20,17 @@ V = 4
 # mstSet = [False, False, False, False]
 """
 
-def initialize_prim_arrays(V):
+def initialize_prim(V, start=0):
     key = [float('inf')] * V
     parent = [-1] * V
     mstSet = [False] * V
-    return key, parent, mstSet
-
+    key[start] = 0  # Starting vertex key set to 0
+    return key, parent, mstSet  
 # Example usage
 if __name__ == "__main__":
     V = 4
-    key, parent, mstSet = initialize_prim_arrays(V)
+    key, parent, mstSet = initialize_prim(V)
     print("key =", key)
     print("parent =", parent)
     print("mstSet =", mstSet)
+    
