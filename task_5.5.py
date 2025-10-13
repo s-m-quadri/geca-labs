@@ -47,10 +47,21 @@ def prim_mst(graph, start):
             if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
                 key[v] = graph[u][v]
                 parent[v] = u
-
+    
+    mst_edges = []
     for v in range(V):
         if parent[v] != -1:
             mst_edges.append((parent[v], v, graph[parent[v]][v]))
 
     return mst_edges
 
+graph = [
+    [0, 2, 0, 6],
+    [2, 0, 3, 8],
+    [0, 3, 0, 0],
+    [6, 8, 0, 0]
+]
+start = 0
+
+result = prim_mst(graph, start)
+print("MST edges:", result)
