@@ -12,7 +12,6 @@
 # - Modify the comparison logic inside merge function accordingly.
 # - Do not use Python's built-in sort().
 
-# Write your solution here
 def merge(arr, left, mid, right):
     L = arr[left:mid+1]
     R = arr[mid+1:right+1]

@@ -14,7 +14,6 @@
 # - No recursion required.
 
 # Write your solution here
-
 def merge_sorted_lists(list1, list2):
     merged = []
     i = j = 0

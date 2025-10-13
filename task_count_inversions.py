@@ -11,7 +11,6 @@
 # - Target time complexity: O(n log n)
 # - Do not use brute force O(n^2) method.
 
-# Write your solution here
 def merge_and_count(arr, left, mid, right):
     L = arr[left:mid+1]
     R = arr[mid+1:right+1]
