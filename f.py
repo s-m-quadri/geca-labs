@@ -1,4 +1,4 @@
-# Taking two numbers as input from the user
+
 x = float(input("Enter first number: "))
 y = float(input("Enter second number: "))
 

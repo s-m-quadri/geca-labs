@@ -4,7 +4,6 @@ import math
 sqrt_val = math.sqrt(144)
 print("Square root of 144:", sqrt_val)
 
-# Value of pi
 pi_val = math.pi
 print("Value of π:", pi_val)
 

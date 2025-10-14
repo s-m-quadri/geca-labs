@@ -5,7 +5,6 @@ students = {
     "Charlie": 78
 }
 
-# Printing a specific student's marks
 print("Bob's marks:", students["Bob"])
 
 # Looping through all students and printing their names and scores

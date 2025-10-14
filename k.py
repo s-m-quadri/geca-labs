@@ -1,7 +1,7 @@
 # Creating a tuple of 3 items
 my_tuple = ("apple", "banana", "cherry")
 
-# Trying to modify the second item (this will cause an error)
+
 try:
     my_tuple[1] = "orange"
 except TypeError as e:

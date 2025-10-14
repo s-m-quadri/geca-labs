@@ -8,6 +8,5 @@ with open("output.txt", "w") as f:
 with open("output.txt", "r") as f:
     content = f.read()
 
-# Printing the file content
 print("File content:")
 print(content)

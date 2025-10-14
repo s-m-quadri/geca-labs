@@ -6,7 +6,6 @@ def student_info_fstring(name, marks):
 def student_info_format(name, marks):
     print("Student {} scored {} marks.".format(name, marks))
 
-# Using % formatting
 def student_info_percent(name, marks):
     print("Student %s scored %s marks." % (name, marks))
 

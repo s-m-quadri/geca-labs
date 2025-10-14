@@ -6,7 +6,6 @@ def void_function():
 def add(a, b):
     return a + b
 
-# Calling both functions
 result1 = void_function()
 result2 = add(5, 7)
 

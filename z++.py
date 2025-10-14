@@ -7,7 +7,7 @@ print("Lowercase:", full_name.lower())
 # Display all uppercase
 print("Uppercase:", full_name.upper())
 
-# Display initials
+
 words = full_name.split()
 initials = [word[0].upper() + "." for word in words]
 print("Initials:", " ".join(initials))

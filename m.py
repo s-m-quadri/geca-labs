@@ -6,6 +6,4 @@ print("Unique numbers:", numbers)
 
 # Adding a new number
 numbers.add(6)
-
-# Printing the updated set
 print("Updated set:", numbers)

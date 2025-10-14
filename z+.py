@@ -9,7 +9,6 @@ quotes = [
     "Every day is a new opportunity."
 ]
 
-# Taking user input and handling invalid input
 try:
     num = int(input("Enter a number: "))
     

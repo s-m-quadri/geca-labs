@@ -1,5 +1,4 @@
 import time
-
 while True:
     # Display menu
     print("\nMenu:")

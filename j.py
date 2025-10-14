@@ -1,7 +1,7 @@
 # Creating an empty list
 my_list = []
 
-# Appending 3 strings
+
 my_list.append("banana")
 my_list.append("apple")
 my_list.append("cherry")
