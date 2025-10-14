@@ -4,3 +4,12 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+my_tuple = ("apple", "banana", "cherry")
+
+try:
+    my_tuple[1] = "orange"
+except TypeError as e:
+    print("Error:", e)
+
+for item in my_tuple:
+    print(item)
