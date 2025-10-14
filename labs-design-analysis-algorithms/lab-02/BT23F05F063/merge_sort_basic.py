@@ -9,6 +9,25 @@ def merge(left, right):
         else:
             result.append(right[j])
             j += 1
+    
+    # Add remaining elements
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+def merge_sort(arr):
+    """Sort an array using merge sort algorithm."""
+    if len(arr) <= 1:
+        return arr
+    
+    # Divide the array into two halves
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    
+    # Merge the sorted halves
+    return merge(left, right)
+            j += 1
     result.extend(left[i:])
     result.extend(right[j:])
     return result
@@ -27,3 +46,4 @@ if __name__ == "__main__":
     print("Original:", arr)
     sorted_arr = merge_sort(arr)
     print("Sorted:", sorted_arr)
+# Completed the program
