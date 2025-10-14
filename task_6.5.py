@@ -10,33 +10,3 @@
 
 # Hint: Use union-find to check cycle.
 # Tip: Keep track of total weight and chosen edges.
-def make_parent(n):
-    return [i for i in range(n)]
-
-def find(parent, x):
-    if parent[x] == x:
-        return x
-    return find(parent, parent[x])
-
-def union(parent, x, y):
-    root_x = find(parent, x)
-    root_y = find(parent, y)
-    if root_x != root_y:
-        parent[root_y] = root_x
-
-def kruskal(n, edges):
-    parent = make_parent(n)
-    mst = []
-    total_weight = 0
-    edges_sorted = sorted(edges, key=lambda x: x[2])
-    
-    for u, v, w in edges_sorted:
-        if find(parent, u) != find(parent, v):
-            union(parent, u, v)
-            mst.append((u, v, w))
-            total_weight += w
-    
-    return mst, total_weight
-
-edges
-
