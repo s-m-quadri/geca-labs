@@ -25,3 +25,38 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+
+
+def prim_iteration(graph, key, parent, mstSet):
+   
+    min_val = float('inf')
+    u = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_val:
+            min_val = key[i]
+            u = i
+  
+    mstSet[u] = True
+    
+  
+    V = len(graph)
+    for v in range(V):
+        if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
+
+
+# Example usage
+
+graph = [
+    [0, 1, 4],
+    [1, 0, 2],
+    [4, 2, 0]
+]
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+prim_iteration(graph, key, parent, mstSet)
+print("key =", key)       # Output: [0, 1, 2]
+print("parent =", parent) # Output: [-1, 0, 1]
