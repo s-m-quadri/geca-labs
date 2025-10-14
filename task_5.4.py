@@ -25,3 +25,34 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+def min_key_vertex(key, mstSet):
+    min_value = float('inf')
+    min_index = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_value:
+            min_value = key[i]
+            min_index = i
+    return min_index
+
+def update_neighbors(graph, u, key, parent, mstSet):
+    V = len(graph)
+    for v in range(V):
+        if graph[u][v] > 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
+
+graph = [
+    [0, 1, 4],
+    [1, 0, 2],
+    [4, 2, 0]
+]
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+u = min_key_vertex(key, mstSet)
+mstSet[u] = True
+update_neighbors(graph, u, key, parent, mstSet)
+
+print("key =", key)
+print("parent =", parent)
