@@ -15,7 +15,7 @@ def min_key_vertex(key, mstSet):
             min_index = v
 
     return min_index
-#test
+#tests
 # Test case
 key = [0, 2, 3]
 mstSet = [True, False, False]

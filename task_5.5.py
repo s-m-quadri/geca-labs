@@ -13,7 +13,7 @@ def prim_mst(graph, start=0):
     parent = [-1] * V
     mstSet = [False] * V
     
-    key[start] = 0  # Start from the given vertex
+    key[start] = 0  # Starts from the given vertex
 
     for _ in range(V):
         # Step 1: Pick min key vertex not in MST

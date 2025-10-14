@@ -11,7 +11,7 @@ def prim_iteration(graph, key, parent, mstSet):
     # Stesp 2: Update neighbors of u
     update_keys(graph, u, key, parent, mstSet)
  
-# Test case
+# Tests case
 graph = [
     [0, 1, 4],
     [1, 0, 2],

@@ -10,7 +10,7 @@ def initialize_prim(V):
     mstSet = [False] * V          # False indicates vertex not yet included in MST
     return key, parent, mstSet
 
-# Example usage
+# ExampleS usage
 V = 4
 key, parent, mstSet = initialize_prim(V)
 
