@@ -50,3 +50,4 @@ graph = [
 ]
 mst_edges = prim_mst_heap(graph, start=0)
 print("MST edges:", mst_edges)
+# completed the program
