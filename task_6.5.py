@@ -40,7 +40,6 @@ def kruskal_mst(edges, V):
 
     # Step 2: Initialize union-find parent array
     parent = [i for i in range(V)]
-
     mst_edges = []
     total_weight = 0
 
