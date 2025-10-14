@@ -9,6 +9,7 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
 def initialize_union_find(V):
     """
     Initialize parent array for Union-Find.
@@ -16,10 +17,13 @@ def initialize_union_find(V):
     V: number of vertices
     Returns: parent array
     """
+    # Each vertex is its own parent initially
     parent = [i for i in range(V)]
     return parent
 
+
 # Example usage
-V = 5
+V = 5  # number of vertices
 parent = initialize_union_find(V)
+
 print("Initial parent array:", parent)

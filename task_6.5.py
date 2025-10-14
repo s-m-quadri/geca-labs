@@ -60,3 +60,4 @@ V = 4
 mst_edges, mst_weight = kruskal_mst(edges, V)
 print("MST edges:", mst_edges)
 print("MST total weight:", mst_weight)
+#

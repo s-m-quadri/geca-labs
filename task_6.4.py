@@ -11,6 +11,9 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
+# Task 6.4: Find and Union Functions
+# -----------------------------------
+
 def find(parent, x):
     """
     Recursively find the root parent of x.
@@ -26,14 +29,20 @@ def union(parent, x, y):
     x_root = find(parent, x)
     y_root = find(parent, y)
     if x_root != y_root:
-        parent[y_root] = x_root  # Make one root the parent of the other
+        parent[y_root] = x_root  # make x_root the parent of y_root
+
 
 # Example usage
 parent = [0, 1, 2, 3]
 
 union(parent, 0, 1)
 print("Parent after union(0,1):", parent)
-print("Find(1):", find(parent, 1))
+print("Find(1):", find(parent, 1))  # should return 0
 
 union(parent, 1, 2)
-print("Parent after union(1,2
+print("Parent after union(1,2):", parent)
+print("Find(2):", find(parent, 2))  # should return 0
+
+union(parent, 2, 3)
+print("Parent after union(2,3):", parent)
+print("Find(3):", find(parent, 3))  # should return 0
