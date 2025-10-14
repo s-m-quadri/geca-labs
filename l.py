@@ -4,3 +4,9 @@
 
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
+students={
+    "ameya":99,
+    "bharat":98,
+    "chandu":97
+}
+print("Bharat's marks:",students["bharat"])

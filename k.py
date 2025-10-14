@@ -4,3 +4,7 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+myTuple=("Mother","Father","Son")
+# myTuple[1]="Daughter"
+for member in myTuple:
+    print(member)
