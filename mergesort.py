@@ -37,3 +37,4 @@ def merge_sort_iterative(arr):
 arr = [38, 27, 43, 3, 9, 82, 10]
 print("Recursive:", merge_sort_recursive(arr))
 print("Iterative:", merge_sort_iterative(arr.copy()))
+# Completed the program
