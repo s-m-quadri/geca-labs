@@ -14,26 +14,3 @@
 # - Recursive version can peel off last digit using n % 10
 # - You may pass an extra parameter (e.g., accumulator) if needed
 # - Iterative version: use while-loop and integer math
-
-# Function 1: Recursive approach
-def reverse_digits_recursive(n, rev=0):
-    if n == 0:   # Base case
-        return rev
-    return reverse_digits_recursive(n // 10, rev * 10 + n % 10)
-
-
-# Function 2: Iterative approach
-def reverse_digits_iterative(n):
-    rev = 0
-    while n > 0:
-        rev = rev * 10 + n % 10  # Append last digit
-        n //= 10                 # Remove last digit
-    return rev
-
-
-# -------------------------------
-# Example Usage
-num = 1234
-print("Recursive Output:", reverse_digits_recursive(num))
-print("Iterative Output:", reverse_digits_iterative(num))
-
