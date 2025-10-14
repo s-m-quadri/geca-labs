@@ -12,37 +12,3 @@
 # Output: 8
 #
 # Bonus: Try printing the whole Fibonacci sequence up to n instead of just nth number.
-
-# Recursive approach
-def fib_recursive(n):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        return fib_recursive(n-1) + fib_recursive(n-2)
-
-# Iterative approach
-def fib_iterative(n):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
-    a, b = 0, 1
-    for _ in range(2, n+1):
-        a, b = b, a + b
-    return b
-
-# Function to print Fibonacci sequence up to n (bonus)
-def fib_sequence(n):
-    sequence = []
-    for i in range(n+1):
-        sequence.append(fib_iterative(i))  # Can use recursive too, but iterative is faster
-    return sequence
-
-# Example usage
-n = 6
-print("Recursive Fibonacci of", n, "is:", fib_recursive(n))
-print("Iterative Fibonacci of", n, "is:", fib_iterative(n))
-print("Fibonacci sequence up to", n, ":", fib_sequence(n))
-

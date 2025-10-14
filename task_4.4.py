@@ -20,31 +20,3 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
-def fractional_knapsack(capacity, items):
-    # Step 1: Calculate value-to-weight ratio for each item
-    items = [(value, weight, value/weight) for value, weight in items]
-    
-    # Step 2: Sort items by ratio in descending order
-    items.sort(key=lambda x: x[2], reverse=True)
-    
-    total_value = 0.0
-    remaining_capacity = capacity
-    
-    # Step 3 & 4: Add items fully or partially
-    for value, weight, ratio in items:
-        if remaining_capacity >= weight:
-            # Take full item
-            total_value += value
-            remaining_capacity -= weight
-        else:
-            # Take fraction of item
-            total_value += value * (remaining_capacity / weight)
-            break  # Knapsack is full
-    
-    return total_value
-
-# Example usage
-capacity = 50
-items = [(60, 10), (100, 20), (120, 30)]
-max_value = fractional_knapsack(capacity, items)
-print("Maximum achievable value:", max_value)
