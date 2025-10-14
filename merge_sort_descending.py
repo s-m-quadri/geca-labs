@@ -20,7 +20,6 @@ def merge_sort_desc(arr):
     right = merge_sort_desc(arr[mid:])
     return merge(left, right)
 
-
 if __name__ == "__main__":
     arr = [5, 3, 8, 6, 2, 7, 4, 1]
     print("Original:", arr)
