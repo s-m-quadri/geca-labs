@@ -17,3 +17,17 @@ key = [0, 2, 3]
 mstSet = [True, False, False]
 # Expected output: 1
 """
+def min_key_vertex(key, mstSet):
+    min_value = float('inf')
+    min_index = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_value:
+            min_value = key[i]
+            min_index = i
+    return min_index
+
+# Test case
+key = [0, 2, 3]
+mstSet = [True, False, False]
+
+print(min_key_vertex(key, mstSet)) 
