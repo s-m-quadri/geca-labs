@@ -10,3 +10,32 @@
 
 # Hint: Use union-find to check cycle.
 # Tip: Keep track of total weight and chosen edges.
+def kruskal_mst(edges, num_vertices):
+    # Sort edges based on weight
+    edges.sort(key=lambda x: x[2])
+    
+    # Initialize parent array for union-find
+    parent = [i for i in range(num_vertices)]
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])  # Path compression
+        return parent[x]
+    
+    def union(x, y):
+        rootX = find(x)
+        rootY = find(y)
+        if rootX != rootY:
+            parent[rootY] = rootX  # Merge sets
+    
+    mst_edges = []
+    total_weight = 0
+    
+    for u, v, w in edges:
+        if find(u) != find(v):  # No cycle
+            union(u, v)
+            mst_edges.append((u, v, w))
+            total_weight += w
+            
+    return mst_edges, total_weight
+    
