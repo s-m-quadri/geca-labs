@@ -19,16 +19,3 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
-def initialize_prim(V):
-    INF = float('inf')
-    key = [INF] * V       # Initialize all keys as infinity
-    parent = [-1] * V     # Initialize all parents as -1
-    mstSet = [False] * V  # Initialize all vertices as not included in MST
-    return key, parent, mstSet
-
-# Test case
-V = 4
-key, parent, mstSet = initialize_prim(V)
-print("key =", key)       # [inf, inf, inf, inf]
-print("parent =", parent) # [-1, -1, -1, -1]
-print("mstSet =", mstSet) # [False, False, False, False]
