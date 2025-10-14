@@ -4,8 +4,3 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
-li1=[1,2,3,4,5]
-print(li1[0],li1[2],li1[-1])
-#changing third element to 100
-li1[2]=100
-print(li1)
