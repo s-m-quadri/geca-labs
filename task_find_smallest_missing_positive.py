@@ -9,32 +9,3 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
- 
-
-
- def smallest_missing_positive(arr):
-    low, high = 0, len(arr) - 1
-    
-    # If the first element is greater than 1, then 1 is missing
-    if arr[0] != 1:
-        return 1
-    
-    while low <= high:
-        mid = (low + high) // 2
-        
-        # Check if number at mid is where it should be
-        if arr[mid] == mid + 1:
-            # Missing number is on the right side
-            low = mid + 1
-        else:
-            # Missing number is on the left side
-            high = mid - 1
-    
-    # When loop ends, low points to first index where arr[i] != i + 1
-    return low + 1
-
-# Example test cases:
-print(smallest_missing_positive([1, 2, 3, 5, 6]))  # Output: 4
-print(smallest_missing_positive([2, 3, 4, 5]))     # Output: 1
-print(smallest_missing_positive([1, 2, 3, 4, 5]))  # Output: 6
-print(smallest_missing_positive([1]))              # Output: 2
