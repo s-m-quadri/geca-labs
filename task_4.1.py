@@ -13,3 +13,23 @@
 #
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
+
+# Recursive approach
+def factorial_recursive(n):
+    if n == 0:  # Base case
+        return 1
+    else:
+        return n * factorial_recursive(n - 1)  # Recursive call
+
+# Iterative approach
+def factorial_iterative(n):
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+# Example usage
+n = 5
+print("Recursive factorial of", n, "is:", factorial_recursive(n))
+print("Iterative factorial of", n, "is:", factorial_iterative(n))
+
