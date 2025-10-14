@@ -12,8 +12,6 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
-
-
 def count_inversions(arr):
     def merge_sort(arr):
         if len(arr) <= 1:
