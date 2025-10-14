@@ -20,3 +20,27 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+def fractional_knapsack(capacity, items):
+    """Return the maximum value for the fractional knapsack problem."""
+    # Calculate value-to-weight ratio and sort items
+    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
+    total_value = 0.0
+    for value, weight in items:
+        if capacity == 0:
+            break
+        if weight <= capacity:
+            total_value += value
+            capacity -= weight
+        else:
+            fraction = capacity / weight
+            total_value += value * fraction
+            capacity = 0
+    return total_value
+
+# Example usage:
+if __name__ == "__main__":
+    capacity = 50
+    items = [(60, 10), (100, 20), (120, 30)]
+    max_value = fractional_knapsack(capacity, items)
+    print(f"Maximum value in knapsack: {max_value}")
