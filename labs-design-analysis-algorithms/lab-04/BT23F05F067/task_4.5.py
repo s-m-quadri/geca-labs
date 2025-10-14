@@ -1,5 +1,5 @@
 # Task 4.5: Coin Change (Greedy)
-# ----------------------------
+# ---------------------------
 # You have coins of certain denominations. 
 # Write a greedy algorithm to make change for an amount using the fewest coins.
 #
@@ -17,3 +17,18 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
+
+def coin_change_greedy(denominations, amount):
+    denominations.sort(reverse=True)
+    coins_used = []
+    for coin in denominations:
+        while amount >= coin:
+            amount -= coin
+            coins_used.append(coin)
+    return coins_used
+
+denominations = list(map(int, input("Enter denominations separated by space: ").split()))
+amount = int(input("Enter the amount: "))
+coins = coin_change_greedy(denominations, amount)
+print("Coins used:", coins)
+print("Total coins:", len(coins))
