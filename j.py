@@ -4,3 +4,12 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+words = []
+words.append("Python")
+words.append("Java")
+words.append("JavaScript")
+
+words.sort()
+words.reverse()
+print(f"Sorted in reverse: {words}")
