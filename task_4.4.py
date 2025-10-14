@@ -1,35 +1,22 @@
-def fractional_knapsack(items, capacity):
-    """
-    items: list of tuples (value, weight)
-    capacity: maximum weight of knapsack
-    Returns: maximum value achievable (float)
-    """
-    # Calculate value-to-weight ratio and sort items by it (descending)
-    items = sorted(items, key=lambda x: x[0]/x[1], reverse=True)
-    
-    total_value = 0.0
-    for value, weight in items:
-        if capacity >= weight:
-            # Take whole item
-            capacity -= weight
-            total_value += value
-        else:
-            # Take fraction of the item
-            fraction = capacity / weight
-            total_value += value * fraction
-            break  # Knapsack is full
-
-    return total_value
-
-# Test the function
-W = int(input("Enter knapsack capacity: "))
-n = int(input("Enter number of items: "))
-
-items = []
-for i in range(n):
-    v = float(input(f"Enter value of item {i+1}: "))
-    w = float(input(f"Enter weight of item {i+1}: "))
-    items.append((v, w))
-
-max_value = fractional_knapsack(items, W)
-print(f"Maximum achievable value: {max_value}")
+# Task 4.4: Fractional Knapsack
+# ---------------------------
+# Implement the greedy algorithm for the Fractional Knapsack problem.
+# Steps:
+# 1. Define items with (value, weight).
+# 2. Sort items by value-to-weight ratio.
+# 3. Add items fully until the knapsack is full.
+# 4. If capacity is left, add fraction of next item.
+#
+# Input:
+# - Capacity W
+# - List of items (value, weight)
+#
+# Output:
+# - Maximum achievable value
+#
+# Example:
+# Capacity = 50
+# Items = [(60,10), (100,20), (120,30)]
+# Output: 240.0
+#
+# Hint: Use sorting and simple loops.
