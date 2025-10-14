@@ -24,6 +24,7 @@ arr = [1, 3, 5, 7, 9, 11]
 target = 7
 binary_search_iterative_steps(arr, target)
 
+
 print("\nAnother example:")
 arr2 = [2, 4, 6, 8, 10]
 target2 = 5
