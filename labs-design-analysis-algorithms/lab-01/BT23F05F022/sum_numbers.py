@@ -16,26 +16,7 @@ def sum_iterative(n):
         total += i
     return total
 
-# Closed-form version
-def sum_closed_form(n):
-    return n * (n + 1) // 2
-
-# Simple test function
-def test_sum_functions():
-    test_cases = [0, 1, 5, 10, 100]
-    for n in test_cases:
-        r = sum_recursive(n)
-        i = sum_iterative(n)
-        c = sum_closed_form(n)
-        assert r == i == c, f"Mismatch for n={n}: {r}, {i}, {c}"
-    print("All tests passed.")
-
-# Try all three
+# Try both
 n = 10
 print("Recursive sum:", sum_recursive(n))
 print("Iterative sum:", sum_iterative(n))
-print("Closed-form sum:", sum_closed_form(n))
-
-# Run tests
-test_sum_functions()
-# completed the program

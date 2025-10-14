@@ -27,7 +27,7 @@ def print_reverse_iterative(arr):
     for i in range(len(arr) - 1, -1, -1):
         print(arr[i], end=' ')
 
-# Example usage
+
 if __name__ == "__main__":
     arr = [1, 2, 3, 4]
     print("Recursive:")
