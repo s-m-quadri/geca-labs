@@ -11,3 +11,13 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
+def find(parent, x):
+    if parent[x] == x:
+        return x
+    return find(parent, parent[x])
+
+def union(parent, x, y):
+    px = find(parent, x)
+    py = find(parent, y)
+    if px != py:
+        parent[py] = px
