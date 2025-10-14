@@ -9,18 +9,3 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
-# Task 6.3: Union-Find Data Structure (Basics)
-# ---------------------------------------------
-# Create parent[] such that parent[i] = i initially
-
-def create_parent_array(n):
-    # Using list comprehension to initialize parent array
-    parent = [i for i in range(n)]
-    return parent
-
-
-# Example usage:
-num_vertices = 5
-parent_array = create_parent_array(num_vertices)
-
-print("Initial Parent Array:", parent_array)
