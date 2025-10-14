@@ -1,5 +1,9 @@
-# Write a function that takes two numbers and returns their sum.
-# Call it with example values and print the result.
+# Function to add two numbers
+def add(x, y):
+    return x + y
 
-# 💡 TIP:
-# Use `def`, `return`, and call it like `f(2, 3)`.
+# Call the function with example values
+result = add(10, 5)
+
+# Print the result
+print("Sum:", result)

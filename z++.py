@@ -1,7 +1,13 @@
-# Ask for a full name and display:
-#  - All lowercase
-#  - All uppercase
-#  - Only initials (e.g., A. B. C.)
+# Take full name input
+name = input("Enter full name: ")
 
-# 💡 TIP:
-# Use `.split()` and `.upper()` / `.lower()`
+# Lowercase
+print("Lower:", name.lower())
+
+# Uppercase
+print("Upper:", name.upper())
+
+# Initials
+parts = name.split()
+initials = '. '.join(p[0].upper() for p in parts) + '.'
+print("Initials:", initials)
