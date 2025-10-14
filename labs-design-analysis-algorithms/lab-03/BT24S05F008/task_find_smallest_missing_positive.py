@@ -9,3 +9,16 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
+
+
+def smallest_missing_positive(arr):
+    if arr[0] != 1:
+        return 1
+    low, high = 0, len(arr) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == mid + 1:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return high + 2
