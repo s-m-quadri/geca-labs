@@ -19,3 +19,20 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+def initialize_prim(V):
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+def display_arrays(key, parent, mstSet):
+    key_display = ['∞' if k == float('inf') else k for k in key]
+    print("key =", key_display)
+    print("parent =", parent)
+    print("mstSet =", mstSet)
+
+V = 4
+key, parent, mstSet = initialize_prim(V)
+display_arrays(key, parent, mstSet)
+
+
