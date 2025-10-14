@@ -3,3 +3,8 @@
 
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
+def sum(a, b):
+    return a + b
+
+result = sum(2, 3)
+print(result)
