@@ -4,3 +4,10 @@
 
 # 💡 TIP:
 # Tuples are like lists, but immutable (they cannot be changed).
+my_tuple = ("apple", "banana", "cherry")
+
+# This line will cause an error because tuples are immutable
+# my_tuple[1] = "mango"
+
+for item in my_tuple:
+    print(item)
