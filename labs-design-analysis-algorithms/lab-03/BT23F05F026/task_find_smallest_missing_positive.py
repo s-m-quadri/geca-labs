@@ -9,3 +9,15 @@
 #
 # Input: [2, 3, 4, 5]
 # Output: 1
+def smallest_missing(arr):
+    l, r = 0, len(arr) - 1
+    while l <= r:
+        m = (l + r) // 2
+        if arr[m] == m + 1:
+            l = m + 1
+        else:
+            r = m - 1
+    return l + 1
+
+print(smallest_missing([1, 2, 3, 5, 6]))  # Output: 4
+print(smallest_missing([2, 3, 4, 5]))    # Output: 1
