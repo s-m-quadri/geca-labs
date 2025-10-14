@@ -14,6 +14,9 @@
 # Task 6.4: Find and Union Functions
 # -----------------------------------
 # Implement find() and union() for Union-Find data structure
+# Task 6.4: Find and Union Functions
+# -----------------------------------
+# Implement find() and union() for Union-Find data structure
 
 def create_parent(V):
     return [i for i in range(V)]
@@ -40,4 +43,7 @@ union(parent, 0, 1)
 print("After union(0,1):", parent)
 
 union(parent, 1, 2)
-print("Afte
+print("After union(1,2):", parent)
+
+print("find(2):", find(parent, 2))
+print("Final parent array:", parent)
