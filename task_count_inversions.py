@@ -12,3 +12,19 @@
 # - Do not use brute force O(n^2) method.
 
 # Write your solution here
+from typing import List, Tuple
+
+def _merge_count(left: List[int], right: List[int]) -> Tuple[List[int], int]:
+    """Merge two sorted lists and count cross inversions (left element > right element)."""
+    merged = []
+    i = j = 0
+    inv_count = 0
+    n_left, n_right = len(left), len(right)
+
+    while i < n_left and j < n_right:
+        # if left[i] <= right[j], no inversion with left[i]
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            # left[i] > right[j] => al
