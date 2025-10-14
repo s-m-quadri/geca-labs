@@ -17,6 +17,7 @@ def binary_search_visual(arr, target):
     print(f"{target} not found")
     return -1
 
+
 # Example usage
 arr = [1, 2, 3, 4, 5, 6, 7]
 target = 4
