@@ -17,3 +17,15 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
+
+def coin_change(denominations, amount):
+    denominations.sort(reverse=True)
+    result = []
+    for coin in denominations:
+        while amount >= coin:
+            amount -= coin
+            result.append(coin)
+    return result
+
+coins = coin_change([1, 2, 5, 10, 20, 50, 100], 93)
+print(f"{len(coins)} coins: {coins}")

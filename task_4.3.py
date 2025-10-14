@@ -12,20 +12,3 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
-
-def reverse_recursive(s):
-    """Reverse the string using recursion."""
-    if len(s) == 0:
-        return s
-    return reverse_recursive(s[1:]) + s[0]
-
-def reverse_iterative(s):
-    """Reverse the string using a loop."""
-    result = ''
-    for char in s:
-        result = char + result
-    return result
-
-# Example usage
-print(reverse_recursive("hello"))  # Output: "olleh"
-print(reverse_iterative("hello"))  # Output: "olleh"
