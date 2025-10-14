@@ -12,32 +12,3 @@
 # Output: 8
 #
 # Bonus: Try printing the whole Fibonacci sequence up to n instead of just nth number.
-
-def fib_recursive(n):
-    if n == 0:
-        return 0
-    if n == 1:
-        return 1
-    return fib_recursive(n - 1) + fib_recursive(n - 2)
-
-def fib_iterative(n):
-    if n == 0:
-        return 0
-    a, b = 0, 1
-    for _ in range(1, n):
-        a, b = b, a + b
-    return b
-
-n = 6
-print(fib_recursive(n))
-print(fib_iterative(n))
-
-def fib_sequence(n):
-    seq = []
-    a, b = 0, 1
-    for i in range(n + 1):
-        seq.append(a)
-        a, b = b, a + b
-    return seq
-
-print(fib_sequence(n))
