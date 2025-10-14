@@ -20,3 +20,27 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+# TO do
+
+def fractional_knapsack(capacity, items):
+    for item in items:
+        item.append(item[0] / item[1]) 
+
+    items.sort(key=lambda x: x[2], reverse=True)
+
+    total_value = 0.0
+    for value, weight, ratio in items:
+        if capacity >= weight:
+            total_value += value
+            capacity -= weight
+        else:
+            total_value += value * (capacity / weight)
+            break 
+
+    return total_value
+
+# Example usage
+capacity = 50
+items = [[60, 10], [100, 20], [120, 30]] 
+print(fractional_knapsack(capacity, items)) 
