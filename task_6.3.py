@@ -9,20 +9,3 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
-# Task 6.3: Union-Find Data Structure (Basics)
-# ---------------------------------------------
-
-def create_parent(n):
-    """
-    n: number of vertices
-    Returns: parent list where each vertex is its own parent initially
-    """
-    parent = [i for i in range(n)]
-    return parent
-
-
-# Example usage
-n = int(input("Enter number of vertices: "))
-parent = create_parent(n)
-
-print("Initial parent array:", parent)
