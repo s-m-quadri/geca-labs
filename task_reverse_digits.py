@@ -34,7 +34,7 @@ def reverse_digits_iterative(n):
         n //= 10
     return result
 
-# Example usage:
+
 if __name__ == "__main__":
     num = 1234
     print("Recursive:", reverse_digits_recursive(num))

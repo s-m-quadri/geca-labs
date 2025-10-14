@@ -29,7 +29,7 @@ def sum_even_iterative(n):
         total += i
     return total
 
-# Example usage
+
 if __name__ == "__main__":
     n = 10
     print("Recursive:", sum_even_recursive(n))
