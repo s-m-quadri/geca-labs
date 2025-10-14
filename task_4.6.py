@@ -20,28 +20,3 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
-def activity_selection(activities):
-    """
-    activities: list of tuples (start_time, finish_time)
-    Returns: list of selected activities
-    """
-    # Step 1: Sort activities based on finish time
-    activities.sort(key=lambda x: x[1])
-    
-    selected_activities = []
-    last_finish_time = 0
-
-    for activity in activities:
-        start, finish = activity
-        if start >= last_finish_time:
-            selected_activities.append(activity)
-            last_finish_time = finish  # Update the last finish time
-    
-    return selected_activities
-
-# Example usage
-activities = [(1,2), (3,4), (0,6), (5,7), (8,9), (5,9)]
-selected = activity_selection(activities)
-
-print("Maximum number of non-overlapping activities:", len(selected))
-print("Selected activities:", selected)
