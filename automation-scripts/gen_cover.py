@@ -142,6 +142,21 @@ def read_commits(csv_path: str) -> List[CommitRow]:
     return rows
 
 
+def read_pull_requests(csv_path: str) -> List[dict]:
+    """Read pull_requests.csv into a list of dict rows.
+
+    Expected columns include: PR Number, PRN, Title, User, Labels, State, Created At, Closed At, Merged At
+    """
+    rows: List[dict] = []
+    if not os.path.exists(csv_path):
+        return rows
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            rows.append({k: (v or "").strip() for k, v in r.items()})
+    return rows
+
+
 # -----------------------------
 # Lab inference
 # -----------------------------
@@ -201,6 +216,7 @@ def infer_lab_from_files(files: Iterable[str]) -> Optional[int]:
 
 
 def infer_lab(commit: CommitRow) -> Optional[int]:
+    # Prefer explicit lab mention in commit message
     m = _LAB_MSG_RE.search(commit.message or "")
     if m:
         try:
@@ -209,9 +225,40 @@ def infer_lab(commit: CommitRow) -> Optional[int]:
                 return num
         except Exception:
             pass
+    # Fallback to inferring from affected files
     lab_from_files = infer_lab_from_files(commit.affected_files_list)
     if lab_from_files is not None:
         return lab_from_files
+    return None
+
+
+def infer_lab_from_pr_row(pr_row: dict) -> Optional[int]:
+    """Infer lab number from a pull request row (title/labels).
+
+    This prefers explicit labels like 'Lab 03' or titles containing 'Lab 03'.
+    """
+    if not pr_row:
+        return None
+    # Try labels first (often contains 'Lab 03')
+    labels = pr_row.get("Labels", "")
+    m = _LAB_MSG_RE.search(labels)
+    if m:
+        try:
+            num = int(m.group(1))
+            if 0 <= num <= 10:
+                return num
+        except Exception:
+            pass
+    # Next try Title
+    title = pr_row.get("Title", "")
+    m = _LAB_MSG_RE.search(title)
+    if m:
+        try:
+            num = int(m.group(1))
+            if 0 <= num <= 10:
+                return num
+        except Exception:
+            pass
     return None
 
 
@@ -556,11 +603,27 @@ def latex_sources_for_lab(student: Student, lab: int, output_dir: str) -> str:
 # Aggregation
 # -----------------------------
 
-def aggregate_for_student_lab(student: Student, lab: int, all_commits: List[CommitRow]) -> Tuple[List[CommitRow], List[int], List[str], List[str], List[str]]:
+def aggregate_for_student_lab(student: Student, lab: int, all_commits: List[CommitRow], pr_lab_map: Optional[dict] = None) -> Tuple[List[CommitRow], List[int], List[str], List[str], List[str]]:
+    """Collect commits for a student and lab.
+
+    If pr_lab_map is provided (mapping PR number -> lab), prefer that mapping when
+    selecting commits by lab. Falls back to commit message / files inference.
+    """
     commits: List[CommitRow] = []
     for c in all_commits:
         if (c.prn or "").strip().upper() != student.prn.strip().upper():
             continue
+        # If commit is associated with a PR and mapping exists, prefer it
+        lab_from_pr = None
+        if pr_lab_map and c.pr_number is not None:
+            lab_from_pr = pr_lab_map.get(int(c.pr_number))
+        if lab_from_pr is not None:
+            if lab_from_pr != lab:
+                continue
+            commits.append(c)
+            continue
+
+        # Otherwise infer from commit message / files
         lab_inferred = infer_lab(c)
         if lab_inferred is None or lab_inferred != lab:
             continue
@@ -616,6 +679,18 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
 
     commits = read_commits(commits_csv)
 
+    # Attempt to read pull requests CSV (same output directory)
+    pr_csv = os.path.join(os.path.dirname(commits_csv), "pull_requests.csv")
+    pr_rows = read_pull_requests(pr_csv)
+    pr_lab_map: dict = {}
+    for r in pr_rows:
+        pr_no = _to_int(r.get("PR Number") or r.get("PR Number") )
+        if pr_no is None:
+            continue
+        lab_n = infer_lab_from_pr_row(r)
+        if lab_n is not None:
+            pr_lab_map[int(pr_no)] = lab_n
+
     lab_titles = lab_titles_default()
     lab_list = [i for i in range(0, 11)] if not labs else [l for l in labs if 0 <= l <= 10]
 
@@ -628,7 +703,7 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
         doc_parts.append(latex_global_preamble(stu))
         for idx, lab in enumerate(lab_list):
             title = lab_titles.get(lab, f"Lab {lab:02d}")
-            commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(stu, lab, commits)
+            commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(stu, lab, commits, pr_lab_map)
 
             # Cover page for this lab
             doc_parts.append(latex_set_header_lab(lab))
