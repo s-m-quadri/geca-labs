@@ -9,3 +9,14 @@
 
 # Hint: Sort using key = lambda x: x[2]
 # Tip: Test with 5-6 edges to check order.
+
+def extract_vertices(edges):
+    vertices = set()
+    for u, v, _ in edges:
+        vertices.add(u)
+        vertices.add(v)
+    return vertices
+
+# Example usage
+vertices = extract_vertices(edges)
+print("Vertices:", vertices)
