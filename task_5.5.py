@@ -8,7 +8,7 @@ def prim_mst(graph, start=0):
     """
     V = len(graph)
     
-    # Initialization
+    # Initialization,
     key = [float('inf')] * V
     parent = [-1] * V
     mstSet = [False] * V

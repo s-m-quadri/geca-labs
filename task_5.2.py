@@ -15,9 +15,10 @@ def min_key_vertex(key, mstSet):
             min_index = v
 
     return min_index
-
+#test
 # Test case
 key = [0, 2, 3]
 mstSet = [True, False, False]
 result = min_key_vertex(key, mstSet)
 print("Vertex with minimum key not in MST:", result)
+

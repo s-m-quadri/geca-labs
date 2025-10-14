@@ -8,9 +8,9 @@ def prim_iteration(graph, key, parent, mstSet):
     u = min_key_vertex(key, mstSet)
     mstSet[u] = True  # Include u in MST
 
-    # Step 2: Update neighbors of u
+    # Stesp 2: Update neighbors of u
     update_keys(graph, u, key, parent, mstSet)
-
+ 
 # Test case
 graph = [
     [0, 1, 4],

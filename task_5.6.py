@@ -14,7 +14,7 @@ def prim_mst_heap(graph, start=0):
     mstSet = [False] * V
     
     key[start] = 0
-    min_heap = [(0, start)]  # (key, vertex)
+    min_heap = [(0, start)]  # (.key, vertex)
     
     while min_heap:
         k, u = heapq.heappop(min_heap)
