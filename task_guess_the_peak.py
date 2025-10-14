@@ -9,27 +9,3 @@
 #
 # Input: [0, 2, 4, 6, 3, 1]
 # Output: 6
-# mountain_peak.py
-# Find the peak element in a mountain array using binary search
-
-def find_peak(arr):
-    low, high = 0, len(arr) - 1
-
-    while low < high:
-        mid = (low + high) // 2
-
-        # If mid is less than next, peak is to the right
-        if arr[mid] < arr[mid + 1]:
-            low = mid + 1
-        else:
-            # Peak is at mid or to the left
-            high = mid
-
-    # low == high is the peak index
-    return arr[low]
-
-
-# Example test cases
-print(find_peak([1, 3, 7, 12, 9, 5, 2]))  # Output: 12
-print(find_peak([0, 2, 4, 6, 3, 1]))      # Output: 6
-print(find_peak([1, 2, 3, 4, 5, 3, 1]))   # Output: 5
