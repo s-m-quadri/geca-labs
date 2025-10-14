@@ -76,4 +76,3 @@ for node in adj_list:
 
 # Optional visualization
 visualize_mst(mst_edges, V)
-

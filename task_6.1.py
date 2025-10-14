@@ -26,4 +26,4 @@ def store_edges(edge_list):
 input_edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
 edges = store_edges(input_edges)
 
-print("Edges stored:", edges)
+print("Edges stored:", edges
