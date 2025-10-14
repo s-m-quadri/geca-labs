@@ -23,7 +23,6 @@ V = 4
 def initialize_prim(V):
     """
     Initialize the arrays needed for Prim's algorithm.
-    
     Args:
         V: Number of vertices in the graph
     
