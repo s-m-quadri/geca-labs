@@ -20,6 +20,7 @@ def merge_sort_strings(arr):
     right = merge_sort_strings(arr[mid:])
     return merge(left, right)
 
+
 if __name__ == "__main__":
     names = ["Charlie", "alice", "Bob", "david"]
     print("Original:", names)
