@@ -5,3 +5,10 @@
 
 # 💡 TIP:
 # Use `.split()` and `.upper()` / `.lower()`
+name = input("Enter your full name: ")
+
+print(name.lower())
+print(name.upper())
+
+initials = ". ".join([part[0].upper() for part in name.split()]) + "."
+print(initials)
