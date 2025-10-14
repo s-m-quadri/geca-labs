@@ -17,3 +17,11 @@ key = [0, 2, 3]
 mstSet = [True, False, False]
 # Expected output: 1
 """
+def min_key(key, mstSet):
+    mn = float('inf')
+    idx = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < mn:
+            mn = key[i]
+            idx = i
+    return idx

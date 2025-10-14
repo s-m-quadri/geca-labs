@@ -24,27 +24,3 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]
 """
-import heapq
-
-def prim_mst_heap(graph, start):
-    V = len(graph)
-    key = [float('inf')] * V
-    parent = [-1] * V
-    in_mst = [False] * V
-    key[start] = 0
-    pq = [(0, start)]
-    while pq:
-        k, u = heapq.heappop(pq)
-        if in_mst[u]:
-            continue
-        in_mst[u] = True
-        for v in range(V):
-            if graph[u][v] and not in_mst[v] and graph[u][v] < key[v]:
-                key[v] = graph[u][v]
-                parent[v] = u
-                heapq.heappush(pq, (key[v], v))
-    res = []
-    for v in range(V):
-        if parent[v] != -1:
-            res.append((parent[v], v, graph[v][parent[v]]))
-    return res

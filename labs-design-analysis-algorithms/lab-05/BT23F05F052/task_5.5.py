@@ -22,3 +22,18 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(0,3,6)]
 """
+def prim_mst(graph, start):
+    V = len(graph)
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    key[start] = 0
+    for _ in range(V - 1):
+        u = min_key(key, mstSet)
+        mstSet[u] = True
+        update_keys(graph, u, key, parent, mstSet)
+    res = []
+    for v in range(V):
+        if parent[v] != -1:
+            res.append((parent[v], v, graph[v][parent[v]]))
+    return res
