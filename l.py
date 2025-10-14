@@ -1,6 +1,6 @@
+# Create a dictionary with 3 student names and their marks.
+# Print a specific student’s marks.
+# Loop through all students and print their names and scores.
 
-students = {"Alice": 92, "Bob": 85, "Charlie": 78}
-print("Alice's marks:", students["Alice"])
-for name, marks in students.items():
-	print(f"{name}: {marks}")
+# 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.

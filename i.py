@@ -2,8 +2,4 @@
 # Then, print the index and value using a loop.
 
 # 💡 TIP:
-items = ['apple', 'banana', 'cherry', 'date']
-for item in items:
-	print(item)
-for idx, val in enumerate(items):
-	print(f"Index {idx}: {val}")
+# Use `for item in list` and `enumerate(list)` for both item and index.

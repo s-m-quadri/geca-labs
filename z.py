@@ -1,17 +1,6 @@
-import math
-import random
+# Combine everything you've learned.
+# Ask user for a number, check if it's even, calculate its square root,
+# and print a random motivational quote if the number is > 10.
 
-num = int(input("Enter a number: "))
-if num % 2 == 0:
-    print("Even")
-else:
-    print("Odd")
-print("Square root:", math.sqrt(num))
-if num > 10:
-    quotes = [
-        "Keep going!",
-        "You can do it!",
-        "Never give up!",
-        "Success is near!"
-    ]
-    print(random.choice(quotes))
+# 💡 TIP:
+# Combine `if`, `math`, `random`, and type conversion.

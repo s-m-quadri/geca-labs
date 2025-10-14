@@ -1,5 +1,6 @@
+# Create a list of 5 integers.
+# Print the first, middle, and last elements.
+# Modify the third element to be 100, then print the entire list.
 
-nums = [10, 20, 30, 40, 50]
-print(nums[0], nums[2], nums[-1])
-nums[2] = 100
-print(nums)
+# 💡 TIP:
+# Use indexing like list[0], list[-1], and list[2] to access or change values.

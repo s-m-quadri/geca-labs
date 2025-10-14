@@ -1,8 +1,6 @@
+# Create an empty list.
+# Append 3 strings to it.
+# Sort the list and print it in reverse order.
 
-words = []
-words.append("banana")
-words.append("apple")
-words.append("cherry")
-words.sort()
-words.reverse()
-print(words)
+# 💡 TIP:
+# Use .append(), .sort(), and .reverse()
