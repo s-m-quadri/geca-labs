@@ -19,3 +19,19 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+
+def initialize_prim(V):
+    # Step 1: Initialize arrays
+    key = [float('inf')] * V       # ∞ for all keys
+    parent = [-1] * V              # -1 means no parent yet
+    mstSet = [False] * V           # no vertex included in MST yet
+
+    return key, parent, mstSet
+
+
+
+V = 4
+key, parent, mstSet = initialize_prim(V)
+print("key    =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
