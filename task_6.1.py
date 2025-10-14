@@ -27,3 +27,12 @@ input_edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
 edges = store_edges(input_edges)
 
 print("Edges stored:", edges)
+def store_edges(edge_list):
+    edges = []
+    for edge in edge_list:
+        edges.append(edge)
+    return edges
+
+input_edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+edges = store_edges(input_edges)
+print("Edges stored:", edges)

@@ -24,3 +24,10 @@ edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
 sorted_edges = sort_edges_by_weight(edges)
 
 print("Edges sorted by weight:", sorted_edges)
+def sort_edges_by_weight(edges):
+    sorted_edges = sorted(edges, key=lambda x: x[2])
+    return sorted_edges
+
+edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+sorted_edges = sort_edges_by_weight(edges)
+print("Edges sorted by weight:", sorted_edges)
