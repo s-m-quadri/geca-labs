@@ -6,8 +6,14 @@
 # Use `f"{name} scored {marks}"` or `"{} scored {}".format(...)`
 
 def student_info(name, marks):
+    # Using f-string
     print(f"Student {name} scored {marks} marks.")
+    
+    # Using .format()
     print("Student {} scored {} marks.".format(name, marks))
+    
+    # Using %s
     print("Student %s scored %s marks." % (name, marks))
 
+# Test the function
 student_info("Alice", 92)

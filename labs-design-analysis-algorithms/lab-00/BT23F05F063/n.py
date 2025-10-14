@@ -4,24 +4,12 @@
 # 💡 TIP:
 # Use `def`, `return`, and call it like `f(2, 3)`.
 
-def add(a, b):
+def add_numbers(a, b):
     return a + b
 
-result = add(5, 7)
-print(result)
+# Test the function
+result = add_numbers(5, 3)
+print(f"5 + 3 = {result}")
 
-# Write a function that takes a name and a message and prints a greeting.
-# Call it with example values and print the result.
-
-def greet(name, msg="Hello"):
-    print(f"{msg}, {name}!")
-
-greet("Alice")
-greet("Bob", "Welcome")
-greet(name="Charlie", msg="Hi")
-
-def void_function():
-    print("Running")
-
-print(void_function())
-print(add(2, 3))
+# Another test
+print(f"10 + 20 = {add_numbers(10, 20)}")

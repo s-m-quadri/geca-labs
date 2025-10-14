@@ -6,17 +6,13 @@
 #  Use `def greet(name, msg="Hello"):` to set a default value.
 
 def greet(name, msg="Hello"):
-    print(f"{msg}, {name}!")
+    return f"{msg}, {name}!"
 
-greet("Alice")
-greet("Bob", "Welcome")
-greet(name="Charlie", msg="Hi")
+# Using default message
+print(greet("Alice"))
 
-def void_function():
-    print("Running")
+# Providing a custom message
+print(greet("Bob", "Hi"))
 
-def add(a, b):
-    return a + b
-
-print(void_function())
-print(add(2, 3))
+# Using named arguments
+print(greet(msg="Good morning", name="Charlie"))

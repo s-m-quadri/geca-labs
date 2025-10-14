@@ -4,10 +4,13 @@
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
 
-with open("output.txt", "w") as f:
-    f.write("Line 1\n")
-    f.write("Line 2\n")
-    f.write("Line 3\n")
+# Writing to the file
+with open('output.txt', 'w') as f:
+    f.write("Line 1: Hello, World!\n")
+    f.write("Line 2: Python is fun\n")
+    f.write("Line 3: File handling demo\n")
 
-with open("output.txt", "r") as f:
+# Reading from the file
+print("File contents:")
+with open('output.txt', 'r') as f:
     print(f.read())

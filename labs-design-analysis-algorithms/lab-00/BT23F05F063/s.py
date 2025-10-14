@@ -6,10 +6,11 @@
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
 
 try:
-    a = int(input("Enter first number: "))
-    b = int(input("Enter second number: "))
-    print(a / b)
-except ZeroDivisionError:
-    print("Cannot divide by zero!")
+    num1 = float(input("Enter first number: "))
+    num2 = float(input("Enter second number: "))
+    result = num1 / num2
+    print(f"{num1} divided by {num2} is {result}")
 except ValueError:
-    print("Invalid input!")
+    print("Error: Please enter valid numbers")
+except ZeroDivisionError:
+    print("Error: Cannot divide by zero")

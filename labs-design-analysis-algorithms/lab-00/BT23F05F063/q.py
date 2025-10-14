@@ -5,9 +5,10 @@
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
 
-rows = int(input("Rows: "))
-cols = int(input("Columns: "))
-for r in range(rows):
-    for c in range(cols):
+rows = int(input("Enter number of rows: "))
+cols = int(input("Enter number of columns: "))
+
+for i in range(rows):
+    for j in range(cols):
         print("*", end="")
-    print()
+    print()  # New line after each row
