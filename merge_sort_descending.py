@@ -8,6 +8,24 @@ def merge(left, right):
         else:
             result.append(right[j])
             j += 1
+    
+    # Add remaining elements
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+def merge_sort_descending(arr):
+    """Sort an array in descending order using merge sort algorithm."""
+    if len(arr) <= 1:
+        return arr
+    
+    # Divide the array into two halves
+    mid = len(arr) // 2
+    left = merge_sort_descending(arr[:mid])
+    right = merge_sort_descending(arr[mid:])
+    
+    # Merge the sorted halves
+    return merge(left, right)
     result.extend(left[i:])
     result.extend(right[j:])
     return result
@@ -25,3 +43,4 @@ if __name__ == "__main__":
     print("Original:", arr)
     sorted_desc = merge_sort_desc(arr)
     print("Sorted (descending):", sorted_desc)
+# Completed the program
