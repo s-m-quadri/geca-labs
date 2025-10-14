@@ -15,3 +15,12 @@
 
 # Hint: Use dictionary for adjacency list.
 # Tip: Visualization part is optional, but fun for testing.
+def visualize_mst(edges, V):
+    mst, total_weight = kruskal_mst(edges, V)
+    adj = {i: [] for i in range(V)}
+    for u, v, w in mst:
+        adj[u].append(v)
+        adj[v].append(u)
+    for k in adj:
+        print(f"{k}: {adj[k]}")
+    return mst, total_weight, adj

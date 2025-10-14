@@ -9,3 +9,5 @@
 
 # Hint: Sort using key = lambda x: x[2]
 # Tip: Test with 5-6 edges to check order.
+def sort_edges(edges):
+    return sorted(edges, key=lambda x: x[2])
