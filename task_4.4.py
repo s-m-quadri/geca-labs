@@ -20,28 +20,3 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
-def fractional_knapsack(W, items):
-    # Calculate value-to-weight ratio for each item
-    items = sorted(items, key=lambda x: x[0] / x[1], reverse=True)
-
-    total_value = 0.0  # maximum achievable value
-    for value, weight in items:
-        if W == 0:
-            break
-        if weight <= W:
-            # take the whole item
-            total_value += value
-            W -= weight
-        else:
-            # take fractional part of the item
-            total_value += value * (W / weight)
-            W = 0
-            break
-
-    return total_value
-
-
-# Example
-capacity = 50
-items = [(60, 10), (100, 20), (120, 30)]
-print(fractional_knapsack(capacity, items))  # Output: 240.0
