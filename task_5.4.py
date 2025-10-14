@@ -25,3 +25,36 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+def prim_iteration(graph, key, parent, mstSet): 
+    V = len(graph)
+    
+    # Step 1: Find the vertex with the minimum key not in mstSet
+    min_value = float('inf')
+    u = -1
+    for v in range(V):
+        if not mstSet[v] and key[v] < min_value:
+            min_value = key[v]
+            u = v
+            
+    # Include this vertex in mstSet
+    mstSet[u] = True
+    
+    # Step 2: Update key and parent for neighbors of u
+    for v in range(V):
+        if graph[u][v] > 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u           
+# Example usage     
+graph = [
+    [0, 1, 4],
+    [1, 0, 2],
+    [4, 2, 0]
+]
+key = [0, float('inf'), float('inf')]
+parent = [-1, -1, -1]
+mstSet = [True, False, False]
+prim_iteration(graph, key, parent, mstSet)
+print("key after iteration =", key)     
+print("parent after iteration =", parent)
+print("mstSet after iteration =", mstSet)   
+    
