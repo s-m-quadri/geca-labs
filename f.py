@@ -1,8 +1,11 @@
-# Ask the user to enter a number.
-# Print:
-#  - "Positive" if it's > 0
-#  - "Negative" if it's < 0
-#  - "Zero" if it's 0
+# Taking two numbers as input from the user
+x = float(input("Enter first number: "))
+y = float(input("Enter second number: "))
 
-# 💡 TIP:
-# Use `if`, `elif`, and `else`.
+# Performing operations
+print("Sum:", x + y)
+print("Difference:", x - y)
+print("Product:", x * y)
+print("Quotient:", x / y)
+print("Remainder:", x % y)
+print("Power:", x ** y)

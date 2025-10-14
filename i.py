@@ -1,5 +1,12 @@
-# Write a program that prints each item of a list on a new line.
-# Then, print the index and value using a loop.
+# Creating a list
+fruits = ["apple", "banana", "cherry", "mango"]
 
-# 💡 TIP:
-# Use `for item in list` and `enumerate(list)` for both item and index.
+# Printing each item on a new line
+print("List items:")
+for item in fruits:
+    print(item)
+
+# Printing index and value using enumerate()
+print("\nIndex and values:")
+for index, value in enumerate(fruits):
+    print(index, value)

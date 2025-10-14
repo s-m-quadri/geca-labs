@@ -1,5 +1,7 @@
-# Ask the user for their name and age using `input()`.
-# Then print: "Hello <name>, you are <age> years old."
+# Declaring variables
+name = "Tanisha"
+age = 20
+is_student = True
 
-# 💡 TIP:
-# `input()` always returns a string, so use `int()` to convert age.
+# Printing all variables in one line
+print(name, age, is_student)
