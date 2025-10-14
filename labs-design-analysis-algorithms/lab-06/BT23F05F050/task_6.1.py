@@ -10,3 +10,12 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+def store_edges(edge_list):
+    # Simply return the list of edges as given
+    return edge_list
+
+# Example
+edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+stored_edges = store_edges(edges)
+print("Edges stored:", stored_edges)
+# Output: Edges stored: [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
