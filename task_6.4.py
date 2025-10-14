@@ -11,3 +11,21 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
+def find(parent, x):
+    if parent[x] == x:
+        return x
+    return find(parent, parent[x])
+
+def union(parent, x, y):
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        parent[root_y] = root_x
+
+parent = [0, 1, 2, 3]
+
+union(parent, 0, 1)
+union(parent, 1, 2)
+
+print("Parent array after unions:", parent)
+print("Find 2:", find(parent, 2))
