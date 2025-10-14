@@ -22,7 +22,6 @@ def fib_recursive(n):
     if n == 1:
         return 1
     return fib_recursive(n - 1) + fib_recursive(n - 2)
-
 def fib_iterative(n):
     """Return the nth Fibonacci number using iteration."""
     if n < 0:

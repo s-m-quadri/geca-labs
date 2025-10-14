@@ -17,7 +17,6 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
-
 def coin_change_greedy(denominations, amount):
     """Return the minimum number of coins and the list of coins used (greedy)."""
     denominations = sorted(denominations, reverse=True)

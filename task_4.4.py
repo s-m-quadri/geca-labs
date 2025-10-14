@@ -20,7 +20,6 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
-
 def fractional_knapsack(capacity, items):
     """Return the maximum value for the fractional knapsack problem."""
     # Calculate value-to-weight ratio and sort items

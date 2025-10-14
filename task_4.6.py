@@ -41,3 +41,4 @@ if __name__ == "__main__":
     count, selected = activity_selection(activities)
     print(f"Maximum number of activities: {count}")
     print(f"Selected activities: {selected}")
+

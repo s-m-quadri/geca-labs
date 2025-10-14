@@ -12,7 +12,6 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
-
 def reverse_recursive(s):
     """Reverse a string using recursion."""
     if len(s) == 0:

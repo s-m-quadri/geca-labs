@@ -30,7 +30,6 @@ def factorial_iterative(n):
     for i in range(2, n + 1):
         result *= i
     return result
-
 # Example usage:
 if __name__ == "__main__":
     n = 5
