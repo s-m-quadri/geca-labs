@@ -14,3 +14,21 @@
 # - Recursive version can peel off last digit using n % 10
 # - You may pass an extra parameter (e.g., accumulator) if needed
 # - Iterative version: use while-loop and integer math
+
+
+def reverse_digits_recursive(n, rev=0):
+    if n == 0:
+        return rev
+    return reverse_digits_recursive(n // 10, rev * 10 + n % 10)
+
+def reverse_digits_iterative(n):
+    rev = 0
+    while n > 0:
+        rev = rev * 10 + n % 10
+        n //= 10
+    return rev
+
+n = int(input("Enter a number: "))
+print(reverse_digits_recursive(n))
+print(reverse_digits_iterative(n))
+
