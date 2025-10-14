@@ -19,3 +19,22 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+
+def initialize_prim(V):
+    # Step 1: Initialize arrays
+    key = [float('inf')] * V        # All key values as ∞
+    parent = [-1] * V               # All parents as -1
+    mstSet = [False] * V            # None of the vertices included yet
+
+    # Step 2: Return all three lists
+    return key, parent, mstSet
+
+
+# ✅ Test case
+V = 4
+key, parent, mstSet = initialize_prim(V)
+
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
+
