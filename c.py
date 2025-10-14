@@ -3,6 +3,3 @@
 
 # 💡 TIP:
 # `input()` always returns a string, so use `int()` to convert age.
-name=input("Enter your name.")
-age=input("Enter your age.")
-print(f"Hello {name}, you are {age} years old.")

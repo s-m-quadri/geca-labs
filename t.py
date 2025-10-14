@@ -3,12 +3,3 @@
 
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
-lines = ["First line\n", "Second line\n", "Third line\n"]
-
-with open("output.txt", "w") as f:
-    f.writelines(lines)
-
-with open("output.txt", "r") as f:
-    content = f.read()
-
-print(content)

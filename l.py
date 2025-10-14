@@ -4,13 +4,3 @@
 
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
-students = {
-    "Ben": 85,
-    "Ollie": 92,
-    "Joe": 78
-}
-
-print("Joe's marks:", students["Joe"])
-
-for name, marks in students.items():
-    print(f"{name}: {marks}")
