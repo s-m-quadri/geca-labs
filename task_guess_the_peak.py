@@ -82,4 +82,4 @@ if __name__ == "__main__":
     print("Binary search compares elements with their neighbors:")
     for i in range(len(arr)-1):
         print(f"Position {i}: {arr[i]} → {arr[i+1]}: {'Increasing' if arr[i] < arr[i+1] else 'Decreasing'}")
-    print("Peak is where we transition from increasing to decreasing!")
+    print("Peak is where , transition from increasing to decreasing!")
