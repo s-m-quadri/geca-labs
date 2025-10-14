@@ -9,3 +9,15 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+def initialize_union_find(n):
+    """
+    Initialize parent array for n elements.
+    Each element is its own parent initially.
+    """
+    parent = [i for i in range(n)]
+    return parent
+
+# Example usage
+n = 5
+parent = initialize_union_find(n)
+print("Initial parent array:", parent)
