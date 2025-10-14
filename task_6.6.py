@@ -1,20 +1,3 @@
-# Task 6.6: Challenge - Visualize MST
-# -------------------------------------
-# Extend Kruskal’s algorithm:
-# 1. Input edges and build MST.
-# 2. Print MST edges in adjacency list format.
-# 3. (Optional for extra) Use networkx + matplotlib to plot MST.
-
-# Example:
-# MST edges: [(2,3,4), (0,3,5), (0,1,10)]
-# Expected adjacency list:
-# 0: [1, 3]
-# 1: [0]
-# 2: [3]
-# 3: [0, 2]
-
-# Hint: Use dictionary for adjacency list.
-# Tip: Visualization part is optional, but fun for testing.
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -46,11 +29,11 @@ def mst_to_adjacency_list(mst_edges, V):
     adj_list = {i: [] for i in range(V)}
     for u, v, _ in mst_edges:
         adj_list[u].append(v)
-        adj_list[v].append(u)  # Since undirected graph
+        adj_list[v].append(u)  # Undirected graph
     return adj_list
 
 def visualize_mst(mst_edges, V):
-    """Optional: Visualize MST using networkx."""
+    """Visualize MST using networkx."""
     G = nx.Graph()
     G.add_nodes_from(range(V))
     for u, v, w in mst_edges:
@@ -74,6 +57,5 @@ print("Adjacency list:")
 for node in adj_list:
     print(f"{node}: {adj_list[node]}")
 
-# Optional visualization
+# Optional: visualize the MST
 visualize_mst(mst_edges, V)
-
