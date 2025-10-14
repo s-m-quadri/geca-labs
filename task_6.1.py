@@ -11,3 +11,11 @@
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
 # hi
+def store_edges(edges):
+    edge_list = []
+    for u, v, w in edges:
+        edge_list.append((u, v, w))
+    return edge_list
+
+edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+print(store_edges(edges))
