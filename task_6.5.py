@@ -35,16 +35,16 @@ def kruskal_mst(edges, V):
     V: number of vertices
     Returns: (mst_edges, total_weight)
     """
-    # Step 1: Sort edges by weight
+    
     sorted_edges = sorted(edges, key=lambda x: x[2])
 
-    # Step 2: Initialize union-find parent array
+    
     parent = [i for i in range(V)]
 
     mst_edges = []
     total_weight = 0
 
-    # Step 3: Iterate over edges
+    
     for u, v, w in sorted_edges:
         if find(parent, u) != find(parent, v):  # If no cycle
             union(parent, u, v)
@@ -53,7 +53,7 @@ def kruskal_mst(edges, V):
 
     return mst_edges, total_weight
 
-# Test case
+
 edges = [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]
 V = 4
 
