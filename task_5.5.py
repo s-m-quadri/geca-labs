@@ -56,6 +56,6 @@ graph = [
     [0, 3, 0, 0],
     [6, 8, 0, 0]
 ]
-# todo
+# Test case
 mst = prim_mst(graph, start=0)
 print("MST edges:", mst)
