@@ -27,6 +27,6 @@ def sum_even_iterative(n):
         s += i
     return s
 
-n = 10
-print("Recursive Sum Output:", sum_even_recursive(n))
-print("Iterative Sum Output:", sum_even_iterative(n))
+n = int(input("Enter a number: "))
+print(sum_even_recursive(n))
+print(sum_even_iterative(n))
