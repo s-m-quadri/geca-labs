@@ -1,11 +1,7 @@
-# Write a program that takes two numbers from the user.
-# Print their:
-#  - sum
-#  - difference
-#  - product
-#  - quotient
-#  - remainder
-#  - power (x^y)
+# Declaring variables
+name = "Tanisha"
+age = 20
+is_student = True
 
-# 💡 TIP:
-# Use `+`, `-`, `*`, `/`, `%`, and `**`.
+
+print(name, age, is_student)
