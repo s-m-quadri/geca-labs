@@ -9,6 +9,6 @@ import random
 
 dice = random.randint(1, 6)
 coin = random.choice(["Heads", "Tails"])
-
+#todo
 print("Dice roll:", dice)
 print("Coin toss:", coin)

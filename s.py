@@ -10,6 +10,7 @@ try:
     y = int(input("Enter denominator: "))
     result = x / y
     print("Result:", result)
+    #todo
 except ZeroDivisionError:
     print("Error: Cannot divide by zero.")
 except ValueError:

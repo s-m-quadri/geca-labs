@@ -11,5 +11,5 @@
 name = "Gokul"
 age = 19
 is_student = True
-
+#todo
 print(name, age, is_student)

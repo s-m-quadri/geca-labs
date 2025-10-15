@@ -8,7 +8,7 @@ fruits = ["apple", "banana", "cherry", "mango"]
 
 for item in fruits:
     print(item)
-
+#todo
 print("With index:")
 for index, value in enumerate(fruits):
     print(index, value)

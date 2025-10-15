@@ -7,7 +7,7 @@
 
 def greet(name, msg="Hello"):
     print(f"{msg}, {name}!")
-
+#todo
 greet("Alice")
 greet("Bob", "Hi")
 greet(name="Charlie", msg="Good morning")

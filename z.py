@@ -30,6 +30,6 @@ try:
             "Believe in yourself!"
         ]
         print("Motivational Quote:", random.choice(quotes))
-        
+#todo
 except ValueError:
     print("Invalid input")
