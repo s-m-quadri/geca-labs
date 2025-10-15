@@ -20,3 +20,24 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+
+def activity_selection(activities):
+    activities.sort(key=lambda x: x[1])
+    selected = []
+    last_finish = 0
+    for start, finish in activities:
+        if start >= last_finish:
+            selected.append((start, finish))
+            last_finish = finish
+    return selected
+
+n = int(input("Enter number of activities: "))
+activities = []
+for _ in range(n):
+    start = int(input("Enter start time: "))
+    finish = int(input("Enter finish time: "))
+    activities.append((start, finish))
+
+selected = activity_selection(activities)
+print("Selected activities:", selected)
+print("Maximum number of activities:", len(selected))
