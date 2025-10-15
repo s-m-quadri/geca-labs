@@ -55,7 +55,7 @@ mstSet = [True, False, False]
 parent = [-1, -1, -1]
 
 prim_iteration(graph, key, parent, mstSet)
-
+#Test case
 print("After one iteration:")
 print("Key:", key)
 print("Parent:", parent)
