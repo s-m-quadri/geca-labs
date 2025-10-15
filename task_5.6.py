@@ -58,6 +58,6 @@ graph = [
     [6, 8, 0, 0, 9],
     [0, 5, 7, 9, 0]
 ]
-#todo
+#Test case
 mst = prim_mst_heap(graph, start=0)
 print("MST edges:", mst)
