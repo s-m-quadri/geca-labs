@@ -6,3 +6,4 @@
 # 💡 TIP:
 # Use the `print()` function.
 print("hello, Python")
+print("This is lab A")
