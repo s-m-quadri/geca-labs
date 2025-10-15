@@ -186,6 +186,7 @@ def read_existing_commits(path):
     """Read existing commits.csv and return a set of commit SHAs already captured and a list of existing rows."""
     existing_rows = []
     existing_shas = set()
+    existing_pr_numbers = set()
     if os.path.exists(path):
         try:
             with open(path, "r", newline="", encoding="utf-8") as f:
@@ -195,14 +196,24 @@ def read_existing_commits(path):
                     sha = row.get("Commit SHA")
                     if sha:
                         existing_shas.add(sha)
+                    prnum = row.get("PR Number")
+                    if prnum:
+                        try:
+                            existing_pr_numbers.add(int(prnum))
+                        except ValueError:
+                            existing_pr_numbers.add(prnum)
         except Exception as e:
             print(f"Warning: Failed to read existing commits file '{path}': {e}")
-    return existing_shas, existing_rows
+    return existing_shas, existing_rows, existing_pr_numbers
 
 def process_commits(merged_prs):
     """Process commit data for merged PRs only"""
     all_commits = []
-    existing_shas, existing_rows = read_existing_commits(COMMITS_OUTPUT_FILE) if INCREMENTAL_COMMITS else (set(), [])
+    # Read existing commits and PR numbers when incremental mode is enabled
+    if INCREMENTAL_COMMITS:
+        existing_shas, existing_rows, existing_pr_numbers = read_existing_commits(COMMITS_OUTPUT_FILE)
+    else:
+        existing_shas, existing_rows, existing_pr_numbers = set(), [], set()
     appended = 0
     
     for pr in merged_prs:
@@ -213,6 +224,11 @@ def process_commits(merged_prs):
         
         print(f"Processing commits for PR #{pr_number} ({prn})...")
         
+        # If incremental mode and this PR number already has commits recorded, skip fetching commits
+        if INCREMENTAL_COMMITS and pr_number in existing_pr_numbers:
+            print(f"Skipping PR #{pr_number} - already present in {COMMITS_OUTPUT_FILE}")
+            continue
+
         try:
             commits = get_pr_commits(pr_number)
             
