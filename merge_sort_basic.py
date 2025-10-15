@@ -26,4 +26,4 @@ if __name__ == "__main__":
     arr = [38, 27, 43, 3, 9, 82, 10]
     print("Original:", arr)
     sorted_arr = merge_sort(arr)
-    print("Sorted:", sorted_arr)
+    print("Sorted:", sorted_arr))
