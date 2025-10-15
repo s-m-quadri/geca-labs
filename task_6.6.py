@@ -61,19 +61,3 @@ def visualize_mst(mst_edges, V):
     labels = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
     plt.show()
-
-# Test case
-edges = [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]
-V = 4
-
-mst_edges = kruskal_mst(edges, V)
-adj_list = mst_to_adjacency_list(mst_edges, V)
-
-print("MST edges:", mst_edges)
-print("Adjacency list:")
-for node in adj_list:
-    print(f"{node}: {adj_list[node]}")
-
-# Optional visualization
-visualize_mst(mst_edges, V)
-
