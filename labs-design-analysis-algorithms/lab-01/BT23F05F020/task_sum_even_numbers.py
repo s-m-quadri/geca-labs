@@ -14,6 +14,7 @@
 # - Base case for recursion: if n <= 1, return 0
 # - Recursive step: if n is even, add n and recurse on n-2
 # - Use `range()` with a step of 2 for the iterative version
+
 def sum_even_recursive(n):
     if n <= 1:
         return 0
@@ -22,11 +23,11 @@ def sum_even_recursive(n):
     return n + sum_even_recursive(n - 2)
 
 def sum_even_iterative(n):
-    s = 0
+    total = 0
     for i in range(2, n + 1, 2):
-        s += i
-    return s
+        total += i
+    return total
 
-n = int(input("Enter a number: "))
-print(sum_even_recursive(n))
-print(sum_even_iterative(n))
+n = 10
+print("Recursive sum:", sum_even_recursive(n))
+print("Iterative sum:", sum_even_iterative(n))

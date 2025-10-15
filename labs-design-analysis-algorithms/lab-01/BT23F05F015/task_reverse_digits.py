@@ -15,20 +15,29 @@
 # - You may pass an extra parameter (e.g., accumulator) if needed
 # - Iterative version: use while-loop and integer math
 
+# -------------------------------------------
+# TASK: Reverse the Digits of a Number
+# -------------------------------------------
 
+# Recursive version
 def reverse_digits_recursive(n, rev=0):
     if n == 0:
         return rev
-    return reverse_digits_recursive(n // 10, rev * 10 + n % 10)
+    rev = rev * 10 + (n % 10)
+    return reverse_digits_recursive(n // 10, rev)
 
+
+# Iterative version
 def reverse_digits_iterative(n):
     rev = 0
     while n > 0:
-        rev = rev * 10 + n % 10
+        rev = rev * 10 + (n % 10)
         n //= 10
     return rev
 
-n = int(input("Enter a number: "))
-print(reverse_digits_recursive(n))
-print(reverse_digits_iterative(n))
+
+# Example test
+num = 1234
+print("Recursive Reverse:", reverse_digits_recursive(num))
+print("Iterative Reverse:", reverse_digits_iterative(num))
 
