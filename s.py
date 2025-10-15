@@ -5,7 +5,7 @@
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
 
-try:
+ry:
     x = int(input("Enter numerator: "))
     y = int(input("Enter denominator: "))
     result = x / y

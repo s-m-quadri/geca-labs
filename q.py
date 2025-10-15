@@ -5,6 +5,7 @@
 # 💡 TIP:
 # Outer loop → rows; Inner loop → columns.
 
+
 rows = int(input("Enter number of rows: "))
 cols = int(input("Enter number of columns: "))
 #todo

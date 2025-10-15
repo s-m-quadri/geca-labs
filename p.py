@@ -6,6 +6,7 @@
 # 💡 TIP:
 # All Python functions return something, even if it's just `None`.
 
+
 def void_function():
     print("Running")
 

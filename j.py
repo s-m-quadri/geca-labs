@@ -5,6 +5,7 @@
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
 
+
 words = []
 
 words.append("banana")
