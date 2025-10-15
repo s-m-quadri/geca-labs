@@ -1,6 +1,8 @@
-# Create an empty list.
-# Append 3 strings to it.
-# Sort the list and print it in reverse order.
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
 
-# 💡 TIP:
-# Use .append(), .sort(), and .reverse()
+print("---")
+
+for index, value in enumerate(fruits):
+    print(f"Index {index}: {value}")
