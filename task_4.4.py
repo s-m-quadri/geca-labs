@@ -20,3 +20,13 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+# -----------------------------------------
+# Task 4.4: Fractional Knapsack
+# -----------------------------------------
+
+def fractional_knapsack(capacity, items):
+    # Step 1: Calculate value-to-weight ratio for each item
+    items = sorted(items, key=lambda x: x[0] / x[1], reverse=True)
+
+    total_value = 0.0  # Total value in knapsack
+    re
