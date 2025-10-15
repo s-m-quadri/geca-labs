@@ -19,34 +19,23 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
-import sys
- 
-def prim_mst(graph):
-    V = len(graph)
-    key = [sys.maxsize] * V
+def initialize_prim(V):
+    # Initialize key values as infinity
+    key = [float('inf')] * V
+    
+    # Initialize parent values as -1
     parent = [-1] * V
-    key[0] = 0
-    mst_set = [False] * V
- 
-    for _ in range(V):
-        u = min((key[v], v) for v in range(V) if not mst_set[v])[1]
-        mst_set[u] = True
- 
-        for v in range(V):
-            if graph[u][v] != 0 and not mst_set[v] and graph[u][v] < key[v]:
-                key[v] = graph[u][v]
-                parent[v] = u
- 
-    for i in range(1, V):
-        print(f"{parent[i]} - {i} \t{graph[i][parent[i]]}")
-        #to do
- 
-graph = [
-    [0, 2, 0, 6, 0],
-    [2, 0, 3, 8, 5],
-    [0, 3, 0, 0, 7],
-    [6, 8, 0, 0, 9],
-    [0, 5, 7, 9, 0]
-]
- #todo
-prim_mst(graph)
+    
+    # Initialize mstSet values as False
+    mstSet = [False] * V
+    
+    return key, parent, mstSet
+
+
+# Test case
+V = 4
+key, parent, mstSet = initialize_prim(V)
+
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
