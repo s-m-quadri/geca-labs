@@ -1,5 +1,8 @@
-# Take a number from user input. 
-# If the input is not a valid integer, print "Invalid input".
+# Take user input
+num = input("Enter a number: ")
 
-# 💡 TIP:
-# Use `.isdigit()` or handle exceptions using try-except.
+# Check if it's a valid integer
+if num.isdigit():
+    print("You entered:", int(num))
+else:
+    print("Invalid input")

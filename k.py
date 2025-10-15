@@ -1,6 +1,9 @@
-# Create a tuple of 3 items.
-# Try to modify the second item and observe the error.
-# Print each item in the tuple using a loop.
+# Create a tuple of 3 items
+colors = ("red", "green", "blue")
 
-# 💡 TIP:
-# Tuples are like lists, but immutable (they cannot be changed).
+# Trying to modify the second item will raise an error
+# colors[1] = "yellow"  # ❌ This will throw TypeError
+
+# Print each item using a loop
+for color in colors:
+    print(color)
