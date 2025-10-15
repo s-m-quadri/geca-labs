@@ -27,13 +27,3 @@ def union(parent, x, y):
     y_root = find(parent, y)
     if x_root != y_root:
         parent[y_root] = x_root  # Make one root the parent of the other
-
-# Example usage
-parent = [0, 1, 2, 3]
-
-union(parent, 0, 1)
-print("Parent after union(0,1):", parent)
-print("Find(1):", find(parent, 1))
-
-union(parent, 1, 2)
-print("Parent after union(1,2,3):", parent)

@@ -52,3 +52,11 @@ def kruskal_mst(edges, V):
             total_weight += w
 
     return mst_edges, total_weight
+
+# Test case
+edges = [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]
+V = 4
+
+mst_edges, mst_weight = kruskal_mst(edges, V)
+print("MST edges:", mst_edges)
+print("MST total weight:", mst_weight)
