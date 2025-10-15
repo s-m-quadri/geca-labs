@@ -16,8 +16,7 @@ def countdown_iterative(n):
     while n > 0:
         print(n)
         n -= 1
-
-# Try both
+# to do
 n = 5
 print("Recursive countdown:")
 countdown_recursive(n)
