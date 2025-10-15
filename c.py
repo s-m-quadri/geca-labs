@@ -3,7 +3,6 @@
 
 # 💡 TIP:
 # `input()` always returns a string, so use `int()` to convert age.
-name = input("Enter your name: ")
+nmae = input("Enter your name: ")
 age = int(input("Enter your age: "))
-
-print("Hello ", name, "your age ", age, "year old")
+name = input("Enter your name: ")
