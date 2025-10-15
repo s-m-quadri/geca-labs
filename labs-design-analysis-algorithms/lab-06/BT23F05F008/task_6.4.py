@@ -36,4 +36,4 @@ print("Parent after union(0,1):", parent)
 print("Find(1):", find(parent, 1))
 
 union(parent, 1, 2)
-print("Parent after union(1,2
+print("Parent after union(1,2,3):", parent)
