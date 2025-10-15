@@ -13,3 +13,41 @@
 # - Do not use Python's built-in sort().
 
 # Write your solution here
+
+def merge(students, left, mid, right):
+    temp = []
+    i = left
+    j = mid + 1
+    while i <= mid and j <= right:
+        if students[i][1] > students[j][1]:
+            temp.append(students[i])
+            i += 1
+        elif students[i][1] < students[j][1]:
+            temp.append(students[j])
+            j += 1
+        else:
+            if students[i][0] < students[j][0]:
+                temp.append(students[i])
+                i += 1
+            else:
+                temp.append(students[j])
+                j += 1
+    while i <= mid:
+        temp.append(students[i])
+        i += 1
+    while j <= right:
+        temp.append(students[j])
+        j += 1
+    for k in range(len(temp)):
+        students[left + k] = temp[k]
+
+def merge_sort(students, left, right):
+    if left < right:
+        mid = (left + right) // 2
+        merge_sort(students, left, mid)
+        merge_sort(students, mid + 1, right)
+        merge(students, left, mid, right)
+
+students = [("Alice", 85), ("Bob", 92), ("Charlie", 78), ("David", 92)]
+merge_sort(students, 0, len(students) - 1)
+print(students)
