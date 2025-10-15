@@ -5,6 +5,5 @@
 
 # 💡 TIP:
 # Use the `print()` function.
-todo
 print("Hello, Python!")
 print("This is Lab A")
