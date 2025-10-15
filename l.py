@@ -4,3 +4,19 @@
 
 # 💡 TIP:
 # Use dict[key] to access values, and `.items()` to loop.
+
+
+# Create a dictionary of students and marks
+students = {
+    "Alice": 85,
+    "Bob": 92,
+    "Charlie": 78
+}
+
+# Print a specific student's marks
+print("Bob's marks:", students["Bob"])
+
+# Loop through all students and print names and scores
+print("\nAll students and their marks:")
+for name, marks in students.items():
+    print(name, ":", marks)
