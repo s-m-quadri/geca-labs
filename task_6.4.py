@@ -1,13 +1,17 @@
-# Task 6.4: Find and Union Functions
-# -----------------------------------
-# Extend union-find with:
-# 1. find(x) -> returns root parent of x.
-# 2. union(x, y) -> merges sets containing x and y.
+def find(parent, x):
+    if parent[x] != x:
+        parent[x] = find(parent, parent[x])
+    return parent[x]
 
-# Example:
-# parent = [0,1,2,3]
-# union(0,1) → parent updated
-# find(1) → should return 0 after union
+def union(parent, x, y):
+    xroot = find(parent, x)
+    yroot = find(parent, y)
+    if xroot != yroot:
+        parent[yroot] = xroot
 
-# Hint: Use recursion for find().
-# Tip: Try multiple unions, like (0,1), (1,2).
+parent = [0,1,2,3]
+union(parent, 0, 1)
+union(parent, 1, 2)
+print(find(parent, 2))
+print(parent)
+
