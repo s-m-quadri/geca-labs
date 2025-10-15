@@ -1,9 +1,3 @@
-# -------------------------------------------
-# Problem: Sum of first n natural numbers
-# Example: sum(5) = 1 + 2 + 3 + 4 + 5 = 15
-# -------------------------------------------
-
-# Recursive version
 def sum_recursive(n):
     if n == 0:
         return 0
