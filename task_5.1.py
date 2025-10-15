@@ -19,6 +19,7 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+
 def initialize_prim(V):
     # Initialize key[], parent[], and mstSet[] arrays
     key = [float('inf')] * V      # ∞ for all vertices

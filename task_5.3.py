@@ -34,7 +34,7 @@ def update_keys(graph, u, key, parent, mstSet):
             key[v] = graph[u][v]
             parent[v] = u
 
-# test case
+#todo
 graph = [
     [0, 2, 0],
     [2, 0, 3],

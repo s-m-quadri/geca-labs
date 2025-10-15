@@ -50,7 +50,7 @@ def prim_mst_heap(graph, start=0):
         if parent[v] != -1:
             mst_edges.append((parent[v], v, graph[parent[v]][v]))
     return mst_edges
-
+#todo
 graph = [
     [0, 2, 0, 6, 0],
     [2, 0, 3, 8, 5],
