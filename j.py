@@ -1,8 +1,10 @@
-fruits = ["apple", "banana", "cherry"]
-for fruit in fruits:
-    print(fruit)
+words = []
+words.append("zebra")
+words.append("apple")
+words.append("monkey")
 
-print("---")
+words.sort()
+print("Sorted:", words)
 
-for index, value in enumerate(fruits):
-    print(f"Index {index}: {value}")
+words.reverse()
+print("Reversed:", words)
