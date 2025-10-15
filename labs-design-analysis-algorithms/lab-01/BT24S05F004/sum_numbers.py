@@ -19,4 +19,4 @@ def sum_iterative(n):
 # Try both
 n = 10
 print("Recursive sum:", sum_recursive(n))
-print("Iterative sum:", sum_iterative(n))
+print("Iterative sum:", sum_iterative(n)))
