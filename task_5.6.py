@@ -24,3 +24,43 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]
 """
+
+
+import heapq
+
+def prim_mst_heap(graph, start):
+    V = len(graph)
+    key = [float('inf')] * V
+    parent = [-1] * V
+    visited = [False] * V
+
+    key[start] = 0
+    pq = [(0, start)]  
+
+    while pq:
+        k, u = heapq.heappop(pq)
+        if visited[u]:
+            continue
+        visited[u] = True
+
+        for v in range(V):
+            if graph[u][v] != 0 and not visited[v] and graph[u][v] < key[v]:
+                key[v] = graph[u][v]
+                parent[v] = u
+                heapq.heappush(pq, (key[v], v))
+
+    mst_edges = []
+    for v in range(V):
+        if parent[v] != -1:
+            mst_edges.append((parent[v], v, graph[parent[v]][v]))
+    return mst_edges
+
+graph = [
+    [0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0]
+]
+start = 0
+print(prim_mst_heap(graph, start))
