@@ -12,6 +12,7 @@
 # Output: 8
 #
 # Bonus: Try printing the whole Fibonacci sequence up to n instead of just nth number.
+
 def fib_recursive(n):
     if n <= 1:
         return n
