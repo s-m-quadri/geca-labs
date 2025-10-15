@@ -12,3 +12,34 @@
 # Output: 8
 #
 # Bonus: Try printing the whole Fibonacci sequence up to n instead of just nth number.
+
+def fib_recursive(n):
+    """Return the nth Fibonacci number using recursion."""
+    if n < 0:
+        raise ValueError("n must be >= 0")
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fib_recursive(n - 1) + fib_recursive(n - 2)
+def fib_iterative(n):
+    """Return the nth Fibonacci number using iteration."""
+    if n < 0:
+        raise ValueError("n must be >= 0")
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+def print_fib_sequence(n):
+    """Print the Fibonacci sequence up to n (inclusive)."""
+    seq = [fib_iterative(i) for i in range(n + 1)]
+    print(seq)
+
+# Example usage:
+if __name__ == "__main__":
+    n = 6
+    print(f"Recursive: Fib({n}) = {fib_recursive(n)}")
+    print(f"Iterative: Fib({n}) = {fib_iterative(n)}")
+    print("Fibonacci sequence up to n:")
+    print_fib_sequence(n)
