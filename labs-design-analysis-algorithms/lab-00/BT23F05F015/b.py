@@ -7,3 +7,11 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
+
+# Declare variables
+name = "Alice"
+age = 20
+is_student = True
+
+# Print all in one line
+print(name, age, is_student)
