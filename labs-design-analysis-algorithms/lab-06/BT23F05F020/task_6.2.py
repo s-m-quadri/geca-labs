@@ -11,13 +11,8 @@
 # Tip: Test with 5-6 edges to check order.
 
 def sort_edges_by_weight(edges):
-    """
-    Sorts a list of edges (u, v, w) by their weight w.
-    """
     return sorted(edges, key=lambda x: x[2])
 
-# Example usage:
-if __name__ == "__main__":
-    edges = [(0, 1, 4), (0, 2, 3), (1, 2, 1), (2, 3, 5), (1, 3, 2)]
-    sorted_edges = sort_edges_by_weight(edges)
-    print(sorted_edges)
+edges_input = [(0,1,4), (0,2,3), (1,2,1)]
+sorted_edges = sort_edges_by_weight(edges_input)
+print("Edges sorted by weight:", sorted_edges)

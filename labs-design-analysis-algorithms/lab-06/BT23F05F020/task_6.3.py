@@ -10,15 +10,10 @@
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
 
-def create_parent_array(num_vertices):
-    """
-    Creates and returns a parent array for union-find,
-    where parent[i] = i initially.
-    """
-    return [i for i in range(num_vertices)]
+def initialize_union_find(n):
+    parent = [i for i in range(n)]
+    return parent
 
-# Example usage:
-if __name__ == "__main__":
-    num_vertices = 5
-    parent = create_parent_array(num_vertices)
-    print(parent)
+n = 5
+parent = initialize_union_find(n)
+print("Initial parent array:", parent)

@@ -11,29 +11,30 @@
 
 # Hint: Use recursion for find().
 # Tip: Try multiple unions, like (0,1), (1,2).
+
 def find(parent, x):
     """
-    Recursively find the root parent of x.
+    Recursively finds the root parent of x.
     """
-    if parent[x] == x:
-        return x
-    return find(parent, parent[x])
+    if parent[x] != x:
+        return find(parent, parent[x])
+    return parent[x]
 
 def union(parent, x, y):
     """
-    Merge the sets containing x and y.
+    Merges the sets containing x and y.
     """
-    x_root = find(parent, x)
-    y_root = find(parent, y)
-    if x_root != y_root:
-        parent[y_root] = x_root  # Make one root the parent of the other
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+    if root_x != root_y:
+        parent[root_y] = root_x
 
-# Example usage
-parent = [0, 1, 2, 3]
-
-union(parent, 0, 1)
-print("Parent after union(0,1):", parent)
-print("Find(1):", find(parent, 1))
-
-union(parent, 1, 2)
-print("Parent after union(1,2
+# Example usage:
+if __name__ == "__main__":
+    parent = [0, 1, 2, 3]
+    union(parent, 0, 1)
+    print("After union(0,1):", parent)
+    print("find(1):", find(parent, 1))
+    union(parent, 1, 2)
+    print("After union(1,2):", parent)
+    print("find(2):", find(parent, 2))
