@@ -12,3 +12,22 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
+
+# Recursive version
+def reverse_recursive(s):
+    if len(s) == 0:
+        return ""
+    else:
+        return reverse_recursive(s[1:]) + s[0]
+
+# Iterative version
+def reverse_iterative(s):
+    reversed_str = ""
+    for char in s:
+        reversed_str = char + reversed_str  # prepend each character
+    return reversed_str
+
+# Example usage
+s = "hello"
+print("Recursive reverse:", reverse_recursive(s))
+print("Iterative reverse:", reverse_iterative(s))
