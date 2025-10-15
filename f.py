@@ -7,7 +7,8 @@
 # 💡 TIP:
 # Use `if`, `elif`, and `else`.
 
-num = float(input("Enter a number: "))
+
+um = float(input("Enter a number: "))
 # to do 
 if num > 0:
     print("Positive")

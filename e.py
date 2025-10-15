@@ -8,6 +8,7 @@
 # 💡 TIP:
 # Use `.upper()`, slicing `[::-1]`, and `len()`.
 # to do
+
 sentence = input("Enter a sentence: ")
 
 print("Uppercase:", sentence.upper())

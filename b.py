@@ -8,6 +8,8 @@
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
 # Declare variables
+
+
 name = "Gokul"
 age = 21
 is_student = True
