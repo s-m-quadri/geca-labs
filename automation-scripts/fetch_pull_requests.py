@@ -18,7 +18,9 @@ PR_OUTPUT_FILE = f"{OUTPUT_DIR}/pull_requests.csv"
 # FILES_OUTPUT_FILE removed: not generating file_changes.csv anymore
 COMMITS_OUTPUT_FILE = f"{OUTPUT_DIR}/commits.csv"
 INCREMENTAL_COMMITS = os.getenv("INCREMENTAL_COMMITS", "1") == "1"
-SKIP_COMMIT_DETAILS = os.getenv("SKIP_COMMIT_DETAILS", "1") == "1"  # default to fast mode
+# By default fetch commit details (additions/deletions/files changed).
+# Set SKIP_COMMIT_DETAILS=1 in the environment for a faster, less-detailed run.
+SKIP_COMMIT_DETAILS = os.getenv("SKIP_COMMIT_DETAILS", "0") == "1"
 
 # Create output directory if it doesn't exist
 os.makedirs(OUTPUT_DIR, exist_ok=True)
