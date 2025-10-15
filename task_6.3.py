@@ -9,20 +9,3 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
-
-def initialize_union_find(n):
-    """
-    Initializes the Union-Find parent array.
-
-    Parameters:
-    n (int): Number of vertices.
-
-    Returns:
-    list: A list where parent[i] = i initially.
-    """
-    parent = [i for i in range(n)]
-    print("Initial parent array:", parent)  # Optional: for verification
-    return parent
-
-# Example usage:
-parent = initialize_union_find(5)
