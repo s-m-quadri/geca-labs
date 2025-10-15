@@ -1,14 +1,11 @@
-def initialize_union_find(V):
-    """
-    Initialize parent array for Union-Find.
+# Task 6.3: Union-Find Data Structure (Basics)
+# ---------------------------------------------
+# Implement a simple parent[] array for union-find.
+# Only create parent[] such that parent[i] = i initially.
 
-    V: number of vertices
-    Returns: parent array where each vertex is its own parent initially
-    """
-    parent = [i for i in range(V)]  # each vertex is its own parent
-    return parent
+# Example:
+# Input: 5 vertices
+# Expected parent: [0, 1, 2, 3, 4]
 
-# Example usage
-V = 5
-parent = initialize_union_find(V)
-print("Initial parent array:", parent)
+# Hint: Use list comprehension.
+# Tip: No path compression or union by rank yet.
