@@ -44,7 +44,7 @@ def prim_iteration(graph, key, parent, mstSet):
             key[v] = graph[u][v]
             parent[v] = u
 
-# Test case
+# test case
 graph = [
     [0, 1, 4],
     [1, 0, 2],

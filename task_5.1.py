@@ -48,5 +48,5 @@ graph = [
     [6, 8, 0, 0, 9],
     [0, 5, 7, 9, 0]
 ]
- 
+ #todo
 prim_mst(graph)
