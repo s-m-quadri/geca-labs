@@ -12,3 +12,14 @@
 # Output: "olleh"
 #
 # Bonus: Try solving without using Python slicing [::-1].
+def reverse_recursive(s):
+    if len(s) <= 1:
+        return s
+    return reverse_recursive(s[1:]) + s[0]
+
+
+def reverse_iterative(s):
+    reversed_str = ""
+    for char in s:
+        reversed_str = char + reversed_str
+    return reversed_str
