@@ -12,6 +12,5 @@
 # 1: [0]
 # 2: [3]
 # 3: [0, 2]
-
 # Hint: Use dictionary for adjacency list.
 # Tip: Visualization part is optional, but fun for testing.
