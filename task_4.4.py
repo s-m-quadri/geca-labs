@@ -20,3 +20,30 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
+
+
+
+
+def fractional_knapsack(W, items):
+    """
+    W: maximum capacity of the knapsack
+    items: list of tuples (value, weight)
+    Returns maximum value that can be carried
+    """
+    items = sorted(items, key=lambda x: x[0] / x[1], reverse=True)
+    
+    total_value = 0.0 
+    remaining_capacity = W
+   
+    for value, weight in items:
+        if weight <= remaining_capacity:
+            #whole
+            total_value += value
+            remaining_capacity -= weight
+        else:
+            #fractional part
+            fraction = remaining_capacity / weight
+            total_value += value * fraction
+            break 
+    
+    return total_value
