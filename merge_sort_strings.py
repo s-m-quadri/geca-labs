@@ -11,7 +11,7 @@ def merge(left, right):
     result.extend(left[i:])
     result.extend(right[j:])
     return result
-# to do
+
 def merge_sort_strings(arr):
     if len(arr) <= 1:
         return arr
