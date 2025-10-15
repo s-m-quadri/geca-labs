@@ -15,7 +15,7 @@ def print_letters_iterative(word):
     for ch in word:
         print(ch)
 
-# Try both
+# to do
 word = "dog"
 print("Recursive:")
 print_letters_recursive(word)

@@ -10,8 +10,7 @@ def factorial_iterative(n):
     for i in range(2, n + 1):
         result *= i
     return result
- # to do
-# Driver
+# to do
 n = 5
 print("Recursive:", factorial_recursive(n))
 print("Iterative:", factorial_iterative(n))
