@@ -20,31 +20,3 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
-
-# ----------------------------------------------
-# Task 4.6: Activity Selection Problem (Greedy)
-# ----------------------------------------------
-
-def activity_selection(activities):
-    # Step 1: Sort activities by their finish time
-    activities.sort(key=lambda x: x[1])
-
-    selected = []   # To store chosen activities
-    last_finish_time = 0
-
-    # Step 2: Pick the first activity, then next compatible ones
-    for start, finish in activities:
-        if start >= last_finish_time:
-            selected.append((start, finish))
-            last_finish_time = finish
-
-    return selected
-
-
-# Example Test
-activities = [(1, 2), (3, 4), (0, 6), (5, 7), (8, 9), (5, 9)]
-
-result = activity_selection(activities)
-print(f"Maximum activities that can be performed: {len(result)}")
-print("Selected activities:", result)
-
