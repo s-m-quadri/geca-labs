@@ -4,12 +4,3 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
-try:
-    x = int(input("Enter the first number: "))
-    y = int(input("Enter the second number: "))
-    result = x / y
-    print("Result:", result)
-except ValueError:
-    print("Please enter valid integers.")
-except ZeroDivisionError:
-    print("Cannot divide by zero.")
