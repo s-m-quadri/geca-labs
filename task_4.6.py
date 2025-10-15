@@ -20,3 +20,36 @@
 # Hint: Sort activities by finish time, then pick the next compatible activity.
 #
 # This is your challenge task for the nerds!
+# Task 4.6: Activity Selection (Greedy)
+# ------------------------------------
+# Sort activities by finish time, then pick the next activity whose start
+# is >= the finish time of the last selected activity.
+
+def activity_selection(activities):
+    """
+    activities: list of tuples (start, finish)
+    Returns: (selected_count, selected_activities_list)
+    """
+    if not activities:
+        return 0, []
+
+    # Sort by finish time (ascending). If finish times tie, stable sort keeps original order.
+    activities_sorted = sorted(activities, key=lambda x: x[1])
+
+    selected = []
+    last_finish = -float("inf")
+
+    for start, finish in activities_sorted:
+        if start >= last_finish:
+            selected.append((start, finish))
+            last_finish = finish
+
+    return len(selected), selected
+
+
+# Example usage
+if __name__ == "__main__":
+    activities = [(1,2), (3,4), (0,6), (5,7), (8,9), (5,9)]
+    count, chosen = activity_selection(activities)
+    print("Max activities:", count)
+    print("Chosen activities:", chosen)
