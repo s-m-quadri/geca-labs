@@ -1,12 +1,5 @@
-# Writing to a file
-with open("output.txt", "w") as f:
-    f.write("Line 1: Hello Python\n")
-    f.write("Line 2: Learning file handling\n")
-    f.write("Line 3: Practice makes perfect\n")
+# Create a file named `output.txt`, write 3 lines into it, then read and print the content.
+#  - Use file modes `'w'` and `'r'`.
 
-# Reading from the file
-with open("output.txt", "r") as f:
-    content = f.read()
-
-print("File content:")
-print(content)
+# 💡 TIP:
+# Use `with open(...) as f:` to auto-close files.

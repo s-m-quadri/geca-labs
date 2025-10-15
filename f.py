@@ -1,11 +1,8 @@
+# Ask the user to enter a number.
+# Print:
+#  - "Positive" if it's > 0
+#  - "Negative" if it's < 0
+#  - "Zero" if it's 0
 
-x = float(input("Enter first number: "))
-y = float(input("Enter second number: "))
-
-# Performing operations
-print("Sum:", x + y)
-print("Difference:", x - y)
-print("Product:", x * y)
-print("Quotient:", x / y)
-print("Remainder:", x % y)
-print("Power:", x ** y)
+# 💡 TIP:
+# Use `if`, `elif`, and `else`.

@@ -1,6 +1,9 @@
-# Asking user for input
-name = input("Enter your name: ")
-age = int(input("Enter your age: "))
+# ✅ TASK:
+# Ask user for a sentence.
+# Then:
+#  - Print it in uppercase.
+#  - Print it reversed.
+#  - Print its length.
 
-
-print("Hello", name + ", you are", age, "years old.")
+# 💡 TIP:
+# Use `.upper()`, slicing `[::-1]`, and `len()`.

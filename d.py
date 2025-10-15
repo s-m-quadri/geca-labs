@@ -1,7 +1,11 @@
-# Declaring variables
-name = "Tanisha"
-age = 20
-is_student = True
+# Write a program that takes two numbers from the user.
+# Print their:
+#  - sum
+#  - difference
+#  - product
+#  - quotient
+#  - remainder
+#  - power (x^y)
 
-
-print(name, age, is_student)
+# 💡 TIP:
+# Use `+`, `-`, `*`, `/`, `%`, and `**`.

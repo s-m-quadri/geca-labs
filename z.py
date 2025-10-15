@@ -1,6 +1,6 @@
+# Combine everything you've learned.
+# Ask user for a number, check if it's even, calculate its square root,
+# and print a random motivational quote if the number is > 10.
 
-try:
-    num = int(input("Enter a number: "))
-    print("You entered:", num)
-except ValueError:
-    print("Invalid input")
+# 💡 TIP:
+# Combine `if`, `math`, `random`, and type conversion.

@@ -1,7 +1,5 @@
-# Declaring variables
-name = "Tanisha"
-age = 20
-is_student = True
+# Ask the user for their name and age using `input()`.
+# Then print: "Hello <name>, you are <age> years old."
 
-
-print(name, age, is_student)
+# 💡 TIP:
+# `input()` always returns a string, so use `int()` to convert age.
