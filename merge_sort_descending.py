@@ -24,4 +24,4 @@ if __name__ == "__main__":
     arr = [5, 3, 8, 6, 2, 7, 4, 1]
     print("Original:", arr)
     sorted_desc = merge_sort_desc(arr)
-    print("Sorted (descending):", sorted_desc)
+    print("Sorted (descending):", sorted_desc))
