@@ -3,3 +3,12 @@
 
 # 💡 TIP:
 # Use `for item in list` and `enumerate(list)` for both item and index.
+
+fruits = ["apple", "banana", "cherry", "mango"]
+
+for item in fruits:
+    print(item)
+#todo
+print("With index:")
+for index, value in enumerate(fruits):
+    print(index, value)

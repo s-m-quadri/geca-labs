@@ -7,10 +7,3 @@
 
 # 💡 TIP:
 # Use `=`, `True/False`, and `print()` with commas.
-# Declaring variables
-name = "Gokul"
-age = 20
-is_student = True
-
-# Printing all in one line
-print(name, age, is_student)

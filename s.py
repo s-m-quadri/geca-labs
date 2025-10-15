@@ -4,3 +4,14 @@
 
 # 💡 TIP:
 # Use `except ZeroDivisionError:` and `except ValueError:` blocks.
+
+try:
+    x = int(input("Enter numerator: "))
+    y = int(input("Enter denominator: "))
+    result = x / y
+    print("Result:", result)
+    #todo
+except ZeroDivisionError:
+    print("Error: Cannot divide by zero.")
+except ValueError:
+    print("Error: Please enter valid integers.")
