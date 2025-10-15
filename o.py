@@ -1,12 +1,6 @@
-# Function with default parameter
-def greet(name, msg="Hello"):
-    print(f"{msg}, {name}!")
+# Create a function `greet` that takes a name and an optional message.
+#  - If no message is provided, it should default to "Hello".
+#  - Call the function in three different ways using default and named arguments.
 
-# Call with only name (uses default message)
-greet("Alice")
-
-# Call with name and custom message
-greet("Bob", "Hi")
-
-# Call using named arguments
-greet(name="Charlie", msg="Welcome")
+# 💡 TIP:
+#  Use `def greet(name, msg="Hello"):` to set a default value.
