@@ -4,6 +4,9 @@
 # 💡 TIP:
 # Use `with open(...) as f:` to auto-close files.
 with open("output.txt", "w") as f:
-    f.write("Line 1\nLine 2\nLine 3\n")
+    f.write("Line 1\n")
+    f.write("Line 2\n")
+    f.write("Line 3\n")
+
 with open("output.txt", "r") as f:
     print(f.read())
