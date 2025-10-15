@@ -1,21 +1,21 @@
-def initialize_prim(V):
-    """
-    Initialize key, parent, and mstSet arrays for Prim's algorithm.
+"""
+Background:
+Prim's algorithm finds a Minimum Spanning Tree (MST) in a weighted graph.
 
-    V: number of vertices
-    Returns: key, parent, mstSet
-    """
-    key = [float('inf')] * V      # ∞ for all vertices
-    parent = [-1] * V             # -1 indicates no parent yet
-    mstSet = [False] * V          # False indicates vertex not yet included in MST
-    return key, parent, mstSet
+Task:
+Write a function that initializes key[], parent[], mstSet[] arrays for a graph with V vertices.
 
-# ExampleS usage
+Instruction:
+- Use Python lists.
+- Do not implement the full MST yet.
+
+Tip:
+Focus only on initialization. Use ∞ for key values and -1 for parent.
+
+Test case:
 V = 4
-key, parent, mstSet = initialize_prim(V)
-
-print("key:", key)
-print("parent:", parent)
-print("mstSet:", mstSet)
-
-#ss
+# Expected:
+# key = [∞, ∞, ∞, ∞]
+# parent = [-1, -1, -1, -1]
+# mstSet = [False, False, False, False]
+"""
