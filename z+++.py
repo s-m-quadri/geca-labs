@@ -6,6 +6,7 @@
 # 💡 TIP:
 # Use `while True` with `if` and `break`.
 
+
 import time
 
 while True:
