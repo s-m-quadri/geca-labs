@@ -9,3 +9,10 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+
+def make_parent(n):
+    return [i for i in range(n)]
+
+parent = make_parent(5)
+print(parent)
