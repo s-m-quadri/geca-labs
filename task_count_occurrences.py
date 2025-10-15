@@ -9,3 +9,45 @@
 #
 # Input: arr = [5, 5, 5, 5, 5], target = 5
 # Output: 5
+
+def count_occurrences(arr, target):
+    def find_first(arr, target):
+        left, right = 0, len(arr) - 1
+        first = -1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] == target:
+                first = mid
+                right = mid - 1
+            elif arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return first
+
+    def find_last(arr, target):
+        left, right = 0, len(arr) - 1
+        last = -1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] == target:
+                last = mid
+                left = mid + 1
+            elif arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return last
+
+    first = find_first(arr, target)
+    if first == -1:
+        return 0
+    last = find_last(arr, target)
+    return last - first + 1
+
+arr1 = [1, 2, 2, 2, 3, 4]
+target1 = 2
+arr2 = [5, 5, 5, 5, 5]
+target2 = 5
+
+print(count_occurrences(ar_
