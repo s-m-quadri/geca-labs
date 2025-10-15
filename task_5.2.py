@@ -1,29 +1,19 @@
-def min_key_vertex(key, mstSet):
-    """
-    Find the vertex with the minimum key value not yet included in MST.
+"""
+Background:
+Prim's algorithm builds MST by adding one vertex at a time.
 
-    Parameters:
-    key : list
-        List of key values for each vertex.
-    mstSet : list
-        Boolean list indicating inclusion in MST.
+Task:
+Write a function to find the vertex with the minimum key not yet in MST.
 
-    Returns:
-    int
-        Index of the vertex with minimum key not in MST.
-    """
-    min_value = float('inf')
-    min_index = -1
+Instruction:
+- Input: key[], mstSet[]
+- Output: index of minimum key vertex.
 
-    for v in range(len(key)):
-        if not mstSet[v] and key[v] < min_value:
-            min_value = key[v]
-            min_index = v
+Tip:
+Use a simple linear search.
 
-    return min_index
-
-# Test case
+Test case:
 key = [0, 2, 3]
 mstSet = [True, False, False]
-
-print("Minimum key vertex:", min_key_vertex(key, mstSet))
+# Expected output: 1
+"""
