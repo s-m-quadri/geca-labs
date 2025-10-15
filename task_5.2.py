@@ -17,6 +17,7 @@ key = [0, 2, 3]
 mstSet = [True, False, False]
 # Expected output: 1
 """
+<<<<<<< HEAD
 def find_min_key_vertex(key, mstSet):
     V = len(key)
     min_key = float('inf')
@@ -27,10 +28,20 @@ def find_min_key_vertex(key, mstSet):
             min_key = key[v]
             min_index = v
     
+=======
+def min_key_vertex(key, mstSet):
+    min_val = float('inf')
+    min_index = -1
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_val:
+            min_val = key[i]
+            min_index = i
+>>>>>>> fce9ab5 (Added Lab 5)
     return min_index
 
 key = [0, 2, 3]
 mstSet = [True, False, False]
+<<<<<<< HEAD
 result = find_min_key_vertex(key, mstSet)
 print(f"Test case 1:")
 print(f"key = {key}")
@@ -64,3 +75,6 @@ print(f"key = {key4}")
 print(f"mstSet = {mstSet4}")
 print(f"Minimum key vertex: {result4}")
 print(f"Expected: -1 (no vertex available), Got: {result4}")
+=======
+print(min_key_vertex(key, mstSet))  # Output: 1
+>>>>>>> fce9ab5 (Added Lab 5)

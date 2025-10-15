@@ -28,11 +28,16 @@ parent = [-1, -1, -1]
 """
 def update_keys(graph, u, key, parent, mstSet):
     V = len(graph)
+<<<<<<< HEAD
     
     for v in range(V):
         if (not mstSet[v] and 
             graph[u][v] != 0 and 
             graph[u][v] < key[v]):
+=======
+    for v in range(V):
+        if graph[u][v] > 0 and not mstSet[v] and graph[u][v] < key[v]:
+>>>>>>> fce9ab5 (Added Lab 5)
             key[v] = graph[u][v]
             parent[v] = u
 
@@ -46,6 +51,7 @@ key = [0, float('inf'), float('inf')]
 mstSet = [True, False, False]
 parent = [-1, -1, -1]
 
+<<<<<<< HEAD
 print("Before update:")
 print(f"graph = {graph}")
 print(f"Selected vertex u = {u}")
@@ -85,3 +91,8 @@ print(f"key = {key2}")
 print(f"parent = {parent2}")
 print("Vertex 1 is connected to vertices 0,2,3 with weights 1,2,5")
 print("Expected updates: key[2]=2, parent[2]=1, key[3]=5, parent[3]=1")
+=======
+update_keys(graph, u, key, parent, mstSet)
+print("key =", key)
+print("parent =", parent)
+>>>>>>> fce9ab5 (Added Lab 5)

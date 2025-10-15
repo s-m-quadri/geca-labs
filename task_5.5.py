@@ -22,6 +22,7 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(0,3,6)]
 """
+<<<<<<< HEAD
 def find_min_key_vertex(key, mstSet):
     V = len(key)
     min_key = float('inf')
@@ -85,6 +86,34 @@ def print_mst_result(graph, start, mst_edges):
     print("\nMST edge details:")
     for parent, vertex, weight in mst_edges:
         print(f"  Edge ({parent}, {vertex}) with weight {weight}")
+=======
+def prim_mst(graph, start=0):
+    V = len(graph)
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    key[start] = 0
+
+    for _ in range(V):
+        u = -1
+        min_val = float('inf')
+        for i in range(V):
+            if not mstSet[i] and key[i] < min_val:
+                min_val = key[i]
+                u = i
+        mstSet[u] = True
+
+        for v in range(V):
+            if graph[u][v] > 0 and not mstSet[v] and graph[u][v] < key[v]:
+                key[v] = graph[u][v]
+                parent[v] = u
+
+    mst_edges = []
+    for v in range(V):
+        if parent[v] != -1:
+            mst_edges.append((parent[v], v, graph[parent[v]][v]))
+    return mst_edges
+>>>>>>> fce9ab5 (Added Lab 5)
 
 graph = [
     [0, 2, 0, 6],
@@ -92,6 +121,7 @@ graph = [
     [0, 3, 0, 0],
     [6, 8, 0, 0]
 ]
+<<<<<<< HEAD
 start = 0
 
 mst_edges = prims_mst(graph, start)
@@ -115,3 +145,7 @@ start2 = 0
 print("Test case 2 - Larger graph:")
 mst_edges2 = prims_mst(graph2, start2)
 print_mst_result(graph2, start2, mst_edges2)
+=======
+mst = prim_mst(graph, start=0)
+print("MST edges:", mst)
+>>>>>>> fce9ab5 (Added Lab 5)

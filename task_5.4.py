@@ -25,6 +25,7 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
+<<<<<<< HEAD
 def find_min_key_vertex(key, mstSet):
     V = len(key)
     min_key = float('inf')
@@ -58,6 +59,21 @@ def prim_iteration(graph, key, parent, mstSet):
     update_keys(graph, u, key, parent, mstSet)
     
     return u
+=======
+def prim_iteration(graph, key, parent, mstSet):
+    u = -1
+    min_val = float('inf')
+    for i in range(len(key)):
+        if not mstSet[i] and key[i] < min_val:
+            min_val = key[i]
+            u = i
+    if u != -1:
+        mstSet[u] = True
+        for v in range(len(graph)):
+            if graph[u][v] > 0 and not mstSet[v] and graph[u][v] < key[v]:
+                key[v] = graph[u][v]
+                parent[v] = u
+>>>>>>> fce9ab5 (Added Lab 5)
 
 graph = [
     [0, 1, 4],
@@ -68,6 +84,7 @@ key = [0, float('inf'), float('inf')]
 mstSet = [True, False, False]
 parent = [-1, -1, -1]
 
+<<<<<<< HEAD
 print("Initial state:")
 print(f"graph = {graph}")
 print(f"key = {key}")
@@ -107,3 +124,8 @@ for v in range(len(parent)):
     if parent[v] != -1:
         weight = graph[v][parent[v]]
         print(f"Edge: ({parent[v]}, {v}) with weight {weight}")
+=======
+prim_iteration(graph, key, parent, mstSet)
+print("key =", key)
+print("parent =", parent)
+>>>>>>> fce9ab5 (Added Lab 5)

@@ -19,6 +19,7 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+<<<<<<< HEAD
 def initialize_prims_arrays(V):
     key = [float('inf')] * V
     parent = [-1] * V
@@ -45,3 +46,16 @@ print(f"\nFor V = {V2} vertices:")
 print(f"key = {key2}")
 print(f"parent = {parent2}")
 print(f"mstSet = {mstSet2}")
+=======
+def initialize_prim(V):
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+V = 4
+key, parent, mstSet = initialize_prim(V)
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
+>>>>>>> fce9ab5 (Added Lab 5)
