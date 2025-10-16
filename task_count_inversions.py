@@ -14,3 +14,16 @@
 # Write your solution here
 
 #todo
+def count_inversions(arr):
+    def merge_sort_and_count(nums):
+        if len(nums) <= 1:
+            return nums, 0
+        
+        mid = len(nums) // 2
+        left, inv_left = merge_sort_and_count(nums[:mid])
+        right, inv_right = merge_sort_and_count(nums[mid:])
+        merged, inv_split = merge_and_count(left, right)
+        
+        return merged, inv_left + inv_right + inv_split_
+arr = [2, 4, 1, 3, 5]
+print("Inversion count:", count_inversions(arr))
