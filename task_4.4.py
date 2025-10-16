@@ -59,3 +59,4 @@ capacity = 50
 # Step 3 & 4: Get maximum value
 max_value = fractional_knapsack(capacity, items)
 print(f"Maximum value in Knapsack = {max_value}")
+
