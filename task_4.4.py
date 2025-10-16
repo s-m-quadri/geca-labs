@@ -20,24 +20,3 @@
 # Output: 240.0
 #
 # Hint: Use sorting and simple loops.
-def fractional_knapsack(capacity, items):
-    items.sort(key=lambda x: x[0] / x[1], reverse=True)
-    total_value = 0
-    for value, weight in items:
-        if capacity >= weight:
-            capacity -= weight
-            total_value += value
-        else:
-            total_value += value * (capacity / weight)
-            break
-    return total_value
-
-W = int(input("Enter knapsack capacity: "))
-n = int(input("Enter number of items: "))
-items = []
-for _ in range(n):
-    value = float(input("Enter item value: "))
-    weight = float(input("Enter item weight: "))
-    items.append((value, weight))
-
-print("Maximum value in knapsack:", fractional_knapsack(W, items))
