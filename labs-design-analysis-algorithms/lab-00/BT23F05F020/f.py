@@ -6,3 +6,13 @@
 
 # 💡 TIP:
 # Use `if`, `elif`, and `else`.
+
+
+um = float(input("Enter a number: "))
+# to do 
+if num > 0:
+    print("Positive")
+elif num < 0:
+    print("Negative")
+else:
+    print("Zero")
