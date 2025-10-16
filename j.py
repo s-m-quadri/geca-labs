@@ -4,3 +4,15 @@
 
 # 💡 TIP:
 # Use .append(), .sort(), and .reverse()
+
+
+words = []
+
+words.append("banana")
+words.append("apple")
+words.append("cherry")
+#todo
+words.sort()
+words.reverse()
+
+print(words)

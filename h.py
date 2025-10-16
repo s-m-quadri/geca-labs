@@ -4,3 +4,13 @@
 
 # 💡 TIP:
 # Use indexing like list[0], list[-1], and list[2] to access or change values.
+
+
+numbers = [10, 20, 30, 40, 50]
+
+print("First:", numbers[0])
+print("Middle:", numbers[2])
+print("Last:", numbers[-1])
+#todo
+numbers[2] = 100
+print("Modified list:", numbers)
