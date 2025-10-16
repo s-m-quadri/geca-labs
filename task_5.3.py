@@ -26,3 +26,26 @@ parent = [-1, -1, -1]
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
 """
+def update_keys(graph, u, key, parent, mstSet):
+    n = len(graph)
+    for v in range(n):
+        
+        if graph[u][v] != 0 and not mstSet[v] and graph[u][v] < key[v]:
+            key[v] = graph[u][v]
+            parent[v] = u
+
+#todo
+graph = [
+    [0, 2, 0],
+    [2, 0, 3],
+    [0, 3, 0]
+]
+u = 0
+key = [0, float('inf'), float('inf')]
+mstSet = [True, False, False]
+parent = [-1, -1, -1]
+
+update_keys(graph, u, key, parent, mstSet)
+
+print("Updated key:", key)
+print("Updated parent:", parent)
