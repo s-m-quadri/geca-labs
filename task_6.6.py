@@ -15,3 +15,16 @@
 
 # Hint: Use dictionary for adjacency list.
 # Tip: Visualization part is optional, but fun for testing.
+# Kruskal + adjacency list visualization
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def kruskal_mst_adjlist(edges, V):
+    # Step 1: Sort edges by weight
+    edges_sorted = sorted(edges, key=lambda x: x[2])
+    
+    # Step 2: Union-Find
+    parent = [i for i in range(V)]
+    
+    def find(x):
+        if parent[x] == x:
