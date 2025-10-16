@@ -48,7 +48,6 @@ def mst_to_adjacency_list(mst_edges, V):
         adj_list[u].append(v)
         adj_list[v].append(u)  # Since undirected graph
     return adj_list
-
 def visualize_mst(mst_edges, V):
     """Optional: Visualize MST using networkx."""
     G = nx.Graph()

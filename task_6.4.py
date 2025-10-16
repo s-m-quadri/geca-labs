@@ -3,7 +3,6 @@
 # Extend union-find with:
 # 1. find(x) -> returns root parent of x.
 # 2. union(x, y) -> merges sets containing x and y.
-
 # Example:
 # parent = [0,1,2,3]
 # union(0,1) → parent updated

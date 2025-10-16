@@ -2,7 +2,6 @@
 # ------------------------
 # Write a function that sorts edges by their weight.
 # Use Python's built-in sorted().
-
 # Example:
 # Input: [(0,1,4), (0,2,3), (1,2,1)]
 # Expected Output: [(1,2,1), (0,2,3), (0,1,4)]
