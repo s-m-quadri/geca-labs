@@ -20,3 +20,17 @@ V = 4
 # mstSet = [False, False, False, False]
 """
 #todo
+def initialize_prim(V):
+    # Use float('inf') for ∞
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+# Example usage
+V = 4
+key, parent, mstSet = initialize_prim(V)
+
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
