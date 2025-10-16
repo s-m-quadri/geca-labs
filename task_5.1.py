@@ -19,3 +19,43 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+<<<<<<< HEAD
+def initialize_prims_arrays(V):
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    
+    return key, parent, mstSet
+
+V = 4
+key, parent, mstSet = initialize_prims_arrays(V)
+
+print(f"For V = {V} vertices:")
+print(f"key = {key}")
+print(f"parent = {parent}")
+print(f"mstSet = {mstSet}")
+
+print("\nVerification:")
+print(f"All keys are infinity: {all(k == float('inf') for k in key)}")
+print(f"All parents are -1: {all(p == -1 for p in parent)}")
+print(f"All mstSet are False: {all(m == False for m in mstSet)}")
+
+V2 = 6
+key2, parent2, mstSet2 = initialize_prims_arrays(V2)
+print(f"\nFor V = {V2} vertices:")
+print(f"key = {key2}")
+print(f"parent = {parent2}")
+print(f"mstSet = {mstSet2}")
+=======
+def initialize_prim(V):
+    key = [float('inf')] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
+
+V = 4
+key, parent, mstSet = initialize_prim(V)
+print("key =", key)
+print("parent =", parent)
+print("mstSet =", mstSet)
+>>>>>>> fce9ab5 (Added Lab 5)
