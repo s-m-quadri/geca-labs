@@ -2,7 +2,6 @@
 # -------------------------------------------------
 # Write Kruskal’s algorithm using edges list and union-find.
 # Iterate over sorted edges, add edge if it doesn’t form a cycle.
-
 # Example:
 # Graph: [(0,1,10), (0,2,6), (0,3,5), (1,3,15), (2,3,4)]
 # Expected MST edges: [(2,3,4), (0,3,5), (0,1,10)]

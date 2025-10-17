@@ -2,7 +2,6 @@
 # ---------------------------------------------
 # Implement a simple parent[] array for union-find.
 # Only create parent[] such that parent[i] = i initially.
-
 # Example:
 # Input: 5 vertices
 # Expected parent: [0, 1, 2, 3, 4]
