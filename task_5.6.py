@@ -24,3 +24,21 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]
 """
+import heapq
+
+def prim_mst_heap(graph, start=0):
+    V = len(graph)
+    key = [float('inf')] * V
+    parent = [-1] * V
+    inMST = [False] * V
+
+    key[start] = 0
+    min_heap = [(0, start)]  # (key, vertex)
+
+    while min_heap:
+        k, u = heapq.heappop(min_heap)
+        if inMST[u]:
+            continue
+        inMST[u] = True
+
+        for
