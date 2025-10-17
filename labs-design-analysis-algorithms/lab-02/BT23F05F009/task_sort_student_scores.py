@@ -13,3 +13,9 @@
 # - Do not use Python's built-in sort().
 
 # Write your solution here
+def merge(left, right):
+    """Merge two sorted sublists according to the given conditions."""
+    merged = []
+    i = j = 0
+
+    while i < len(left) and j < len(right)

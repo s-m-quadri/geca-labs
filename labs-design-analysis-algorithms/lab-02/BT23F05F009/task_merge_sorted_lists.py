@@ -14,3 +14,10 @@
 # - No recursion required.
 
 # Write your solution here
+def merge_sorted_lists(list1, list2):
+    """
+    Merge two sorted lists into a single sorted list (ascending order).
+    Time complexity: O(n + m)
+    Space complexity: O(n + m)
+    """
+    i, j
