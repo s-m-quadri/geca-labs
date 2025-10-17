@@ -17,3 +17,15 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
+# -----------------------------------------
+# Task 4.5: Coin Change (Greedy)
+# -----------------------------------------
+
+def coin_change_greedy(denominations, amount):
+    # Step 1: Sort denominations in descending order
+    denominations.sort(reverse=True)
+
+    coins_used = []
+    remaining = amount
+
+    # Step 2: Pick largest coin possibl

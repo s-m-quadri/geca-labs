@@ -13,26 +13,3 @@
 #
 # Hint: Start with the mathematical definition:
 # factorial(n) = 1 if n == 0 else n * factorial(n-1)
-# -----------------------------------------
-# Task 4.1: Factorial (Recursive vs Iterative)
-# -----------------------------------------
-
-# Function 1: Recursive approach
-def factorial_recursive(n):
-    if n == 0 or n == 1:
-        return 1
-    else:
-        return n * factorial_recursive(n - 1)
-
-# Function 2: Iterative approach
-def factorial_iterative(n):
-    result = 1
-    for i in range(2, n + 1):
-        result *= i
-    return result
-
-# ---- Example Test ----
-n = int(input("Enter a number: "))
-
-print("Factorial (Recursive):", factorial_recursive(n))
-print("Factorial (Iterative):", factorial_iterative(n))
