@@ -17,27 +17,3 @@
 #
 # Note: Greedy works with canonical coin systems like Indian/US coins,
 # but may fail with arbitrary denominations. That’s the fun part to test!
-def greedy_coin_change(denominations, amount):
-    # Sort denominations in descending order
-    denominations.sort(reverse=True)
-    
-    coins_used = []
-    remaining = amount
-    
-    for coin in denominations:
-        while remaining >= coin:
-            remaining -= coin
-            coins_used.append(coin)
-    
-    if remaining != 0:
-        print("Greedy may not give exact solution for this set of coins!")
-    
-    return coins_used, len(coins_used)
-
-# Example usage
-denominations = [1, 2, 5, 10, 20, 50, 100]
-amount = 93
-
-coins, total = greedy_coin_change(denominations, amount)
-print(f"Coins used: {coins}")
-print(f"Total coins: {total}")
