@@ -10,3 +10,18 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+def store_edges(edges_input):
+    """
+    edges_input: list of tuples (u, v, w)
+    Returns the same list of edges.
+    """
+    edges = []
+    for edge in edges_input:
+        edges.append(edge)
+    return edges
+
+# Example usage
+edges_input = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+edges = store_edges(edges_input)
+
+print("Edges stored:", edges)
