@@ -19,3 +19,16 @@ V = 4
 # parent = [-1, -1, -1, -1]
 # mstSet = [False, False, False, False]
 """
+def init_prim(V):
+    """
+    Initialize arrays for Prim's algorithm.
+
+    Returns:
+      key: list of length V with float('inf')
+      parent: list of length V with -1
+      mstSet: list of length V with False
+    """
+    key = [float("inf")] * V
+    parent = [-1] * V
+    mstSet = [False] * V
+    return key, parent, mstSet
