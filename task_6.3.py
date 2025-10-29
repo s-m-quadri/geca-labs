@@ -9,3 +9,15 @@
 
 # Hint: Use list comprehension.
 # Tip: No path compression or union by rank yet.
+
+def make_parent(n):
+    """
+    Create and return a parent list for union-find with n vertices.
+    parent[i] = i
+    """
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    return [i for i in range(n)]
+
+if __name__ == "__main__":
+    print("Parent for 5 vertices:", make_parent(5))
