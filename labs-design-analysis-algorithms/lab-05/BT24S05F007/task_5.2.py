@@ -17,3 +17,14 @@ key = [0, 2, 3]
 mstSet = [True, False, False]
 # Expected output: 1
 """
+def min_key_index(key, mstSet):
+    """
+    Return index of the minimum value in key[] among vertices not in mstSet.
+    """
+    min_val = float("inf")
+    min_index = -1
+    for i, k in enumerate(key):
+        if not mstSet[i] and k < min_val:
+            min_val = k
+            min_index = i
+    return min_index

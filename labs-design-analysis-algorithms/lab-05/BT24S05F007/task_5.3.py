@@ -26,3 +26,13 @@ parent = [-1, -1, -1]
 # key = [0, 2, ∞]
 # parent = [-1, 0, -1]
 """
+def update_neighbors(graph, u, key, parent, mstSet):
+    """
+    Update key and parent arrays for all neighbors v of u using adjacency matrix.
+    """
+    V = len(graph)
+    for v in range(V):
+        weight = graph[u][v]
+        if weight != 0 and not mstSet[v] and weight < key[v]:
+            key[v] = weight
+            parent[v] = u

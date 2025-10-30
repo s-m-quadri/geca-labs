@@ -24,38 +24,3 @@ graph = [
 start = 0
 # Expected MST edges: [(0,1,2),(1,2,3),(1,4,5),(0,3,6)]
 """
-import heapq
-
-def prim_mst_heap(graph, start=0):
-    """
-    Prim's algorithm using a min-heap. Assumes adjacency matrix input (list of lists).
-    Returns list of edges as (parent, vertex, weight).
-    """
-    V = len(graph)
-    if V == 0:
-        return []
-
-    key = [float("inf")] * V
-    parent = [-1] * V
-    visited = [False] * V
-
-    key[start] = 0
-    heap = [(0, start)]
-
-    edges = []
-
-    while heap:
-        k, u = heapq.heappop(heap)
-        if visited[u]:
-            continue
-        visited[u] = True
-        # when u is not the start, parent[u] holds the connecting vertex
-        if parent[u] != -1:
-            edges.append((parent[u], u, k))
-        # explore neighbors
-        for v, weight in enumerate(graph[u]):
-            if weight != 0 and not visited[v] and weight < key[v]:
-                key[v] = weight
-                parent[v] = u
-                heapq.heappush(heap, (weight, v))
-    return edges

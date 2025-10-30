@@ -25,20 +25,3 @@ parent = [-1, -1, -1]
 # key = [0, 1, 2]
 # parent = [-1, 0, 1]
 """
-from .task_5.2 import min_key_index
-from .task_5.3 import update_neighbors
-
-def prim_iteration(graph, key, parent, mstSet):
-    """
-    Perform one iteration of Prim's algorithm:
-    - select the min-key vertex not in mstSet
-    - mark it as included
-    - update its neighbors' keys and parents
-    Returns the selected vertex index (u) or -1 if none found.
-    """
-    u = min_key_index(key, mstSet)
-    if u == -1:
-        return -1
-    mstSet[u] = True
-    update_neighbors(graph, u, key, parent, mstSet)
-    return u
