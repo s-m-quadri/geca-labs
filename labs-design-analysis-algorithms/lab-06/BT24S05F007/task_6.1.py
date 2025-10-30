@@ -10,3 +10,14 @@
 
 # Hint: Just create and return the list.
 # Tip: Print the list to verify edges.
+
+def create_edge_list(edges):
+    """
+    Accepts an iterable of edge tuples (u, v, w) and returns a list of edges.
+    """
+    return list(edges)
+
+if __name__ == "__main__":
+    example = [(0, 1, 4), (0, 2, 3), (1, 2, 1)]
+    edges = create_edge_list(example)
+    print("Edges:", edges)
