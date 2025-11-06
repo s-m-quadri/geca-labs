@@ -6,7 +6,7 @@ import re
 # CONFIG
 # ------------------------
 REPO_URL = "https://github.com/s-m-quadri/geca-labs"
-LAB_RANGE = range(0, 11)   # Lab 0 to Lab 10
+LAB_RANGE = range(0, 7)   # Lab 0 to Lab 10
 INPUT_FILE = "output/pull_requests.csv"
 STUDENT_FILE = "output/students.csv"
 ATTENDANCE_FILE = "output/attendance.csv"
@@ -300,7 +300,7 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \begin{landscape}
 \small
 \begin{center}
-    {\LARGE \textbf{DAA Labs} Attendance and Submission Report - \textbf{September 2025}}
+    {\LARGE \textbf{DAA Labs} Attendance and Submission Report \textbf{2025}}
 \end{center}
 \vspace{1em} % small space before first table
 """)
