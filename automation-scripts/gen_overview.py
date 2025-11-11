@@ -12,6 +12,9 @@ INPUT_FILE = "output/pull_requests.csv"
 ATTENDANCE_FILE = "output/attendance.csv"
 LAB_RANGE = range(0, 11)   # Lab 0 to Lab 10
 
+# Flag to show or hide marks column
+SHOW_MARKS = True  # Set to False to hide marks column
+
 # Submitted rolls
 submitted_bt23 = [2,3,4,6,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,32,33,35,36,38,39,42,43,44,45,46,47,48,49,50,51,52,53,56,57,58,60,61,62,63,64,65,66,67]
 submitted_bt24 = [1,2,3,4,5,6,8,9,10]
@@ -145,21 +148,36 @@ for _, student in students_df.iterrows():
         attendance_str = f"{attended}/{conducted} ({attendance_percent}%)"
     else:
         attendance_str = "0/0 (0%)"
+        attendance_percent = 0
 
     # Submission: denominator is always 7 as requested. Compute integer percentage.
     SUBMISSION_DENOM = 7
     submission_percent = int(round((labs_completed / SUBMISSION_DENOM) * 100)) if SUBMISSION_DENOM > 0 else 0
     submission_str = f"{labs_completed}/{SUBMISSION_DENOM} ({submission_percent}%)"
     
+    # Calculate marks breakdown
+    base_marks = 10
+    writeup_marks = 5 if writeup_status == "submitted" else 0
+    attendance_marks = round((attendance_percent / 100) * 5)  # 5 marks for attendance
+    submission_marks = round((submission_percent / 100) * 5)  # 5 marks for submission
+    total_marks = base_marks + writeup_marks + attendance_marks + submission_marks
+    marks_breakdown = f"{base_marks}+{writeup_marks}+{attendance_marks}+{submission_marks} = {total_marks}"
+    
     # Place Sign and Marks at the end; Marks should be the very last column
-    overview_data.append({
+    row_data = {
         "PRN": prn,
         "Name": name,
         "Writeup": writeup_status,
         "Attendance": attendance_str,
         "Submission": submission_str,
         "Sign": sign
-    })
+    }
+    
+    # Add marks column if SHOW_MARKS is True
+    if SHOW_MARKS:
+        row_data["Marks"] = marks_breakdown
+    
+    overview_data.append(row_data)
 
 overview_dff = pd.DataFrame(overview_data)
 overview_dff = overview_dff.sort_values(by="PRN")
@@ -201,8 +219,9 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \end{center}
 \vspace{1em}
 """)
-    f.write(overview_dff.to_latex(index=False, longtable=True, escape=False, column_format='lllllp{2cm}'))
+    f.write(overview_dff.to_latex(index=False, longtable=True, escape=False, column_format='lllllll'))
     f.write(r"""
 \end{document}""")
 
-print(f"LaTeX overview report saved to {LATEX_FILE}")
+marks_column_info = "with marks column" if SHOW_MARKS else "without marks column"
+print(f"LaTeX overview report saved to {LATEX_FILE} ({marks_column_info})")
