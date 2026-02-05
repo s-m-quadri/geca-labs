@@ -7,5 +7,10 @@
 
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
+print("This is my second file")
+sId=110
+sname="Pratiksha"
+print(sId)
+print(sname)
 
 
