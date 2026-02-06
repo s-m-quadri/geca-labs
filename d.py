@@ -9,3 +9,15 @@
 # Loop: for key, value in student.items():
 
 
+student = {
+    "id" : 70,
+    "name" : "rohan",
+    "age" : 20,
+    "department" : "CSE"
+}
+
+print("Student Record :")
+for key, value in student.items():
+    print(f"{key.capitalize()} : {value}")
+
+print("Student Names :", student["name"])
