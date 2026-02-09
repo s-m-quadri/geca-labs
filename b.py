@@ -8,4 +8,6 @@
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
 
+#duto
 
+print("wellcome to dbms")
