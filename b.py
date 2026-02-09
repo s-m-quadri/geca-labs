@@ -7,5 +7,9 @@
 
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
-
+student_id = 101
+student_name = "suhani"
+marks = 85.5
+department = "CSE"
+print(f"ID: {student_id} \n name {student_name} \n marks:{marks} \n dept:{}")
 
