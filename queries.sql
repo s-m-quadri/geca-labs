@@ -6,7 +6,7 @@ USE student_db;
 -- TODO: Complete the following queries
 
 -- Query 1: Insert at least 5 student records
-INSERT INTO students (id, name, age, department) VALUES (3,"Virat",37,"CSE");
+INSERT INTO students (id, name, age, department) VALUES (4,"Surya",34,"CSE");
 
 
 -- Query 2: Select all students
@@ -18,15 +18,15 @@ INSERT INTO students (id, name, age, department) VALUES (3,"Virat",37,"CSE");
 
 
 -- Query 4: Select students from CSE department
- SELECT * FROM students WHERE id=1;
+ SELECT * FROM students WHERE id=4;
 
 
 -- Query 5: Count total students
--- SELECT COUNT(*) as total FROM students;
+ SELECT COUNT(*) as total FROM students;
 
 
 -- Query 6: Count students per department
--- SELECT department, COUNT(*) as count FROM students GROUP BY ...;
+ SELECT department, COUNT(*) as count FROM students GROUP BY department;
 
 
 -- Query 7: Find oldest student
