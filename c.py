@@ -4,8 +4,7 @@
 #  - Print total count of students
 
 # 💡 TIP:
-students = ["Alice", "Bob", ...]
-for student in students:
-    print(len(students))
-
-
+students = ["sayli","pratiksha","vedika","prajkta"]
+for s in students:
+    print(s)
+print(len(students))    
