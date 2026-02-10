@@ -4,8 +4,8 @@
 #  - Print total count of students
 
 # 💡 TIP:
-# Lists: students = ["Alice", "Bob", ...]
-# Loop: for student in students:
-# Count: len(students)
+students = ["Alice", "Bob", ...]
+for student in students:
+    print(len(students))
 
 
