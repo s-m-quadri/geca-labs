@@ -4,8 +4,17 @@
 #  - Access and print only the student's name
 
 # 💡 TIP:
-# Dictionary: student = {"id": 101, "name": "Alice", ...}
-# Access: student["name"]
-# Loop: for key, value in student.items():
+# Create a dictionary representing a student record
+student = {
+    "id": 101,
+    "name": "Alice",
+    "age": 20,
+    "department": "Computer Science"
+}
 
+# Print each field with its value
+for key, value in student.items():
+    print(key, ":", value)
 
+# Access and print only the student's name
+print("Student Name:", student["name"])
