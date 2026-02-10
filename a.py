@@ -7,4 +7,3 @@
 print("This is a  python file")
 print("welcome to DBMS lab")
 
-
