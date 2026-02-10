@@ -6,8 +6,8 @@ USE student_db;
 -- TODO: Complete the following queries
 
 -- Query 1: Insert at least 5 student records
-INSERT INTO students (id, name, age, department) VALUES (1,"vedika",20,"CSE");
-
+-- INSERT INTO students (id, name, age, department) VALUES (1,"vedika",20,"CSE");
+INSERT INTO students (id, name, age, department) VALUES (2,"vanshita",23,"CSE");
 
 -- Query 2: Select all students
 SELECT * FROM students;
