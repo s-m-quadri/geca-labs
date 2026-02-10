@@ -5,9 +5,11 @@
 #  - Then read and print the file contents
 
 # 💡 TIP:
-# Write: with open("file.txt", "w") as f:
-#           f.write("text\n")
-# Read: with open("file.txt", "r") as f:
-#          print(f.read())
+with open("students.txt", "w") as f:
+        f.write("Hello, My name is vedika, I am 20 years old and I am from cse department\n")
+        f.write("Hello, My name is vanshita, I am 23 years old and I am from it department\n")
+        f.write("Hello, My name is akshay, I am 20 years old and I am from aiml department")
+with open("students.txt", "r") as f:
+         print(f.read())
 
 
