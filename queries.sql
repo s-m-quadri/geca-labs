@@ -6,19 +6,19 @@ USE student_db;
 -- TODO: Complete the following queries
 
 -- Query 1: Insert at least 5 student records
--- INSERT INTO students (id, name, age, department) VALUES (...);
+INSERT INTO students (id, name, age, department) VALUES (3,"Virat",37,"CSE");
 
 
 -- Query 2: Select all students
--- SELECT * FROM students;
+ SELECT * FROM students;
 
 
 -- Query 3: Select only names and departments
--- SELECT name, department FROM students;
+ SELECT name, department FROM students;
 
 
 -- Query 4: Select students from CSE department
--- SELECT * FROM students WHERE ...;
+ SELECT * FROM students WHERE id=1;
 
 
 -- Query 5: Count total students
