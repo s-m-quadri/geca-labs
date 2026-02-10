@@ -7,6 +7,10 @@
 # Lists: students = ["Alice", "Bob", ...]
 # Loop: for student in students:
 # Count: len(students)
+students = ["Alice", "Bob", "Charlie", "Diana", "Eve"]
 
+print("Student Names:")
+for student in students:
+    print(student)
 
-#to do
+print(f"\nTotal count of students: {len(students)}")
