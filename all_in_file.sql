@@ -1,7 +1,16 @@
--- Lab 0: Basic SQL Queries
--- Task: Insert data and perform basic queries
+CREATE DATABASE if NOT EXISTS student_db;
 
-USE student_db;
+use student_db;
+
+
+DROP TABLE IF EXISTS students;
+
+CREATE TABLE if NOT EXISTS students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    department VARCHAR(30)
+);
 
 -- Insert data
 INSERT INTO students VALUES (1, 'Mayur', 20, 'CSE');
@@ -12,5 +21,3 @@ INSERT INTO students VALUES (4, 'Ravan', 21, 'CSE');
 -- Select all
 SELECT * FROM students;
  
--- Filter by department
-SELECT * FROM students WHERE department = 'CSE';
