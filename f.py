@@ -9,5 +9,10 @@
 #           f.write("text\n")
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
-
-
+students = open("students.txt", "w")
+students.write("Alice,20,CSE\n")
+students.write("Bob,22,ECE\n")
+students.write("Charlie,21,ME\n")
+students.close()    
+with open("students.txt", "r") as f:
+    print(f.read())
