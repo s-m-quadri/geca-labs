@@ -1,0 +1,3 @@
+aaa,19,Information Technology
+bbb,21,Electronics
+ccc,20,Computer Science
