@@ -30,4 +30,4 @@ SELECT department, COUNT(*) as count FROM students GROUP BY department;
 
 
 -- Query 7: Find oldest student
-SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students);
+SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students); 
