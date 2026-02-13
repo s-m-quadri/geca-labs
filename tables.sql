@@ -15,3 +15,11 @@ USE student_db;
 
 -- Verify table creation
 -- DESCRIBE students;
+
+create table students (
+    id int primary key,
+    name varchar (50),
+    age int,
+    department varchar (30)
+)
+   describe students;
