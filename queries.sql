@@ -31,3 +31,12 @@ USE student_db;
 
 -- Query 7: Find oldest student
 -- SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students);
+
+INSERT INTO students (id, name, age, department) VALUES ((1, "Dnyaneshwari", 18, "CSE"),
+(2, "Akshada", 19, "CSE"), 
+(3, "Yadvi", 19, "IT"));
+SELECT * FROM students;
+-- SELECT name, department FROM students;
+-- SELECT * FROM students WHERE department='CSE';
+-- SELECT COUNT(*) AS TOTAL FROM students;
+
