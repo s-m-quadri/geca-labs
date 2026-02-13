@@ -11,3 +11,9 @@
 #     print("Invalid input! Please enter a number.")
 
 
+try :
+    value = int(input("Enter Your ID : "))
+    print(f"ID : {value}")
+
+except ValueError :
+    print("InValid Input! Please Enter Valid number ")
