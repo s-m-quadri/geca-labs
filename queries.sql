@@ -31,3 +31,8 @@ USE student_db;
 
 -- Query 7: Find oldest student
 -- SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students);
+
+
+
+SELECT * FROM students;
+SELECT * FROM students WHERE department = 'CSE';
