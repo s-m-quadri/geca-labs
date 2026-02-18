@@ -6,5 +6,11 @@
 # 💡 TIP:
 # def function_name(param1, param2):
 #     print(f"Student: {param1}")
-
-
+def display_student(name, age, dept):
+    print(f"Student Name: {name}")
+    print(f"Age: {age}")
+    print(f"Department: {dept}")
+    print("  ")
+display_student("Alice", 20, "Computer Science")
+display_student("Bob", 22, "Mechanical Engineering")
+display_student("Charlie", 19, "Electrical Engineering")
