@@ -1,97 +1,104 @@
 # Lab 2: DML Commands
 
-This lab focuses on Data Manipulation Language (DML) commands in SQL.
+Learn SQL Data Manipulation Language through 15 simple progressive tasks.
 
 ## Objectives
 
-- Master INSERT, SELECT, UPDATE, and DELETE commands
-- Learn data filtering with WHERE clause
-- Understand sorting and limiting results
-- Practice transaction management
-- Query data with JOINs and subqueries
+- INSERT data into tables
+- SELECT data with filters and sorting
+- UPDATE existing records
+- DELETE unwanted data
+- Use aggregate functions (COUNT, AVG, MAX, MIN)
+- GROUP data and filter groups
 
-## Files to Complete
+## Tasks
 
-1. **setup.sql** - Database and table setup
-2. **insert_data.sql** - INSERT operations
-3. **select_queries.sql** - SELECT queries with various clauses
-4. **update_data.sql** - UPDATE operations
-5. **delete_data.sql** - DELETE operations
-6. **transactions.sql** - Transaction management
-7. **advanced_dml.sql** - Complex DML operations
+Complete these 15 tasks in order:
+
+1. **01_setup.sql** - Create database and students table
+2. **02_insert_one.sql** - Insert one student
+3. **03_insert_multiple.sql** - Insert multiple students at once
+4. **04_select_all.sql** - Select all students
+5. **05_select_where.sql** - Select with WHERE filter
+6. **06_select_order.sql** - Select with ORDER BY
+7. **07_update_one.sql** - Update one student
+8. **08_update_multiple.sql** - Update multiple students
+9. **09_delete_where.sql** - Delete with WHERE
+10. **10_count.sql** - Count total students
+11. **11_avg.sql** - Calculate average age
+12. **12_max_min.sql** - Find MAX and MIN age
+13. **13_group_by.sql** - Group students by grade
+14. **14_having.sql** - Filter groups with HAVING
+15. **15_check_status.sql** - View database status
 
 ## How to Work
 
-1. Each SQL file contains TODO comments indicating what you need to implement
-2. Read the lab manual at [geca-labs documentation](https://github.com/s-m-quadri/geca-labs)
-3. Complete each TODO section with the appropriate SQL commands
-4. Test your work by executing each file
+1. Open files in order (01, 02, 03, ...)
+2. Read TODO comments
+3. Write SQL commands
+4. Test by running file
+5. Move to next task
 
-## Testing Your Work
+## Running Your Code
 
-Execute files in this order:
+Execute one file at a time:
 
 ```bash
-# 1. Setup database and tables
-sudo mysql < setup.sql
+# Task 1: Setup
+sudo mysql < 01_setup.sql
 
-# 2. Insert data
-sudo mysql college_db < insert_data.sql
+# Task 2-3: Insert data
+sudo mysql < 02_insert_one.sql
+sudo mysql < 03_insert_multiple.sql
 
-# 3. Practice SELECT queries
-sudo mysql college_db < select_queries.sql
+# Task 4-6: Select queries
+sudo mysql < 04_select_all.sql
+sudo mysql < 05_select_where.sql
+sudo mysql < 06_select_order.sql
 
-# 4. Practice UPDATE
-sudo mysql college_db < update_data.sql
+# Task 7-9: Update and Delete
+sudo mysql < 07_update_one.sql
+sudo mysql < 08_update_multiple.sql
+sudo mysql < 09_delete_where.sql
 
-# 5. Practice DELETE
-sudo mysql college_db < delete_data.sql
+# Task 10-14: Aggregate functions
+sudo mysql < 10_count.sql
+sudo mysql < 11_avg.sql
+sudo mysql < 12_max_min.sql
+sudo mysql < 13_group_by.sql
+sudo mysql < 14_having.sql
 
-# 6. Learn transactions
-sudo mysql college_db < transactions.sql
-
-# 7. Advanced DML
-sudo mysql college_db < advanced_dml.sql
+# Task 15: Check status anytime
+sudo mysql < 15_check_status.sql
 ```
 
-## Verification
+## Check Your Work
 
-After completing, verify your work:
+Use `15_check_status.sql` anytime to see:
+- All databases
+- All tables
+- Table structure
+- Row count
+- All student data
+- Summary by grade
 
 ```bash
-# Check data exists
-sudo mysql -e "USE college_db; SELECT COUNT(*) FROM students;"
-sudo mysql -e "USE college_db; SELECT * FROM students LIMIT 3;"
-
-# Check relationships
-sudo mysql -e "USE college_db; 
-SELECT s.first_name, d.department_name 
-FROM students s 
-JOIN departments d ON s.department_id = d.department_id 
-LIMIT 3;"
+sudo mysql < 15_check_status.sql
 ```
 
 ## Getting Help
 
-- Review the lab manual for detailed explanations
-- Use GitHub Copilot to assist with syntax (but understand what you're writing!)
-- Check MySQL documentation: https://dev.mysql.com/doc/
-- Ask your instructor if you're stuck
+- Check lab manual for examples
+- Use GitHub Copilot for syntax
+- Run `15_check_status.sql` if confused
+- Ask instructor if stuck
 
 ## Submission
 
-1. Complete all TODO sections in each file
-2. Test that all files execute without errors
-3. Commit your changes: `git add . && git commit -m "[YOUR_PRN] Lab 2: DML Commands"`
-4. Push to your fork: `git push origin lab-dbms-02`
-5. Create a Pull Request with title: `Submission of Lab 2 by [YOUR_PRN]`
+1. Complete all 15 tasks
+2. Test each file works
+3. Commit: `git add . && git commit -m "[YOUR_PRN] Lab 2 DML"`
+4. Push: `git push origin lab-dbms-02`
+5. Create Pull Request: `Submission of Lab 2 by [YOUR_PRN]`
 
-## Important Notes
-
-- DML commands can be rolled back using transactions
-- Always test your WHERE conditions with SELECT before UPDATE/DELETE
-- Use transactions for multi-step operations
-- Understand JOIN types and when to use each
-- Practice reading and understanding query results
-
-Good luck! 🚀
+Good luck!
