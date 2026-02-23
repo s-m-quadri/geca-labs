@@ -39,12 +39,44 @@ jobs:
 
             };
 
+      - name: Ensure standard labels exist
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const labels = [
+              { name: '🎉 Accepted', color: '28A745', description: 'Submission accepted and merged' },
+              { name: '⚠️ Incomplete', color: 'FFA500', description: 'Submission incomplete or pending review' },
+              { name: '⛌ Error! Must Provide PRN', color: 'D73A4A', description: 'PRN not found in branch or title' },
+              { name: '😵 Conflict! Please Give Access to Resolve', color: 'B60205', description: 'Merge conflicts detected' },
+              { name: '⛌ Error! Please Resubmit', color: 'D73A4A', description: 'Invalid base branch or other critical error' }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description
+                });
+              }
+            }
+
       - name: Extract PRN & Lab Number
         id: extract
         run: |
           BASE_BRANCH="${{ fromJson(steps.pr.outputs.result).base }}"
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
+          PR_AUTHOR="${{ github.event.issue.user.login }}"
 
           PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
           if [ -z "$PRN" ]; then
@@ -53,12 +85,24 @@ jobs:
           if [ -z "$PRN" ]; then
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
               -f body="❌ Could not extract PRN from branch or title."
+            # Add error label
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels \
+              -f labels[]="⛌ Error! Must Provide PRN"
             exit 1
           fi
           PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
+          echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
 
-          # Handle LAB_NUM extraction (special case for lab-daa)
-          if [[ "$HEAD_BRANCH" == "lab-daa" ]]; then
+          # Extract subject and lab number from branch (lab-{subject}-{NN} or lab-{subject})
+          SUBJECT=$(echo "$HEAD_BRANCH" | grep -oP 'lab-\K[a-z]+' || true)
+          if [ -z "$SUBJECT" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+              -f body="❌ Could not extract subject from branch. Expected format: lab-{subject}-{NN} or lab-{subject}"
+            exit 1
+          fi
+
+          # Handle LAB_NUM extraction (special case for lab-{subject} without number)
+          if [[ "$HEAD_BRANCH" =~ ^lab-[a-z]+$ ]]; then
             LAB_NUM="00"
           else
             LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
@@ -72,6 +116,7 @@ jobs:
 
           echo "PRN=$PRN" >> $GITHUB_ENV
           echo "LAB_NUM=$LAB_NUM" >> $GITHUB_ENV
+          echo "SUBJECT=$SUBJECT" >> $GITHUB_ENV
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
 
         env:
@@ -89,50 +134,86 @@ jobs:
               title: `Submission of Lab ${process.env.LAB_NUM} by ${process.env.PRN}`
             });
 
-      - name: Create label if not exists
+      - name: Create and apply labels
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.BOT_TOKEN }}
           script: |
-            const labelName = `Lab ${process.env.LAB_NUM}`;
+            const labLabel = `Lab ${process.env.LAB_NUM}`;
+            const incompleteLabel = '⚠️ Incomplete';
+
+            // Create Lab label if not exists
             try {
               await github.rest.issues.getLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                name: labelName
+                name: labLabel
               });
             } catch {
               await github.rest.issues.createLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                name: labelName,
+                name: labLabel,
                 color: '0E8A16',
                 description: `All submissions for Lab ${process.env.LAB_NUM}`
               });
             }
+
+            // Create Incomplete label if not exists
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: incompleteLabel
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: incompleteLabel,
+                color: 'FFA500',
+                description: 'Submission incomplete or pending review'
+              });
+            }
+
+            // Apply labels
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: ${{ fromJson(steps.pr.outputs.result).number }},
-              labels: [labelName]
+              labels: [labLabel, incompleteLabel]
             });
 
-      - name: Ensure sub-branch exists
+      - name: Validate and ensure sub-branch
         run: |
-          TARGET_BRANCH="sub-lab-daa-${LAB_NUM}"
+          TARGET_BRANCH="sub-lab-${SUBJECT}-${LAB_NUM}"
+
+          # Guardrail: Check if current base is valid
+          if [[ "${BASE_BRANCH}" == "stable" ]] || [[ "${BASE_BRANCH}" =~ ^lab-[a-z]+-[0-9]{2}$ ]]; then
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+              -f body="⛌ **Error!** PR is targeting invalid base branch: \`${BASE_BRANCH}\`. Must target \`${TARGET_BRANCH}\`. Please resubmit."
+            # Add error label
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels \
+              -f labels[]="⛌ Error! Please Resubmit"
+            exit 1
+          fi
+
           git init temprepo
           cd temprepo
           git remote add origin "https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git"
           git fetch origin
           if ! git rev-parse --verify origin/$TARGET_BRANCH >/dev/null 2>&1; then
-            echo "Creating $TARGET_BRANCH from ${BASE_BRANCH}"
-            git checkout -b "$TARGET_BRANCH" "origin/${BASE_BRANCH}"
+            # Get the lab branch name (should be lab-{subject}-{NN})
+            LAB_BRANCH="lab-${SUBJECT}-${LAB_NUM}"
+            echo "Creating $TARGET_BRANCH from ${LAB_BRANCH}"
+            git checkout -b "$TARGET_BRANCH" "origin/${LAB_BRANCH}"
             git push origin "$TARGET_BRANCH"
           else
             echo "$TARGET_BRANCH already exists"
           fi
         env:
           LAB_NUM: ${{ env.LAB_NUM }}
+          SUBJECT: ${{ env.SUBJECT }}
           BASE_BRANCH: ${{ env.BASE_BRANCH }}
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -145,10 +226,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ fromJson(steps.pr.outputs.result).number }},
-              base: `sub-lab-daa-${process.env.LAB_NUM}`
+              base: `sub-lab-${process.env.SUBJECT}-${process.env.LAB_NUM}`
             });
 
-      - name: List all PRs for PRN
+      - name: List all PRs for user
         id: listprs
         uses: actions/github-script@v7
         with:
@@ -160,8 +241,8 @@ jobs:
               state: "all",
               per_page: 1000
             });
-            const prn = process.env.PRN;
-            const related = pulls.filter(p => p.title.includes(prn));
+            const username = process.env.PR_AUTHOR;
+            const related = pulls.filter(p => p.user.login === username);
             return related.map(p => `- #${p.number}`).join(`\n`);
 
       - name: Prepare PR list
@@ -189,7 +270,7 @@ jobs:
           > | Info. | Value/Link |
           > |-----------------:|:------|
           > | PRN              | <a href="https://github.com/s-m-quadri/geca-labs/pulls?q=$PRN" target="_blank"><b>$PRN</b></a> (Click to search all PR) |
-          > | Lab Number       | <a href="https://www.s-m-quadri.me/geca/daa/${LAB_NUM}" target="_blank"><b>${LAB_NUM}</b></a> (Click to open manual pages) |
+          > | Lab Number       | <a href="https://www.s-m-quadri.me/geca/${SUBJECT}/${LAB_NUM}" target="_blank"><b>${LAB_NUM}</b></a> (Click to open manual pages) |
           > | Base Repository  | <a href="https://github.com/s-m-quadri/geca-labs" target="_blank"><b>geca-labs</b></a> (Click to open repository) |
           > | Base Branch      | <a href="https://github.com/${{ github.repository }}/tree/${{ fromJson(steps.pr.outputs.result).base }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).base }}</b></a> (Click to view problem set) |
           > | Student's (Merge) Repository | <a href="https://github.com/${{ fromJson(steps.pr.outputs.result).headRepo }}" target="_blank"><b>${{ fromJson(steps.pr.outputs.result).headRepo }}</b></a> (Click to view student fork) |
@@ -198,7 +279,7 @@ jobs:
           ### All Submissions
           $PR_LIST
 
-          In case of doubts, contact 📧 **dev.smq@gmail.com**, or <a href="https://github.com/${{ github.repository }}/pull/${{ fromJson(steps.pr.outputs.result).number }}" target="_blank"><b>comment here</b></a>.
+          In case of doubts, contact 📧 **hi@s-m-quadri.me**, or <a href="https://github.com/${{ github.repository }}/pull/${{ fromJson(steps.pr.outputs.result).number }}" target="_blank"><b>comment here</b></a>.
 
           Thanks for your initiation of PR! 🙂 Keep it up!
           EOF
@@ -209,4 +290,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
           PRN: ${{ env.PRN }}
           LAB_NUM: ${{ env.LAB_NUM }}
+          SUBJECT: ${{ env.SUBJECT }}
           BASE_BRANCH: ${{ env.BASE_BRANCH }}

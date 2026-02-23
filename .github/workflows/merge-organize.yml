@@ -36,6 +36,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
+      - name: Validate base branch (Guardrail)
+        run: |
+          BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
+
+          # CRITICAL: Only allow merging to sub-lab-{subject}-{NN} branches
+          if [[ ! "$BASE_BRANCH" =~ ^sub-lab-[a-z]+-[0-9]{2}$ ]]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="🛑 **BLOCKED!** Cannot merge to \`$BASE_BRANCH\`. Automation only merges to \`sub-lab-{subject}-{NN}\` branches. Current base: \`$BASE_BRANCH\`"
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+              -f labels[]="⛌ Error! Please Resubmit"
+            exit 1
+          fi
+
+          echo "✅ Base branch validated: $BASE_BRANCH"
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="✅ Base branch validated: \`$BASE_BRANCH\`. Proceeding with merge..."
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
       - name: Merge PR
         uses: octokit/request-action@v2.x
         with:
@@ -71,7 +90,29 @@ jobs:
 
       - name: Determine Lab Folder
         run: |
-          LAB_BASE="labs-design-analysis-algorithms"
+          # Extract subject from branch name (sub-lab-{subject}-{NN})
+          SUBJECT=$(echo "${BASE_BRANCH}" | grep -oP 'lab-\K[a-z]+' || true)
+          if [ -z "$SUBJECT" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="❌ Could not extract subject from branch: ${BASE_BRANCH}"
+            exit 1
+          fi
+
+          # Map subject to lab folder
+          case "$SUBJECT" in
+            daa)
+              LAB_BASE="labs-design-analysis-algorithms"
+              ;;
+            dbms)
+              LAB_BASE="labs-database-management-systems"
+              ;;
+            *)
+              gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+                -f body="❌ Unknown subject: $SUBJECT. Supported: daa, dbms"
+              exit 1
+              ;;
+          esac
+
           LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
           if [ -z "$LAB_NUM" ]; then
             LAB_NUM="00"
@@ -90,6 +131,7 @@ jobs:
           mv ./*.py "$LAB_DIR/$ROLL"/ || true
           mv ./*.ipynb "$LAB_DIR/$ROLL"/ || true
           mv ./*.csv "$LAB_DIR/$ROLL"/ || true
+          mv ./*.sql "$LAB_DIR/$ROLL"/ || true
           mv ./*.md "$LAB_DIR/$ROLL"/ || true
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -112,5 +154,29 @@ jobs:
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
               -f body="ℹ️ No changes to commit for $ROLL."
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Add Accepted label
+        run: |
+          # Create Accepted label if not exists
+          gh api repos/${{ github.repository }}/labels -f name="🎉 Accepted" -f color="28A745" -f description="Submission accepted and merged" || true
+
+          # Remove Incomplete label if exists
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⚠️%20Incomplete \
+            -X DELETE || true
+
+          # Remove Error labels if exist
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⛌%20Error!%20Must%20Provide%20PRN \
+            -X DELETE || true
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⛌%20Error!%20Please%20Resubmit \
+            -X DELETE || true
+
+          # Add Accepted label
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+            -f labels[]="🎉 Accepted"
+
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
