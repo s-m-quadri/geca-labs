@@ -8,7 +8,8 @@ jobs:
   process-pr:
     if: |
       github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, 'Hi @bot-s-m-quadri')
+      contains(github.event.comment.body, 'Hi @bot-s-m-quadri') &&
+      !contains(github.event.comment.body, 'merge')
     runs-on: ubuntu-latest
     steps:
       - name: Get PR context
@@ -188,11 +189,10 @@ jobs:
         run: |
           TARGET_BRANCH="sub-lab-${SUBJECT}-${LAB_NUM}"
 
-          # Guardrail: Check if current base is valid
-          if [[ "${BASE_BRANCH}" == "stable" ]] || [[ "${BASE_BRANCH}" =~ ^lab-[a-z]+-[0-9]{2}$ ]]; then
+          # Guardrail: Block if targeting stable directly
+          if [[ "${BASE_BRANCH}" == "stable" ]]; then
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
-              -f body="⛌ **Error!** PR is targeting invalid base branch: \`${BASE_BRANCH}\`. Must target \`${TARGET_BRANCH}\`. Please resubmit."
-            # Add error label
+              -f body="⛌ **Error!** Cannot target \`stable\` branch directly. Must target \`${TARGET_BRANCH}\`."
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels \
               -f labels[]="⛌ Error! Please Resubmit"
             exit 1
