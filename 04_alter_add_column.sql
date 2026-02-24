@@ -4,3 +4,5 @@
 USE school_db;
 
 -- TODO: Write your ALTER TABLE ADD COLUMN command here
+ALTER TABLE student
+ADD COLUMN grade VARCHAR(4);
