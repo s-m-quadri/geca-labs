@@ -1,0 +1,3 @@
+Alice,20,CSE
+Bob,21,ECE
+Charlie,19,ME
