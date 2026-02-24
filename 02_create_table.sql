@@ -3,5 +3,12 @@
 
 -- Switch to school_db
 USE school_db;
+CREATE TABLE students(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+DESCRIBE students;
 
 -- TODO: Write your CREATE TABLE command here
