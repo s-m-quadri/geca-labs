@@ -4,4 +4,5 @@
 -- Switch to school_db
 USE school_db;
 
--- TODO: Write your CREATE TABLE command here
+-- TODO: Write your CREATE TABLE command
+CREATE TABLE STUDENT
