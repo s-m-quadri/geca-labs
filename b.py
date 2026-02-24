@@ -7,5 +7,6 @@
 
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
-
+student_id=8
+print(f"id:{student_id}")
 
