@@ -1,0 +1,3 @@
+kirti,20,CSE
+poorva,21,ECE
+renu,19,MECH
