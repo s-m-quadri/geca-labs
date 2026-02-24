@@ -5,4 +5,5 @@ USE school_db;
 
 -- TODO: Write your ALTER TABLE RENAME COLUMN command here
 -- MySQL syntax: ALTER TABLE table_name RENAME COLUMN old_name TO new_name;
-ALTER TABLE student_info RENAME
+ALTER TABLE student_info RENAME COLUMN name TO stu_name;
+DESCRIBE student_info;
