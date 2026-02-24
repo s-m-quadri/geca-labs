@@ -12,3 +12,5 @@ USE school_db;
 --     email VARCHAR(50)
 -- );
 DESC students;
+
+
