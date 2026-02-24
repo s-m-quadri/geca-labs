@@ -2,7 +2,9 @@
 -- Task: Create a database named "student_db" and use it
 
 -- TODO: Complete the following
-
+CREATE DATABASE IF NOT EXISTS student_db;
+USE student_db;
+SELECT DATABASE();
 -- Step 1: Create database
 -- CREATE DATABASE IF NOT EXISTS ...;
 
