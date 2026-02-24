@@ -4,4 +4,12 @@
 -- Switch to school_db
 USE school_db;
 
+
 -- TODO: Write your CREATE TABLE command here
+create table students(
+    id INT,
+    name VARCHAR(50),
+    age Int
+);
+Describe students;
+    
