@@ -1,0 +1,3 @@
+Anurag,20,CSE
+prerna,21,CSE
+sankeet,22,CSE
