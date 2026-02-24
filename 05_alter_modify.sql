@@ -1,3 +1,4 @@
+
 -- Task 5: Modify Column
 -- Change 'age' column to be TINYINT with NOT NULL constraint
 
