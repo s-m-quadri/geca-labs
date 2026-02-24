@@ -1,7 +1,13 @@
 -- Task 2: Create Students Table
--- Create table 'students' with: id, name, age, email
+-- Create table 'students' with: id, name, age, email, grade
 
 -- Switch to school_db
 USE school_db;
-
--- TODO: Write your CREATE TABLE command here
+CREATE TABLE students(
+    id INT,
+    name VARCHAR(100),
+    age INT,
+    email VARCHAR(50),
+    grade VARCHAR(5)
+);
+DESCRIBE students;
