@@ -7,5 +7,9 @@
 # Lists: students = ["Alice", "Bob", ...]
 # Loop: for student in students:
 # Count: len(students)
+student=["prajkta","vedika","kajal"]
+for name in student:
+    print(name)
 
+print(len(student))
 
