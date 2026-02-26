@@ -10,4 +10,9 @@
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
 
-
+# with open ("student.txt","w") as f:
+#     f.write("name : prajkta , age : 20, department : cse\n")
+#     f.write("name : vedika , age : 20, department : cse\n")
+#     f.write("name : kajal , age : 20, department : entc\n")
+with open ("student.txt","r") as f:
+    print(f.read())

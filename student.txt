@@ -1,0 +1,3 @@
+name : prajkta , age : 20, department : cse
+name : vedika , age : 20, department : cse
+name : kajal , age : 20, department : entc
