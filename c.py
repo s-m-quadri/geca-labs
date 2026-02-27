@@ -8,4 +8,8 @@
 # Loop: for student in students:
 # Count: len(students)
 
+students = ["ava", "ben", "casey", "darek", "emily"]
+for student in students:
+    print(student)
+print(f"Total students: {len(students)}")
 
