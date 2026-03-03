@@ -13,3 +13,4 @@ create table students (
 
 
 -- TODO: Write your CREATE TABLE command here
+SELECT * FROM students; -- This line is just to verify the table creation, you can remove it if not needed.
