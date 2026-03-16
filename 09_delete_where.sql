@@ -11,3 +11,15 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+-- Delete one student
+DELETE FROM students
+WHERE id = 5;
+ 
+-- Delete multiple
+DELETE FROM students
+WHERE age < 15;
+ 
+-- Always check first with SELECT!
+SELECT * FROM students WHERE age < 15;
+-- Then delete
+DELETE FROM students WHERE age < 15;
