@@ -4,3 +4,6 @@
 USE school_db;
 
 -- TODO: UPDATE students SET grade = '10th-A' WHERE grade = '10th';
+SELECT * FROM students WHERE grade = '10th'; -- Check before update
+UPDATE students SET grade = '10th-A' WHERE grade = '10th'; -- Update grade
+SELECT * FROM students WHERE grade = '10th-A'; -- Check after update
