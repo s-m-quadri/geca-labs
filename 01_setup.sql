@@ -10,3 +10,8 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
+
+use  school_db1;
+
+Alter table students
+add column marks int ;
