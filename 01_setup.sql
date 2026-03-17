@@ -10,3 +10,15 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
+
+ create database school_db;
+ USE school_db;
+ SHOW DATABASES;
+
+ CREATE TABLE students(
+    id INT,
+    name VARCHAR(50),
+    age INT
+
+ );
+ DESCRIBE students;
