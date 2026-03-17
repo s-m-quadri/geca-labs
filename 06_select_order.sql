@@ -4,3 +4,6 @@
 USE school_db;
 
 -- TODO: SELECT all students ORDER BY age DESC
+SELECT * FROM students WHERE grade='FY BTECH';
+
+SELECT * FROM students WHERE age >34;
