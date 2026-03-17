@@ -3,8 +3,8 @@
 
 USE school_db;
 
--- TODO: Insert multiple students at once
--- Example: INSERT INTO students (name, age, grade) VALUES
--- ('Bob', 16, '11th'),
--- ('Charlie', 15, '10th'),
--- ('Diana', 17, '12th');
+-- Task 3 solution: Insert multiple students in one query
+INSERT INTO students (name, age, grade) VALUES
+  ('Riya', 14, '9th'),
+  ('Aarav', 16, '11th'),
+  ('Simran', 15, '10th');
