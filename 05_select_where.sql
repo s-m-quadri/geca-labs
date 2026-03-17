@@ -4,4 +4,5 @@
 USE school_db;
 
 -- TODO: SELECT students WHERE grade = '10th'
-  
+  SELECT name FROM students;
+  SELECT age FROM students;
