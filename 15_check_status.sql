@@ -1,25 +1,27 @@
 -- Task 15: Check Status
 -- View complete database status
 
--- Show databases
+-- Show all databases in the server
 SHOW DATABASES;
 
 -- Switch to your database
 USE school_db;
 
--- Show tables
+-- Show all tables in the current database
 SHOW TABLES;
 
--- Table structure
+-- Display table structure
 DESCRIBE students;
 
--- Total rows
-SELECT COUNT(*) as total_students FROM students;
+-- Count total rows in the table
+SELECT COUNT(*) AS total_students 
+FROM students;
 
--- View all data
-SELECT * FROM students;
+-- Display all student records
+SELECT * 
+FROM students;
 
--- Summary by grade
-SELECT grade, COUNT(*) as count, AVG(age) as avg_age
+-- Summary statistics grouped by grade
+SELECT grade, COUNT(*) AS count, AVG(age) AS avg_age
 FROM students
 GROUP BY grade;

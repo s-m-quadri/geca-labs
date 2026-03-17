@@ -3,4 +3,6 @@
 
 USE school_db;
 
--- TODO: SELECT grade, COUNT(*) as count FROM students GROUP BY grade;
+SELECT grade, COUNT(*) AS count
+FROM students
+GROUP BY grade;
