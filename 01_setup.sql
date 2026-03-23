@@ -34,6 +34,6 @@ INSERT INTO employees(full_name,dept,salary,hire_date,phone) VALUES
 ("Vedant Dakare","IT",50000,'2026-04-20','  9834762293  '),
 ("Sudhanshu Bagde","HR",20000,'2026-03-15','9844762365'),
 ("Priya Sharma","IT",65000,'2025-06-10','  9123456789 '),
-("Raj Patel","HR",35000,'2025-11-05','9987654321');
+("Chaitanya Shah","HR",35000,'2025-11-05','9987654321');
 
 SELECT * FROM employees;
