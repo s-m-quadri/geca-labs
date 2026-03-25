@@ -1,6 +1,5 @@
 -- Task 1: Setup database and employees table
 -- You need sample data for later tasks (at least 5 rows, 2+ departments).
-
 -- TODO: DROP DATABASE IF EXISTS school_db; then CREATE DATABASE school_db;
 DROP DATABASE IF EXISTS school_db;
 CREATE DATABASE school_db;
