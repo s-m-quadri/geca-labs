@@ -1,6 +1,5 @@
 -- Task 4: Date — current date and time
 -- Compare hire_date to today using CURDATE() and show NOW() once.
-
 USE school_db;
 SELECT NOW() AS server_time;
 -- TODO: SELECT NOW() AS server_time;
