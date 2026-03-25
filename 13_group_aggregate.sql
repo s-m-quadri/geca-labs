@@ -1,6 +1,5 @@
 -- Task 13: Group — SUM and AVG by department
 -- For each dept: employee count, total salary, average salary.
-
 USE school_db;
 SELECT dept,
   COUNT(*) AS n,
