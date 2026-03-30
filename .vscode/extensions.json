@@ -1,0 +1,11 @@
+{
+  "recommendations": ["GitHub.copilot", "GitHub.copilot-chat"],
+  "unwantedRecommendations": [
+    "tabnine.tabnine-vscode",
+    "VisualStudioExptTeam.vscodeintellicode",
+    "AmazonWebServices.aws-toolkit-vscode",
+    "Codeium.codeium",
+    "sourcegraph.cody-ai",
+    "ms-toolsai.vscode-ai-toolkit"
+  ]
+}
