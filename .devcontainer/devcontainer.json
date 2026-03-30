@@ -1,0 +1,27 @@
+{
+  "name": "GECA DBMS Lab 5 — Procedural SQL",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "postCreateCommand": "chmod +x .devcontainer/setup-mysql.sh run_source.sh && bash .devcontainer/setup-mysql.sh",
+  "postStartCommand": "sudo service mysql start 2>/dev/null || sudo service mysqld start 2>/dev/null || true",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.quickSuggestions": {
+          "other": false,
+          "comments": false,
+          "strings": false
+        },
+        "editor.suggestOnTriggerCharacters": false,
+        "editor.wordBasedSuggestions": "off",
+        "editor.snippetSuggestions": "none",
+        "editor.tabCompletion": "off",
+        "editor.parameterHints.enabled": false,
+        "editor.inlineSuggest.enabled": true,
+        "github.copilot.enable": { "*": true },
+        "github.copilot.editor.enableAutoCompletions": true,
+        "telemetry.telemetryLevel": "off"
+      },
+      "extensions": ["GitHub.copilot", "GitHub.copilot-chat"]
+    }
+  }
+}
