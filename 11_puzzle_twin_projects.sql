@@ -6,4 +6,11 @@
 
 USE join_lab;
 
+SELECT s.name
+FROM staff s
+JOIN project_staff ps ON ps.staff_id = s.staff_id
+JOIN projects p ON p.proj_id = ps.proj_id
+WHERE p.title LIKE 'Riddle-%'
+GROUP BY s.name
+HAVING COUNT(DISTINCT p.proj_id) = 2;
 -- TODO: Write one SELECT that returns exactly one name (the solver).
