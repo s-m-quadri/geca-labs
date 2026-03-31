@@ -3,4 +3,8 @@
 
 USE join_lab;
 
--- TODO: Use an outer join or NOT EXISTS pattern; return dept_name only
+SELECT d.dept_name
+FROM departments AS d
+LEFT JOIN projects AS p
+  ON d.dept_id = p.dept_id
+WHERE p.proj_id IS NULL;
