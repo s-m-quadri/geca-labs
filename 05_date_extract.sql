@@ -8,3 +8,4 @@ USE school_db;
 --   MONTH(hire_date) AS m,
 --   DAY(hire_date) AS d
 -- FROM employees;
+vyvyvivbiukj
