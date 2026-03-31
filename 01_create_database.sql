@@ -1,4 +1,6 @@
 -- Task 1: Create Database
--- Create a database named 'school_db'
-
+-- Create a database named 'school_db
+CREATE DATABASE school_db;
+USE school_db;
+SHOW DATABASES;
 -- TODO: Write your SQL command here
