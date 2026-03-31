@@ -12,5 +12,3 @@ INSERT INTO students (id, name, age)
 VALUES (3, 'Charlie', 17);
  
 SELECT * FROM students;
--- TODO: Write your INSERT commands here
--- Example: INSERT INTO students VALUES (...);

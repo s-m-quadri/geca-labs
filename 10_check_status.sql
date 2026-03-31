@@ -1,6 +1,5 @@
 -- Task 10: Check Status
 -- View current database status
-
 -- Show all databases
 SHOW DATABASES;
 -- Use your database
