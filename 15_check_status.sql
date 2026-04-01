@@ -10,7 +10,6 @@ USE school_db;
 -- Show tables
 SHOW TABLES;
 
--- Table structure
 DESCRIBE students;
 
 -- Total rows
@@ -23,3 +22,4 @@ SELECT * FROM students;
 SELECT grade, COUNT(*) as count, AVG(age) as avg_age
 FROM students
 GROUP BY grade;
+
