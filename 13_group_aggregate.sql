@@ -9,3 +9,10 @@ USE school_db;
 --   AVG(salary) AS avg_pay
 -- FROM employees
 -- GROUP BY dept;
+
+SELECT dept,
+  COUNT(*) AS employee_count,
+  SUM(salary) AS total_salary,
+  AVG(salary) AS avg_salary
+FROM employees
+GROUP BY dept;
