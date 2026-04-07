@@ -10,8 +10,8 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS safe_transfer//
 CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(12,2))
 BEGIN
-  -- TODO: DECLARE donor_balance ... SELECT balance INTO ... IF ...
-  -- TODO: UPDATE accounts twice or use transactions mindset (single-threaded lab OK)
+   DECLARE donor_balance ... SELECT balance INTO ... IF ...
+   UPDATE accounts twice or use transactions mindset (single-threaded lab OK)
   SET @lab5_transfer_todo := 0;
 END//
 DELIMITER ;
