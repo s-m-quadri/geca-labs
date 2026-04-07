@@ -2,7 +2,6 @@
 -- Avoid duplicate pairs: only rows where a.staff_id < b.staff_id
 
 USE join_lab;
-
--- TODO: SELECT a.name AS person_a, b.name AS person_b, a.dept_id
--- FROM staff a
--- JOIN staff b ON ...
+SELECT a.name AS person_a, b.name AS person_b, a.dept_id
+FROM staff a
+JOIN staff b ON ...

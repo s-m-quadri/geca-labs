@@ -3,9 +3,8 @@
 -- between projects and departments using ON with column names explicit.
 
 USE join_lab;
-
--- TODO: SELECT projects.title, departments.dept_name, departments.floor_no
--- FROM projects
--- INNER JOIN departments ON ...
+ SELECT projects.title, departments.dept_name, departments.floor_no
+ FROM projects
+ INNER JOIN departments ON ...
 
 -- Optional: explain in one line why NATURAL JOIN is risky in real schemas
