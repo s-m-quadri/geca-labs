@@ -29,3 +29,4 @@ INSERT INTO payroll (name, salary, bonus_eligible) VALUES
   ('Cal', 52000.00, 1);
 
 SELECT 'proc_lab ready' AS status;
+
