@@ -7,3 +7,7 @@ USE school_db;
 -- FROM students
 -- GROUP BY grade
 -- HAVING count > 1;
+SELECT grade, COUNT(*) as count
+FROM students
+GROUP BY grade
+HAVING count > 1; -- Show grades with more than 1 student
