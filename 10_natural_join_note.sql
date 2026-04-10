@@ -3,6 +3,10 @@
 -- between projects and departments using ON with column names explicit.
 
 USE join_lab;
+select projects.title, departments.dept_name, departments.floor_no
+from projects
+inner join departments on projects.dept_id = departments.dept_id
+
 
 -- TODO: SELECT projects.title, departments.dept_name, departments.floor_no
 -- FROM projects
