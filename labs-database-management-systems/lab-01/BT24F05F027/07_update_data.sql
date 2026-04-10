@@ -1,0 +1,11 @@
+-- Task 7: Update Records
+-- Update the grade for a specific student
+
+USE school_db;
+
+-- TODO: Write your UPDATE command here
+-- Remember to use WHERE clause!
+
+UPDATE students
+SET grade = 'A'
+WHERE id = 1; -- Update grade for student with id 1 (Alice Johnson) 

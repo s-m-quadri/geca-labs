@@ -1,0 +1,9 @@
+-- Task 4: Add Column
+-- Add a 'grade' column (VARCHAR(10)) to students table
+
+USE school_db;
+
+-- TODO: Write your ALTER TABLE ADD COLUMN command here
+-- ALTER TABLE student_info ADD dept varchar(50);
+-- SELECT * FROM student_info;
+DESCRIBE student_info;
