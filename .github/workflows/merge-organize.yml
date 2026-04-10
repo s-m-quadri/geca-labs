@@ -77,11 +77,11 @@ jobs:
         run: |
           # Save merged branch ref
           git branch merged_state
-          
+
           # Checkout stable to get automation scripts
           git checkout stable
           cp -r automation-scripts /tmp/
-          
+
           # Return to merged branch
           git checkout merged_state
 
@@ -205,7 +205,7 @@ jobs:
         run: |
           # Restore automation scripts
           cp -r /tmp/automation-scripts .
-          
+
           # Determine if DBMS lab or other subject
           if [[ "${ORIGINAL_BRANCH}" =~ ^lab-dbms ]]; then
             # Run test to generate comprehensive report
@@ -237,19 +237,15 @@ jobs:
             # Post comprehensive report with test results
             FULL_REPORT=$(cat /tmp/merge_report.md)
             
-            COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged.
-
----
-
-${FULL_REPORT}"
+            COMMENT_BODY=$(printf "🎉 **Congratulations!** Your submission has been accepted and merged.\n\n---\n\n%s" "$FULL_REPORT")
           else
             # Simple acceptance message for non-DBMS labs
             COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
           fi
-          
+
           # Escape for JSON
           COMMENT_JSON=$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')
-          
+
           gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
             --input - <<< "$COMMENT_JSON"
         env:

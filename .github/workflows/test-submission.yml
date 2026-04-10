@@ -127,9 +127,6 @@ jobs:
 
           # Save output for next step
           echo "$OUTPUT" > /tmp/test_output.md
-        env:
-          LAB_BRANCH: ${{ env.LAB_BRANCH }}
-          PRN: ${{ env.PRN }}
 
           # Determine status
           if [ $EXIT_CODE -eq 0 ]; then
@@ -139,6 +136,9 @@ jobs:
           fi
 
           echo "Test completed with exit code: $EXIT_CODE"
+        env:
+          LAB_BRANCH: ${{ env.LAB_BRANCH }}
+          PRN: ${{ env.PRN }}
 
       - name: Post test results
         run: |
