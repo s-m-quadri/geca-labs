@@ -135,6 +135,47 @@ def validate_files(files: List[str], is_lab_07: bool = False) -> List[Validation
     return results
 
 
+def get_file_tree(args, modified_files: List[str]) -> str:
+    """Generate file tree structure with hyperlinks to stable branch."""
+    if not modified_files:
+        return ""
+    
+    # Extract subject and lab number for stable path
+    lab_parts = args.lab_branch.split('-')
+    subject = lab_parts[1] if len(lab_parts) > 1 else 'dbms'
+    lab_num = lab_parts[2] if len(lab_parts) > 2 else '00'
+    
+    # Map subject to folder name
+    subject_folders = {
+        'dbms': 'labs-database-management-systems',
+        'daa': 'labs-design-analysis-algorithms',
+        'ml': 'labs-adv-machine-learning',
+        'cv': 'labs-computer-vision',
+        'acn': 'labs-adv-computer-networks'
+    }
+    folder_name = subject_folders.get(subject, f'labs-{subject}')
+    
+    # Build tree structure
+    base_path = f"{folder_name}/lab-{lab_num}/{args.prn}"
+    base_url = f"https://github.com/{args.base_repo}/tree/stable/{base_path}"
+    
+    lines = []
+    lines.append(f"📁 <a href=\"https://github.com/{args.base_repo}/tree/stable\" target=\"_blank\"><b>geca-labs</b></a>")
+    lines.append(f"└── 📁 <a href=\"https://github.com/{args.base_repo}/tree/stable/{folder_name}\" target=\"_blank\">{folder_name}</a>")
+    lines.append(f"    └── 📁 <a href=\"https://github.com/{args.base_repo}/tree/stable/{folder_name}/lab-{lab_num}\" target=\"_blank\">lab-{lab_num}</a>")
+    lines.append(f"        └── 📁 <a href=\"{base_url}\" target=\"_blank\"><b>{args.prn}</b></a>")
+    
+    # Sort files for consistent display
+    sorted_files = sorted(modified_files)
+    for i, file in enumerate(sorted_files):
+        is_last = i == len(sorted_files) - 1
+        prefix = "            └── " if is_last else "            ├── "
+        file_url = f"https://github.com/{args.base_repo}/blob/stable/{base_path}/{file}"
+        lines.append(f"{prefix}📄 <a href=\"{file_url}\" target=\"_blank\">{file}</a>")
+    
+    return '\n'.join(lines)
+
+
 def generate_markdown_report(config: TestConfig, report: TestReport, args) -> str:
     """Generate comprehensive markdown report."""
     now_ist = subprocess.run(
@@ -145,6 +186,9 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     ).stdout.strip()
     
     lines = []
+    
+    # Technical details at top (dim, monospace)
+    lines.append(f"> *Testing against `{config.lab_branch}` | Lab {'07' if config.is_lab_07 else config.lab_number} mode | {len(report.baseline_files)} baseline files | {report.modified_files} modified files | {report.errors_count} syntax errors*\n")
     
     lines.append(f"### PRN: <a href=\"https://github.com/{args.base_repo}/pulls?q={args.prn}\" target=\"_blank\"><code>{args.prn}</code></a> Test Results\n")
     
@@ -206,6 +250,8 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     if report.extra_files:
         lines.append("")
         lines.append("**Extra Files (not in problem set):**\n")
+        lines.append("| Problem Set | Your Solution | Syntax Check | Remark | Status |")
+        lines.append("|-------------|---------------|--------------|---------|--------|")
         for extra_file in sorted(report.extra_files):
             result = modified_dict.get(extra_file)
             student_url = f"https://github.com/{args.head_repo}/blob/{args.head_branch}/{extra_file}"
@@ -230,7 +276,8 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     lines.append("---\n")
     lines.append("### Overall Summary\n")
     
-    lines.append(f"- **Completion**: {len(modified_set)}/{len(baseline_set)} files ({report.completion_ratio:.1%})")
+    matched_files = len(modified_set & baseline_set)
+    lines.append(f"- **Completion**: {matched_files}/{len(baseline_set)} files ({report.completion_ratio:.1%})")
     lines.append(f"- **Threshold**: {config.completion_threshold:.0%}")
     lines.append(f"- **Syntax Errors**: {report.errors_count}")
     lines.append(f"- **Extra Files**: {len(report.extra_files)}")
@@ -251,6 +298,14 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     
     lines.append("")
     
+    # Add file tree showing stable branch structure
+    lines.append("---\n")
+    lines.append("### Your Submitted Files (@ stable branch)\n")
+    modified_list = [r.file for r in report.validation_results]
+    file_tree = get_file_tree(args, modified_list)
+    lines.append(file_tree)
+    lines.append("")
+    
     if not report.passed:
         lines.append("---\n")
         lines.append("### Suggestions for Improvement\n")
@@ -269,8 +324,6 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
         lines.append("")
     
     lines.append("---\n")
-    lines.append("> **Note**: Test failures do NOT block merge. You can merge this PR with `@bot-s-m-quadri merge` even if tests fail. However, incomplete or erroneous submissions may affect your evaluation.\n")
-    
     lines.append(f"In case of doubts, contact 📧 **hi@s-m-quadri.me**, or <a href=\"https://github.com/{args.base_repo}/pull/{args.pr_number}\" target=\"_blank\"><b>comment here</b></a>.\n")
     
     if report.passed:
@@ -278,15 +331,15 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     else:
         lines.append("Keep improving! 🙂")
     
+    lines.append("\n---\n")
+    lines.append("> **Note**: Test failures do NOT block merge. You can merge this PR with `@bot-s-m-quadri merge` even if tests fail. However, incomplete or erroneous submissions may affect your evaluation.")
+    
     return '\n'.join(lines)
 
 
 def run_tests(config: TestConfig) -> TestReport:
-    """Execute all tests and generate report."""
-    print(f"Fetching baseline from {config.lab_branch}...", file=sys.stderr)
+    """Execute all tests and generate report (no verbose stderr output)."""
     baseline_files = fetch_baseline_files(config.lab_branch)
-    
-    print(f"Comparing modified files...", file=sys.stderr)
     modified_files = get_modified_files(config.lab_branch)
     
     baseline_set = set(baseline_files)
@@ -298,7 +351,6 @@ def run_tests(config: TestConfig) -> TestReport:
     total_files = len(baseline_files) if not config.is_lab_07 else len(modified_files)
     completion_ratio = len(modified_set & baseline_set) / total_files if total_files > 0 else 0.0
     
-    print(f"Validating {len(modified_files)} files...", file=sys.stderr)
     validation_results = validate_files(modified_files, config.is_lab_07)
     
     errors_count = sum(len(r.errors) for r in validation_results)
@@ -326,9 +378,6 @@ def main():
     args = parse_arguments()
     
     config = get_lab_config(args.lab_branch, args.threshold)
-    
-    print(f"Testing submission for {config.lab_branch}...", file=sys.stderr)
-    print(f"Lab 07 mode: {config.is_lab_07}", file=sys.stderr)
     
     report = run_tests(config)
     

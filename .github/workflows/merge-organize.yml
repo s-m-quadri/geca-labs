@@ -73,6 +73,18 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           fetch-depth: 0
 
+      - name: Checkout stable for automation scripts
+        run: |
+          # Save merged branch ref
+          git branch merged_state
+          
+          # Checkout stable to get automation scripts
+          git checkout stable
+          cp -r automation-scripts /tmp/
+          
+          # Return to merged branch
+          git checkout merged_state
+
       - name: Extract PRN and Branch Info
         run: |
           PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
@@ -172,11 +184,75 @@ jobs:
           gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⛌%20Error!%20Please%20Resubmit \
             -X DELETE || true
 
-          # Add Accepted label
+          # Add Accepted label (Note: Test labels are preserved)
           gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
             -f labels[]="🎉 Accepted"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
+      - name: Setup Python and generate comprehensive report
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install SQL parsers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y mysql-client postgresql-client
+
+      - name: Generate comprehensive merge report
+        id: merge_report
+        run: |
+          # Restore automation scripts
+          cp -r /tmp/automation-scripts .
+          
+          # Determine if DBMS lab or other subject
+          if [[ "${ORIGINAL_BRANCH}" =~ ^lab-dbms ]]; then
+            # Run test to generate comprehensive report
+            set +e
+            REPORT=$(python3 automation-scripts/test_submission.py \
+              --lab-branch "${ORIGINAL_BRANCH}" \
+              --prn "${ROLL}" \
+              --author "${{ fromJson(steps.pr.outputs.data).user.login }}" \
+              --head-repo "${{ fromJson(steps.pr.outputs.data).head.repo.full_name }}" \
+              --head-branch "${{ fromJson(steps.pr.outputs.data).head.ref }}" \
+              --base-repo "${{ fromJson(steps.pr.outputs.data).base.repo.full_name }}" \
+              --pr-number "${{ github.event.issue.number }}" \
+              2>&1)
+            set -e
+            
+            # Save report
+            echo "$REPORT" > /tmp/merge_report.md
+            echo "HAS_REPORT=true" >> $GITHUB_ENV
+          else
+            echo "HAS_REPORT=false" >> $GITHUB_ENV
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Post comprehensive acceptance comment
+        run: |
+          if [ "$HAS_REPORT" = "true" ]; then
+            # Post comprehensive report with test results
+            FULL_REPORT=$(cat /tmp/merge_report.md)
+            
+            COMMENT_BODY=$(cat <<EOF
+🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`.
+
+---
+
+$FULL_REPORT
+EOF
+            )
+          else
+            # Simple acceptance message for non-DBMS labs
+            COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
+          fi
+          
+          # Escape for JSON
+          COMMENT_JSON=$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')
+          
           gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-            -f body="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
+            --input - <<< "$COMMENT_JSON"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
