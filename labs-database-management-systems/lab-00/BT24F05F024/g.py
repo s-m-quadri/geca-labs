@@ -9,5 +9,11 @@
 #     print(f"ID: {value}")
 # except ValueError:
 #     print("Invalid input! Please enter a number.")
+try:
+    student_id = int(input("Enter Student ID: "))
+    print(f"Student ID: {student_id}")
+except ValueError:
+    print("Invalid input! Please enter a number.")
+    
 
 

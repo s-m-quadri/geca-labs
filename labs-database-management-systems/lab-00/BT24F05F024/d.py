@@ -7,5 +7,7 @@
 # Dictionary: student = {"id": 101, "name": "Alice", ...}
 # Access: student["name"]
 # Loop: for key, value in student.items():
-
-
+student={ "id": 101, "name": "Alice", "age": 20, "department": "Computer Science"}
+for key, value in student.items():
+    print(f"{key}: {value}")
+print(f"Student's name: {student['name']}")
