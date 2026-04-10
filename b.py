@@ -7,5 +7,13 @@
 
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
+stdid=101
+stdname="AAA"
+smarks=20
+sdept="cse"
+print(stdid)
+print(stdname)
+print(smarks)
+print(sdept)
 
 
