@@ -2,6 +2,7 @@
 -- Delete a student from the table
 
 USE school_db;
-
+DELETE FROM students
+WHERE student_name = 'Bob Smith';
 -- TODO: Write your DELETE command here
 -- Remember to use WHERE clause!
