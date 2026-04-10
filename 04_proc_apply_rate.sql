@@ -12,6 +12,6 @@ CREATE PROCEDURE apply_rate(
 )
 BEGIN
   -- TODO: SET out_val = ...
-  SET out_val = NULL;
+  SET out_val = base + (base * pct / 100);
 END//
 DELIMITER ;
