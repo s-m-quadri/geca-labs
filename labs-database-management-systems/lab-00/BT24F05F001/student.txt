@@ -1,0 +1,15 @@
+Student detail,
+1.Name	:Mayur Wakchaure
+2.Age	:20
+Dept.	:CSE
+
+Student detail,
+1.Name	:Pawan Pawar
+2.Age	:21
+Dept.	:CSE
+
+Student detail,
+1.Name	:Rohan Pawar
+2.Age	:19
+Dept.	:CSE
+
