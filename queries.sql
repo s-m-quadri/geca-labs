@@ -1,23 +1,24 @@
-
-USE student_db;
 -- Lab 0: Basic SQL Queries
 -- Task: Insert data and perform basic queries
+
+USE student_db;
+
 -- TODO: Complete the following queries
 
 -- Query 1: Insert at least 5 student records
--- INSERT INTO student (id, name, age, department) VALUES (1,"anjali",20,"cse");
--- INSERT INTO student (id, name, age, department) VALUES (2,"sneha", 20,"cse");
+-- INSERT INTO students (id, name, age, department) VALUES (...);
+
 
 -- Query 2: Select all students
--- SELECT * FROM student;
+-- SELECT * FROM students;
 
 
 -- Query 3: Select only names and departments
--- SELECT name, department FROM student;
+-- SELECT name, department FROM students;
 
 
 -- Query 4: Select students from CSE department
--- SELECT * FROM student WHERE department = "CSE";
+-- SELECT * FROM students WHERE ...;
 
 
 -- Query 5: Count total students
@@ -25,8 +26,8 @@ USE student_db;
 
 
 -- Query 6: Count students per department
--- SELECT department, COUNT(*) as count FROM student GROUP BY department;
+-- SELECT department, COUNT(*) as count FROM students GROUP BY ...;
 
 
 -- Query 7: Find oldest student
- SELECT * FROM student WHERE age = (SELECT MAX(age) FROM student);
+-- SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students);
