@@ -332,7 +332,7 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
         lines.append("Keep improving! 🙂")
     
     lines.append("\n---\n")
-    lines.append("> **Note**: Test failures do NOT block merge. You can merge this PR with `@bot-s-m-quadri merge` even if tests fail. However, incomplete or erroneous submissions may affect your evaluation.")
+    lines.append("> **Note**: Test failures do NOT block merge. However, incomplete or erroneous submissions may affect your evaluation.")
     
     return '\n'.join(lines)
 
