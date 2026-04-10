@@ -2,7 +2,10 @@
 #  - At least 5 student names
 #  - Print each name using a for loop
 #  - Print total count of students
-
+students = ["anushka", "vedika", "siya", "veer", "lina"]
+for student in students:
+    print(student)
+print(f"Total students: {len(students)}")
 # 💡 TIP:
 # Lists: students = ["Alice", "Bob", ...]
 # Loop: for student in students:
