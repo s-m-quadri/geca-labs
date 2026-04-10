@@ -10,4 +10,11 @@
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
 
+with open("student.txt","w") as f:
+         f.write("Sheetal,20,CSE\n")
+         f.write("Sanika,19,IT\n")
+         f.write("Anjali,18,CSE\n")
+with open("student.txt","r")as f:
+        print(f.read())
+                 
 
