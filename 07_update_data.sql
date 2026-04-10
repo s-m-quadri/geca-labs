@@ -1,7 +1,2 @@
--- Task 7: Update Records
--- Update the grade for a specific student
-
-USE school_db;
-
--- TODO: Write your UPDATE command here
--- Remember to use WHERE clause!
+UPDATE student_info SET marks=20 WHERE rollno=2;
+SELECT * FROM student_info;

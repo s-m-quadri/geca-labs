@@ -11,10 +11,10 @@ USE school_db;
 SHOW TABLES;
 
 -- If students table exists, show its structure
-DESCRIBE students;
+DESCRIBE student_info;
 
 -- If students table exists, count rows
-SELECT COUNT(*) as total_students FROM students;
+SELECT COUNT(*) as total_students FROM student_info;
 
 -- View all data
-SELECT * FROM students;
+SELECT * FROM student_info;
