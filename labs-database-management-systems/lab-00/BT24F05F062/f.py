@@ -11,3 +11,12 @@
 #          print(f.read())
 
 
+with open("students.txt", "w") as file:
+	file.write("Alice,20,CSE\n")
+	file.write("Bob,21,ECE\n")
+	file.write("Charlie,19,ME\n")
+
+with open("students.txt", "r") as file:
+	print(file.read())
+
+
