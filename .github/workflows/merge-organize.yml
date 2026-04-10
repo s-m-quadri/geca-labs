@@ -87,13 +87,19 @@ jobs:
 
       - name: Extract PRN and Branch Info
         run: |
+          HEAD_BRANCH="${{ fromJson(steps.pr.outputs.data).head.ref }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
-          ROLL=$(echo "$PR_TITLE" | grep -oP 'BT[0-9A-Z]+' || true)
+
+          ROLL=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
+          if [ -z "$ROLL" ]; then
+            ROLL=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
+          fi
           if [ -z "$ROLL" ]; then
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="❌ Could not extract PRN from PR title: \`$PR_TITLE\`"
+              -f body="❌ Could not extract PRN from title (\`$PR_TITLE\`) or branch (\`$HEAD_BRANCH\`)"
             exit 1
           fi
+          ROLL=$(echo "$ROLL" | tr '[:lower:]' '[:upper:]')
           echo "ROLL=$ROLL" >> $GITHUB_ENV
           BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
@@ -138,34 +144,24 @@ jobs:
 
       - name: Organize submission and restore clean lab
         run: |
-          # 1. Save student submission files to temp location
+          # 1. Save all root-level files (student submission) to temp
           mkdir -p /tmp/student_submission
-          shopt -s nullglob dotglob
-
-          # Copy all student files (not .git directory)
-          for file in *; do
-            if [ "$file" != ".git" ] && [ "$file" != ".github" ]; then
-              cp -r "$file" /tmp/student_submission/ || true
-            fi
+          find . -maxdepth 1 -type f | while read -r file; do
+            cp "$file" /tmp/student_submission/ || true
           done
+          echo "Student files saved: $(ls /tmp/student_submission/)"
 
-          # 2. Restore clean lab set from original branch at root
-          echo "Restoring clean lab set from origin/${ORIGINAL_BRANCH}..."
+          # 2. Remove all root-level files (clean root)
+          find . -maxdepth 1 -type f -delete
+
+          # 3. Restore clean baseline at root
           git checkout "origin/${ORIGINAL_BRANCH}" -- .
 
-          # 3. Create student directory and move files there
+          # 4. Move student files into their PRN folder
           mkdir -p "$LAB_DIR/$ROLL"
+          find /tmp/student_submission -maxdepth 1 -type f -exec mv {} "$LAB_DIR/$ROLL/" \;
 
-          # Move student SQL files
-          find /tmp/student_submission -maxdepth 1 -name "*.sql" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
-          # Move other student files
-          find /tmp/student_submission -maxdepth 1 -name "*.py" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
-          find /tmp/student_submission -maxdepth 1 -name "*.ipynb" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
-          find /tmp/student_submission -maxdepth 1 -name "*.csv" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
-          find /tmp/student_submission -maxdepth 1 -name "*.md" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
-
-          echo "Organized files for $ROLL under $LAB_DIR/$ROLL"
-          echo "Root now contains clean lab set from ${ORIGINAL_BRANCH}"
+          echo "Done: root has clean baseline, $LAB_DIR/$ROLL has $(ls $LAB_DIR/$ROLL/)"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
