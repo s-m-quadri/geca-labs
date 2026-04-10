@@ -1,5 +1,4 @@
 # Lab 5: Procedural SQL (MySQL) — arithmetic, cursors, updates, puzzles
-
 Bundles **arithmetic in SQL**, **stored procedures**, **cursors**, **cursor-driven updates**, and **riddle-style** tasks (former syllabus spread across procedural topics).
 
 ## Environment
