@@ -3,4 +3,9 @@
 
 USE school_db;
 
+ALTER TABLE students
+ADD COLUMN phone VARCHAR(100);
+
+DESCRIBE students;
+
 -- TODO: Write your ALTER TABLE ADD COLUMN command here
