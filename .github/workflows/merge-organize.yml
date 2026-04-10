@@ -237,14 +237,11 @@ jobs:
             # Post comprehensive report with test results
             FULL_REPORT=$(cat /tmp/merge_report.md)
             
-            COMMENT_BODY=$(cat <<'EOF'
-🎉 **Congratulations!** Your submission has been accepted and merged.
+            COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged.
 
 ---
 
-EOF
-            )
-            COMMENT_BODY="${COMMENT_BODY}${FULL_REPORT}"
+${FULL_REPORT}"
           else
             # Simple acceptance message for non-DBMS labs
             COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
