@@ -63,13 +63,13 @@ jobs:
       - name: Checkout repository (main branch for scripts)
         uses: actions/checkout@v4
         with:
-          ref: stable/main
+          ref: stable
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN }}
 
       - name: Fetch PR head and baseline
         run: |
-          # Save automation scripts (they're on stable/main)
+          # Save automation scripts (they're on stable)
           cp -r automation-scripts /tmp/
 
           # Fetch and checkout PR head
