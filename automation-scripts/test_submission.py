@@ -250,6 +250,7 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
                 remark = "✓ Syntax OK"
                 status = "✓ PASS"
             else:
+                parser_info = f"{result.parser_used}" if result.parser_used else "—"
                 error_count = len(result.errors)
                 remark = f"{error_count} error(s)"
                 status = "✗ FAIL"
@@ -273,6 +274,7 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
                 remark = "✓ Syntax OK"
                 status = "✓ PASS"
             elif result:
+                parser_info = f"{result.parser_used}" if result.parser_used else "—"
                 error_count = len(result.errors)
                 remark = f"{error_count} error(s)"
                 status = "✗ FAIL"

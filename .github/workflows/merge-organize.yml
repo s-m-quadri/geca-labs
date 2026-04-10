@@ -200,12 +200,25 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y mysql-client postgresql-client
 
-      - name: Generate comprehensive merge report
-        id: merge_report
+      - name: Checkout PR head for testing
         run: |
+          # Fetch and checkout PR head SHA for validation
+          git fetch origin ${{ fromJson(steps.pr.outputs.data).head.sha }}
+          git checkout ${{ fromJson(steps.pr.outputs.data).head.sha }}
+
           # Restore automation scripts
           cp -r /tmp/automation-scripts .
 
+          # Fetch baseline branch for comparison
+          git fetch origin "${ORIGINAL_BRANCH}:refs/remotes/origin/${ORIGINAL_BRANCH}" || true
+
+          echo "Checked out PR head for testing against ${ORIGINAL_BRANCH}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Generate comprehensive merge report
+        id: merge_report
+        run: |
           # Determine if DBMS lab or other subject
           if [[ "${ORIGINAL_BRANCH}" =~ ^lab-dbms ]]; then
             # Run test to generate comprehensive report
