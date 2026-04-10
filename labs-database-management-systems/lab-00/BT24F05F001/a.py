@@ -5,4 +5,6 @@
 # 💡 TIP:
 # Use the print() function to display text
 
-print("testing workflow by bot-s-m-quadri")
+
+print("hello world")
+print("Welcome to DBMS Lab")

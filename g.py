@@ -10,9 +10,4 @@
 # except ValueError:
 #     print("Invalid input! Please enter a number.")
 
-try:
-    student_id = int(input("Please enter student ID: "))
-    print(f"Entered ID: {student_id}")
 
-except ValueError:
-    print("Invalid input! Please enter a number.")
