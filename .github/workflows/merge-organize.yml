@@ -182,7 +182,7 @@ jobs:
           git add -A
 
           if git commit -m "Organize submission for $ROLL into $LAB_DIR/$ROLL"; then
-            git push origin "${BASE_BRANCH}"
+            git push origin "HEAD:${BASE_BRANCH}"
             echo "✓ Successfully organized and pushed submission"
           else
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
