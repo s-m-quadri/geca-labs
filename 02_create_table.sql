@@ -4,4 +4,10 @@
 -- Switch to school_db
 USE school_db;
 
+CREATE TABLE students (
+    id INT,
+    name VARCHAR(100),
+    age INT,
+    email VARCHAR(100)
+)
 -- TODO: Write your CREATE TABLE command here
