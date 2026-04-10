@@ -11,3 +11,9 @@
 
 -- Step 3: Display current database
 -- SELECT DATABASE();
+
+CREATE DATABSE IF NOT EXISTS student_db
+
+USE student_db
+
+SELECT DATABASE()
