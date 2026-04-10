@@ -8,3 +8,9 @@
 #     print(f"Student: {param1}")
 
 
+def display_student(name, age, dept):
+    print(f"Student: {name}, age: {age}, Department: {dept}")
+
+display_student("Eve", 19, "CSE")
+display_student("John", 20, "Mech")
+display_student("Isha", 20, "CSE")

@@ -1,0 +1,3 @@
+Eve,19,CSE
+John,20,Mech
+Isha,19,CSE
