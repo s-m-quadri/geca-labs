@@ -105,6 +105,9 @@ jobs:
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
           ORIGINAL_BRANCH=$(echo "$BASE_BRANCH" | sed 's/^sub-//')
           echo "ORIGINAL_BRANCH=$ORIGINAL_BRANCH" >> $GITHUB_ENV
+          echo "Extracted ROLL=$ROLL BASE_BRANCH=$BASE_BRANCH ORIGINAL_BRANCH=$ORIGINAL_BRANCH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Determine Lab Folder
         run: |
@@ -144,24 +147,29 @@ jobs:
 
       - name: Organize submission and restore clean lab
         run: |
-          # 1. Save all root-level files (student submission) to temp
-          mkdir -p /tmp/student_submission
-          find . -maxdepth 1 -type f | while read -r file; do
-            cp "$file" /tmp/student_submission/ || true
-          done
-          echo "Student files saved: $(ls /tmp/student_submission/)"
+          echo "ROLL=$ROLL LAB_DIR=$LAB_DIR ORIGINAL_BRANCH=$ORIGINAL_BRANCH"
 
-          # 2. Remove all root-level files (clean root)
+          # Ensure orphan baseline branch is fetched
+          git fetch origin "${ORIGINAL_BRANCH}"
+
+          # 1. Copy all root-level files to temp (use process substitution, not pipe)
+          mkdir -p /tmp/student_submission
+          while IFS= read -r file; do
+            cp "$file" /tmp/student_submission/
+          done < <(find . -maxdepth 1 -type f)
+          echo "Saved $(ls /tmp/student_submission/ | wc -l) files to temp"
+
+          # 2. Wipe all root-level files
           find . -maxdepth 1 -type f -delete
 
-          # 3. Restore clean baseline at root
+          # 3. Restore clean baseline from orphan branch
           git checkout "origin/${ORIGINAL_BRANCH}" -- .
+          echo "Root restored: $(ls -1 | head -20)"
 
-          # 4. Move student files into their PRN folder
+          # 4. Move student files into PRN folder
           mkdir -p "$LAB_DIR/$ROLL"
-          find /tmp/student_submission -maxdepth 1 -type f -exec mv {} "$LAB_DIR/$ROLL/" \;
-
-          echo "Done: root has clean baseline, $LAB_DIR/$ROLL has $(ls $LAB_DIR/$ROLL/)"
+          cp -r /tmp/student_submission/. "$LAB_DIR/$ROLL/"
+          echo "Organized into $LAB_DIR/$ROLL: $(ls $LAB_DIR/$ROLL/)"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
