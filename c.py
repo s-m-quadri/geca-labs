@@ -9,3 +9,8 @@
 # Count: len(students)
 
 
+students = ["Sheetal","Tanvi","Anjali","Suhani","Sanika"]
+for student in students:
+    print(student)
+
+print(len(students))
