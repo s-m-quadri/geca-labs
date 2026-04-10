@@ -10,3 +10,17 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
+-- Task 2: Insert Sample Data
+-- Insert sample student records into the students table
+CrEATE DATABASE school_db;
+
+USE school_db;
+
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    age INT,
+    grade VARCHAR(10)
+);
+
+
