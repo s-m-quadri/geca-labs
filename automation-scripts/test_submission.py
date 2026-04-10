@@ -41,6 +41,7 @@ def parse_arguments():
     parser.add_argument('--head-branch', required=True, help='Student branch name')
     parser.add_argument('--base-repo', required=True, help='Base repository (s-m-quadri/geca-labs)')
     parser.add_argument('--pr-number', required=True, help='PR number')
+    parser.add_argument('--show-file-tree', action='store_true', help='Show file tree (for merge reports)')
     return parser.parse_args()
 
 
@@ -160,18 +161,28 @@ def get_file_tree(args, modified_files: List[str]) -> str:
     base_url = f"https://github.com/{args.base_repo}/tree/stable/{base_path}"
     
     lines = []
-    lines.append(f"📁 <a href=\"https://github.com/{args.base_repo}/tree/stable\" target=\"_blank\"><b>geca-labs</b></a>")
-    lines.append(f"└── 📁 <a href=\"https://github.com/{args.base_repo}/tree/stable/{folder_name}\" target=\"_blank\">{folder_name}</a>")
-    lines.append(f"    └── 📁 <a href=\"https://github.com/{args.base_repo}/tree/stable/{folder_name}/lab-{lab_num}\" target=\"_blank\">lab-{lab_num}</a>")
-    lines.append(f"        └── 📁 <a href=\"{base_url}\" target=\"_blank\"><b>{args.prn}</b></a>")
+    lines.append("```")
+    lines.append(f"📁 geca-labs")
+    lines.append(f"└── 📁 {folder_name}")
+    lines.append(f"    └── 📁 lab-{lab_num}")
+    lines.append(f"        └── 📁 {args.prn}")
     
     # Sort files for consistent display
     sorted_files = sorted(modified_files)
     for i, file in enumerate(sorted_files):
         is_last = i == len(sorted_files) - 1
         prefix = "            └── " if is_last else "            ├── "
+        lines.append(f"{prefix}📄 {file}")
+    
+    lines.append("```")
+    lines.append("")
+    
+    # Add clickable links below the tree
+    lines.append("**Quick Links:**")
+    lines.append(f"- 📁 [View folder on stable]({base_url})")
+    for file in sorted_files:
         file_url = f"https://github.com/{args.base_repo}/blob/stable/{base_path}/{file}"
-        lines.append(f"{prefix}📄 <a href=\"{file_url}\" target=\"_blank\">{file}</a>")
+        lines.append(f"- 📄 [{file}]({file_url})")
     
     return '\n'.join(lines)
 
@@ -298,13 +309,14 @@ def generate_markdown_report(config: TestConfig, report: TestReport, args) -> st
     
     lines.append("")
     
-    # Add file tree showing stable branch structure
-    lines.append("---\n")
-    lines.append("### Your Submitted Files (@ stable branch)\n")
-    modified_list = [r.file for r in report.validation_results]
-    file_tree = get_file_tree(args, modified_list)
-    lines.append(file_tree)
-    lines.append("")
+    # Add file tree showing stable branch structure (only for merge reports)
+    if args.show_file_tree:
+        lines.append("---\n")
+        lines.append("### Your Submitted Files (@ stable branch)\n")
+        modified_list = [r.file for r in report.validation_results]
+        file_tree = get_file_tree(args, modified_list)
+        lines.append(file_tree)
+        lines.append("")
     
     if not report.passed:
         lines.append("---\n")

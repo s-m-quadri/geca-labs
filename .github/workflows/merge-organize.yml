@@ -218,6 +218,7 @@ jobs:
               --head-branch "${{ fromJson(steps.pr.outputs.data).head.ref }}" \
               --base-repo "${{ fromJson(steps.pr.outputs.data).base.repo.full_name }}" \
               --pr-number "${{ github.event.issue.number }}" \
+              --show-file-tree \
               2>&1)
             set -e
             
