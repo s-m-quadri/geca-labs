@@ -1,6 +1,5 @@
 -- Lab 5 — procedural SQL (MySQL stored programs): schema
 -- Run: sudo mysql < 01_setup.sql
-
 DROP DATABASE IF EXISTS proc_lab;
 CREATE DATABASE proc_lab;
 USE proc_lab;
