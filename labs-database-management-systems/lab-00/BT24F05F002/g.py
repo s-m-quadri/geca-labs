@@ -10,4 +10,15 @@
 # except ValueError:
 #     print("Invalid input! Please enter a number.")
 
+while (True):
+    try:
+        id = int(input("enter student id : "))
+        print(f"ID : {id}")
+        print("It is a VALID ID")
+        break
+    except ValueError:
+        print("you enter invalid student id, input is not a number")
+        print("Enter id again")
+
+
 
