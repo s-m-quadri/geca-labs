@@ -10,4 +10,10 @@
 # except ValueError:
 #     print("Invalid input! Please enter a number.")
 
+try:
+    value = int(input("Enter Roll No.: "))
+    print(f"Roll No.: {value}")
+except ValueError:
+    print("Invalid input! Please enter an integer.")
+
 
