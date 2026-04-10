@@ -4,15 +4,7 @@
 #  - Call this function 3 times with different students
 
 # 💡 TIP:
-# Function to display student information
-def display_student(name, age, dept):
-    print("Student Name :", name)
-    print("Age :", age)
-    print("Department :", dept)
-    print("--------------------")
+# def function_name(param1, param2):
+#     print(f"Student: {param1}")
 
-
-display_student("Alice", 20, "Computer Science")
-display_student("Sayli", 19, "Information Technology")
-display_student("Prajakta", 21, "Electronics")
 
