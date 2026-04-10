@@ -4,9 +4,7 @@
 #  - Call this function 3 times with different students
 
 # 💡 TIP:
-def display_student(name,age,dept):
-    print(f"Hello, My name is {name}, I am {age} years old and I am from {dept} department")
+# def function_name(param1, param2):
+#     print(f"Student: {param1}")
 
-display_student("vedika",20,"cse")
-display_student("vanshita",23,"it")
-display_student("akshay",32,"aiml")
+
