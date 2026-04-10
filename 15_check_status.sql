@@ -7,6 +7,7 @@ SHOW DATABASES;
 -- Switch to your database
 USE school_db;
 
+
 -- Show tables
 SHOW TABLES;
 
