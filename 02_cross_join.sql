@@ -6,3 +6,10 @@ USE join_lab;
 -- TODO: SELECT staff.name, projects.title
 -- FROM staff
 -- CROSS JOIN projects;
+USE join_lab;
+
+SELECT 
+    staff.name, 
+    projects.title
+FROM staff
+CROSS JOIN projects;
