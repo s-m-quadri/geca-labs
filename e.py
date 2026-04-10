@@ -8,3 +8,15 @@
 #     print(f"Student: {param1}")
 
 
+def display_student(name:str, age:int, dept:str):
+    """ To Display Student Information """
+    print(f"Student Name : {name}")
+    print(f"Student Age : {age}")
+    print(f"Student Department : {dept}")
+    print("-"*80)
+
+display_student("Adarsh",21,"CSE")
+display_student("Serena",16,"ELE")
+display_student("Ash",19,"IT")
+
+
