@@ -136,22 +136,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
-      - name: Move files into PRN folder
+      - name: Organize submission and restore clean lab
         run: |
-          mkdir -p "$LAB_DIR/$ROLL"
-          shopt -s nullglob
-          mv ./*.py "$LAB_DIR/$ROLL"/ || true
-          mv ./*.ipynb "$LAB_DIR/$ROLL"/ || true
-          mv ./*.csv "$LAB_DIR/$ROLL"/ || true
-          mv ./*.sql "$LAB_DIR/$ROLL"/ || true
-          mv ./*.md "$LAB_DIR/$ROLL"/ || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          # 1. Save student submission files to temp location
+          mkdir -p /tmp/student_submission
+          shopt -s nullglob dotglob
 
-      - name: Restore lab working set
-        run: |
-          echo "Restoring from origin/${ORIGINAL_BRANCH}..."
+          # Copy all student files (not .git directory)
+          for file in *; do
+            if [ "$file" != ".git" ] && [ "$file" != ".github" ]; then
+              cp -r "$file" /tmp/student_submission/ || true
+            fi
+          done
+
+          # 2. Restore clean lab set from original branch at root
+          echo "Restoring clean lab set from origin/${ORIGINAL_BRANCH}..."
           git checkout "origin/${ORIGINAL_BRANCH}" -- .
+
+          # 3. Create student directory and move files there
+          mkdir -p "$LAB_DIR/$ROLL"
+
+          # Move student SQL files
+          find /tmp/student_submission -maxdepth 1 -name "*.sql" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
+          # Move other student files
+          find /tmp/student_submission -maxdepth 1 -name "*.py" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
+          find /tmp/student_submission -maxdepth 1 -name "*.ipynb" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
+          find /tmp/student_submission -maxdepth 1 -name "*.csv" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
+          find /tmp/student_submission -maxdepth 1 -name "*.md" -exec mv {} "$LAB_DIR/$ROLL/" \; || true
+
+          echo "Organized files for $ROLL under $LAB_DIR/$ROLL"
+          echo "Root now contains clean lab set from ${ORIGINAL_BRANCH}"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -159,12 +173,16 @@ jobs:
         run: |
           git config user.name "bot-s-m-quadri"
           git config user.email "access.smq@gmail.com"
-          git add "$LAB_DIR/$ROLL"
-          if git commit -m "Organize submission for $ROLL (merge into ${BASE_BRANCH})"; then
+
+          # Stage all changes (student directory + restored clean lab at root)
+          git add -A
+
+          if git commit -m "Organize submission for $ROLL into $LAB_DIR/$ROLL"; then
             git push origin "${BASE_BRANCH}"
+            echo "✓ Successfully organized and pushed submission"
           else
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="ℹ️ No changes to commit for $ROLL."
+              -f body="ℹ️ No changes to commit for $ROLL (files may already be organized)."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
