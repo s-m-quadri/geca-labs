@@ -60,17 +60,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
-      - name: Checkout PR head
+      - name: Checkout repository (main branch for scripts)
         uses: actions/checkout@v4
         with:
-          ref: ${{ fromJson(steps.pr.outputs.result).headSha }}
+          ref: stable/main
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN }}
 
-      - name: Fetch baseline branch
+      - name: Fetch PR head and baseline
         run: |
+          # Save automation scripts (they're on stable/main)
+          cp -r automation-scripts /tmp/
+
+          # Fetch and checkout PR head
+          git fetch origin ${{ fromJson(steps.pr.outputs.result).headSha }}
+          git checkout ${{ fromJson(steps.pr.outputs.result).headSha }}
+
+          # Restore automation scripts
+          cp -r /tmp/automation-scripts .
+
+          # Fetch baseline branch
           git fetch origin "${LAB_BRANCH}:refs/remotes/origin/${LAB_BRANCH}" || true
-          echo "Baseline branch fetched: ${LAB_BRANCH}"
+
+          echo "Testing PR head with baseline: ${LAB_BRANCH}"
+          ls -la automation-scripts/
 
       - name: Install SQL parsers
         run: |
@@ -88,11 +101,9 @@ jobs:
       - name: Run tests
         id: test
         run: |
-          cd automation-scripts
-
           # Run test script and capture both stdout and exit code
           set +e
-          OUTPUT=$(python3 test_submission.py --lab-branch "${LAB_BRANCH}" 2>&1)
+          OUTPUT=$(python3 automation-scripts/test_submission.py --lab-branch "${LAB_BRANCH}" 2>&1)
           EXIT_CODE=$?
           set -e
 
