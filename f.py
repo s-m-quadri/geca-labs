@@ -11,20 +11,3 @@
 #          print(f.read())
 
 
-# Writing to student.txt 
-for i in range(3):
-    name = input("Enter Name : ")
-    age = int(input("Enter Age : "))
-    dept  = input("Enter Department Name : ")
-    print("-"*50)
-    with open("students.txt","a") as f:
-        f.write("="*60)
-        f.write(f"\nStudent Record : {i+1}\nName: {name}\nAge:{age}\nDepartment:{dept}\n")
-        f.write("="*60)
-
-# Reading from File
-print("-------- Reading From File students.txt ---------")
-with open("students.txt",'r') as f:
-    print(f.read())
-    
-

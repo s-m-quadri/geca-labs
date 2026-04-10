@@ -9,3 +9,8 @@
 # Count: len(students)
 
 
+student_names = ["adarsh","serena","ash","Luffy","Zoro"]
+for name in student_names:
+    print(name)
+
+print(f"Length of Student List : {len(student_names)}")
