@@ -1,0 +1,3 @@
+alice,20,CSE
+bob,21,ECE
+carot,22,ME

@@ -9,9 +9,12 @@ USE student_db;
 -- - age (integer)
 -- - department (string, max 30 characters)
 
--- CREATE TABLE students (
---     ...
--- );
+CREATE TABLE student (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    department VARCHAR(30)
+);
 
 -- Verify table creation
--- DESCRIBE students;
+ DESCRIBE student;

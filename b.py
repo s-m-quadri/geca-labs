@@ -8,4 +8,14 @@
 # 💡 TIP:
 # Use f-strings for formatting: f"ID: {student_id}"
 
+student_id=101
+print(f"ID: {student_id}")
 
+student_name="Alice"
+print(f"name:{student_name}")
+
+student_marks=85.5
+print(f"marks:{student_marks}")
+
+student_department="CSE"
+print(f"department:{student_department}")
