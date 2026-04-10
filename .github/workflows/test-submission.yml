@@ -6,9 +6,7 @@ on:
 
 jobs:
   test-submission:
-    if: |
-      github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '@bot-s-m-quadri test')
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@bot-s-m-quadri test')
     runs-on: ubuntu-latest
     steps:
       - name: Get PR details
@@ -36,6 +34,7 @@ jobs:
         id: lab
         run: |
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
+          PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
 
           # Extract lab branch pattern (lab-{subject}-{NN})
           if [[ "$HEAD_BRANCH" =~ lab-dbms-[0-9]{2} ]]; then
@@ -48,8 +47,19 @@ jobs:
             exit 1
           fi
 
+          # Extract PRN from branch or title
+          PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
+          if [ -z "$PRN" ]; then
+            PRN=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
+          fi
+          if [ -z "$PRN" ]; then
+            PRN="UNKNOWN"
+          fi
+          PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
+
           echo "LAB_BRANCH=$LAB_BRANCH" >> $GITHUB_ENV
-          echo "Testing against baseline: $LAB_BRANCH"
+          echo "PRN=$PRN" >> $GITHUB_ENV
+          echo "Testing against baseline: $LAB_BRANCH for PRN: $PRN"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -103,7 +113,15 @@ jobs:
         run: |
           # Run test script and capture both stdout and exit code
           set +e
-          OUTPUT=$(python3 automation-scripts/test_submission.py --lab-branch "${LAB_BRANCH}" 2>&1)
+          OUTPUT=$(python3 automation-scripts/test_submission.py \
+            --lab-branch "${LAB_BRANCH}" \
+            --prn "${PRN}" \
+            --author "${{ github.event.issue.user.login }}" \
+            --head-repo "${{ fromJson(steps.pr.outputs.result).headRepo }}" \
+            --head-branch "${{ fromJson(steps.pr.outputs.result).head }}" \
+            --base-repo "${{ fromJson(steps.pr.outputs.result).baseRepo }}" \
+            --pr-number "${{ fromJson(steps.pr.outputs.result).number }}" \
+            2>&1)
           EXIT_CODE=$?
           set -e
 
