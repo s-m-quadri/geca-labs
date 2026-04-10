@@ -4,10 +4,10 @@
 -- TODO: Complete the following
 
 -- Step 1: Create database
--- CREATE DATABASE IF NOT EXISTS ...;
+ CREATE DATABASE IF NOT EXISTS student;
 
--- Step 2: Use the database
--- USE ...;
+
+USE student;
 
 -- Step 3: Display current database
--- SELECT DATABASE();
+ SELECT DATABASE();
