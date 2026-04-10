@@ -10,4 +10,9 @@
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
 
+with open("students.txt", "w") as f:
+    f.write("Meeran, 18, CSE\nAditya, 19, CSE\nRohan, 19, CSE")
+
+with open("students.txt", "r") as f:
+    print(f.read())
 
