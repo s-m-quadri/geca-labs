@@ -4,3 +4,6 @@
 USE school_db;
 
 -- TODO: Write your ALTER TABLE MODIFY COLUMN command here
+
+ALTER TABLE student_info MODIFY name VARCHAR(100);
+DESCRIBE student_info;
