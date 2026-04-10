@@ -8,4 +8,13 @@
 # Access: student["name"]
 # Loop: for key, value in student.items():
 
+student = {'id' = 101, 'name' = "aditya", 'age' = 20, 'department' = "CSE"}
+
+for k,v in student:
+    print(f"{k} is {v}")
+
+# for printing name of student
+NAME = student['name']
+print(f"the name of student is {NAME}")
+
 
