@@ -25,6 +25,7 @@ jobs:
               number: pr.number,
               base: pr.base.ref,
               head: pr.head.ref,
+              title: pr.title,
               headSha: pr.head.sha,
               headRepo: pr.head.repo.full_name,
               baseRepo: pr.base.repo.full_name
