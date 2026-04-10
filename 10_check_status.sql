@@ -18,3 +18,5 @@ SELECT COUNT(*) as total_students FROM students;
 
 -- View all data
 SELECT * FROM students;
+
+
