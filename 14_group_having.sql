@@ -4,12 +4,17 @@
 
 USE school_db;
 
--- TODO (Part A): SELECT dept, AVG(salary) AS avg_pay
--- FROM employees
--- GROUP BY dept
--- HAVING AVG(salary) > 35000;
+-- Part A: Departments with average salary > 35000
+SELECT 
+    dept, 
+    AVG(salary) AS avg_pay
+FROM employees
+GROUP BY dept
+HAVING AVG(salary) > 35000;
 
--- TODO (Part B): SELECT dept,
---   GROUP_CONCAT(full_name ORDER BY full_name SEPARATOR ', ') AS members
--- FROM employees
--- GROUP BY dept;
+-- Part B: Comma-separated employee names by department
+SELECT 
+    dept,
+    GROUP_CONCAT(full_name ORDER BY full_name SEPARATOR ', ') AS members
+FROM employees
+GROUP BY dept;
