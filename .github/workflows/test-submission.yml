@@ -37,9 +37,9 @@ jobs:
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
 
-          # Extract lab branch pattern (lab-{subject}-{NN})
+          # Extract lab branch pattern (lab-{subject}-{NN} or lab-{subject}-{NN}-v{N})
           if [[ "$HEAD_BRANCH" =~ lab-dbms-[0-9]{2} ]]; then
-            LAB_BRANCH=$(echo "$HEAD_BRANCH" | grep -oP 'lab-dbms-\d{2}')
+            LAB_BRANCH=$(echo "$HEAD_BRANCH" | grep -oP 'lab-dbms-\d{2}(-v\d+)?')
           elif [[ "$HEAD_BRANCH" =~ lab-dbms ]]; then
             LAB_BRANCH="lab-dbms-00"
           else

@@ -102,11 +102,14 @@ jobs:
             exit 1
           fi
 
+          # Strip version suffix (-v1, -v2, ...) before numeric extraction
+          CLEAN_BRANCH=$(echo "$HEAD_BRANCH" | sed 's/-v[0-9]*$//')
+
           # Handle LAB_NUM extraction (special case for lab-{subject} without number)
-          if [[ "$HEAD_BRANCH" =~ ^lab-[a-z]+$ ]]; then
+          if [[ "$CLEAN_BRANCH" =~ ^lab-[a-z]+$ ]]; then
             LAB_NUM="00"
           else
-            LAB_NUM=$(echo "$HEAD_BRANCH" | grep -oP '\d{2}$' || true)
+            LAB_NUM=$(echo "$CLEAN_BRANCH" | grep -oP '\d{2}$' || true)
           fi
 
           if [ -z "$LAB_NUM" ]; then
