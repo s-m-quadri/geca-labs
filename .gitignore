@@ -1,2 +1,17 @@
-*.mp4
-*.ppm
+-- Solution files (starting with .solution.)
+.solution.*.sql
+.solution.*.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
