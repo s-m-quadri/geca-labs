@@ -1,5 +1,5 @@
--- Task 2: User variables and arithmetic (+ − * /)
--- No procedures yet.
+-- Task 2: Arithmetic in a SELECT (+ - * /)
+-- PostgreSQL has no session variables (@a := ...); just SELECT the expressions.
 
 USE proc_lab;
 

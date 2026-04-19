@@ -4,34 +4,30 @@ Bundles **arithmetic in SQL**, **stored procedures**, **cursors**, **cursor-driv
 ## Environment
 
 - **Copilot only** among AI assistants: see `.vscode/settings.json` and `.devcontainer/devcontainer.json`.
-- Turn off Tabnine, Cody, Codeium, and similar if your Codespace profile adds them.
-- Generic autocomplete lists are intentionally reduced so **Copilot + this repo’s `.github/copilot-instructions.md`** stay primary.
+- PostgreSQL is installed automatically via `.devcontainer/setup-postgres.sh`.
+- Start it manually if needed: `sudo service postgresql start`
 
-## DELIMITER / procedures
-
-MySQL batch mode and `mysql < file` **do not** handle `DELIMITER` reliably. Use the helper:
+## Running files
 
 ```bash
-chmod +x run_source.sh
-./run_source.sh proc_lab 04_proc_apply_rate.sql
-```
-
-Plain `.sql` files without procedures can still use:
-
-```bash
-sudo mysql proc_lab < 02_user_vars_arithmetic.sql
+sudo -u postgres psql -f 01_setup.sql
+sudo -u postgres psql -d proc_lab -f 02_user_vars_arithmetic.sql
 ```
 
 ## Problem set
 
-| File | Notes |
-| --- | --- |
-| `01_setup.sql` | Run first |
-| `02`–`03` | Variables + `IF()` |
-| `04`, `06`–`08` | Use `./run_source.sh` after editing |
-| `05` | `CALL` after `04` loads |
-| `09` | Puzzle (plain SQL) |
-| `10_check_status.sql` | Verify |
+| File                           | Notes                                          |
+| ------------------------------ | ---------------------------------------------- |
+| `01_setup.sql`                 | Run first — creates the database and seed data |
+| `02_user_vars_arithmetic.sql`  | Arithmetic in SELECT                           |
+| `03_select_if.sql`             | CASE WHEN conditional expression               |
+| `04_proc_apply_rate.sql`       | Function with RETURNS                          |
+| `05_call_procedures.sql`       | Call apply_rate after task 4                   |
+| `06_proc_cursor_sum.sql`       | Cursor loop that accumulates a sum             |
+| `07_proc_cursor_bonus.sql`     | Cursor-driven UPDATE                           |
+| `08_puzzle_safe_transfer.sql`  | Puzzle A: safe bank transfer procedure         |
+| `09_puzzle_balance_enigma.sql` | Puzzle B: scalar subquery riddle               |
+| `10_check_status.sql`          | Verify final state                             |
 
 ## Manual
 
@@ -39,4 +35,4 @@ https://www.s-m-quadri.me/geca/dbms/05
 
 ## Submit
 
-`[YOUR_PRN] Lab 5: Procedural SQL & puzzles`
+`[YOUR_PRN] Lab 5-v2: Procedural SQL (PostgreSQL) & puzzles`

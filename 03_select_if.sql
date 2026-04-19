@@ -1,4 +1,4 @@
--- Task 3: Conditional expression in a query (MySQL IF(expr, a, b))
+-- Task 3: Conditional expression in a query (PostgreSQL uses CASE WHEN, not IF())
 -- Label each account as 'high' if balance >= 1000 else 'low'
 
 USE proc_lab;
