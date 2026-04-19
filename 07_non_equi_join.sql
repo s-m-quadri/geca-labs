@@ -4,3 +4,4 @@ USE join_lab;
 
 -- TODO: JOIN staff a to staff b on same dept_id AND a.joined_on < b.joined_on
 -- Show a.name, b.name, a.joined_on, b.joined_on
+select a.name as person_a, b.name as person_b, a.joined_on, b.joined_on from staff a join staff b on a.dept_id = b.dept_id and a.joined_on < b.joined_on order by a.dept_id, a.joined_on;
