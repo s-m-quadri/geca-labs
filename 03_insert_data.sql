@@ -5,3 +5,7 @@ USE school_db;
 
 -- TODO: Write your INSERT commands here
 -- Example: INSERT INTO students VALUES (...);
+ALTER TABLE students
+ADD PRIMARY KEY (id);
+ 
+DESCRIBE students;
