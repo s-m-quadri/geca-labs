@@ -11,7 +11,11 @@ CREATE PROCEDURE apply_rate(
   OUT out_val DECIMAL(10,2)
 )
 BEGIN
-  -- TODO: SET out_val = ...
-  SET out_val = NULL;
+  SET out_val = base * (1 + pct / 100);
 END//
 DELIMITER ;
+
+
+
+
+
