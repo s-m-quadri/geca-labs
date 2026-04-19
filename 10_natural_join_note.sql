@@ -9,3 +9,7 @@ USE join_lab;
 -- INNER JOIN departments ON ...
 
 -- Optional: explain in one line why NATURAL JOIN is risky in real schemas
+select projects.title,departments.dept_name,departments.floor_no
+from projects
+inner join departments on projects.dept_id=departments.dept_id;
+
