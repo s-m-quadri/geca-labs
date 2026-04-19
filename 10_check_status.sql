@@ -3,7 +3,6 @@
 
 -- Show all databases
 SHOW DATABASES;
-
 -- Use your database
 USE school_db;
 
