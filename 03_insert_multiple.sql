@@ -1,6 +1,5 @@
 -- Task 3: Insert Multiple Students
 -- Add 3 more students in one command
-
 USE school_db;
 
 -- TODO: Insert multiple students at once
