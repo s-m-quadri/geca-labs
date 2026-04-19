@@ -1,8 +1,8 @@
 {
-  "name": "GECA DBMS Lab 6 — Views & subqueries",
+  "name": "GECA DBMS Lab 6-v2 — Views & Subqueries (PostgreSQL)",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  "postCreateCommand": "chmod +x .devcontainer/setup-mysql.sh && bash .devcontainer/setup-mysql.sh",
-  "postStartCommand": "sudo service mysql start 2>/dev/null || sudo service mysqld start 2>/dev/null || true",
+  "postCreateCommand": "chmod +x .devcontainer/setup-postgres.sh && bash .devcontainer/setup-postgres.sh",
+  "postStartCommand": "sudo service postgresql start 2>/dev/null || true",
   "customizations": {
     "vscode": {
       "settings": {

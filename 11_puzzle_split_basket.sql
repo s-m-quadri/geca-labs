@@ -1,7 +1,6 @@
 -- Puzzle C (riddle)
--- "One order carried both a bargain-bin item (unit price under 15) and a premium item (unit price over 30).
---  Which order_id is it?"
+-- "One order carried both a bargain-bin item (unit price under 15)
+--  and a premium item (unit price over 30). Which order_id is it?"
+\c view_lab
 
-USE view_lab;
-
--- TODO: HAVING with SUM of conditions, or intersection of two subqueries, or EXISTS pair — your choice
+-- TODO: HAVING with conditional sums, or EXISTS pair, or intersect of two subqueries

@@ -1,5 +1,5 @@
--- Task 4: Scalar subquery — products priced above the average product price
+-- Task 4: Scalar subquery -- products priced above the average product price
+\c view_lab
 
-USE view_lab;
-
--- TODO: SELECT name, price FROM products WHERE price > ( ... scalar subquery for AVG(price) ... );
+-- TODO: SELECT name, price FROM products
+--       WHERE price > ( ... scalar subquery for AVG(price) ... );
