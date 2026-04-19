@@ -7,3 +7,10 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+select s.name
+from staff s
+join project_staff ps on s.staff_id=ps.staff_id
+join projects p on ps.proj_id=p.proj_id
+where p.title like 'Riddle%' 
+group by s.name
+having count(distinct p.proj_id)>1;
