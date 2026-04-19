@@ -2,6 +2,17 @@
 #  - id, name, age, department
 #  - Print each field with its value
 #  - Access and print only the student's name
+student = {
+    "id": 101,
+    "name": "Alice",
+    "age": 20,
+    "department": "CSE"
+}
+for key, value in student.items():
+    print(f"{key.capitalize()}: {value}")
+print(f"Student Name: {student['name']}")
+    
+
 
 # 💡 TIP:
 # Dictionary: student = {"id": 101, "name": "Alice", ...}
