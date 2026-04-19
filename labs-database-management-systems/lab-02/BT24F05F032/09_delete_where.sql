@@ -11,3 +11,4 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+SELECT * FROM students WHERE age < 15;    
