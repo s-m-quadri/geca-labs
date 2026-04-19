@@ -4,7 +4,6 @@
 DROP DATABASE IF EXISTS proc_lab;
 CREATE DATABASE proc_lab;
 USE proc_lab;
-
 CREATE TABLE accounts (
   id INT PRIMARY KEY AUTO_INCREMENT,
   holder VARCHAR(60) NOT NULL,

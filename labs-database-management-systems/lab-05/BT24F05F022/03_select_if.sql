@@ -3,4 +3,4 @@
 
 USE proc_lab;
 
--- TODO: SELECT holder, balance, IF(balance >= 1000, 'high', 'low') AS tier FROM accounts;
+SELECT holder, balance, IF(balance >= 1000, 'high', 'low') AS tier FROM accounts;
