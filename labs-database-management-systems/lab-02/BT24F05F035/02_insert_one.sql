@@ -2,6 +2,9 @@
 -- Add your first student to the table
 
 USE school_db;
-
+-- DROP TABLE IF EXISTS school_db;
 -- TODO: Insert one student record
 -- Example: INSERT INTO students (name, age, grade) VALUES ('Alice', 15, '10th');
+INSERT INTO students (name, age, grade) VALUES ('Prabhakar', 15, '10th');
+SHOW TABLES;
+SELECT * FROM students;

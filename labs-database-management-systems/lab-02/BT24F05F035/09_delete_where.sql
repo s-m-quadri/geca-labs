@@ -11,3 +11,4 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+DELETE FROM students WHERE name = 'Prabhakar';
