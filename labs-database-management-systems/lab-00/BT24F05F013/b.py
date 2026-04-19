@@ -9,3 +9,6 @@
 # Use f-strings for formatting: f"ID: {student_id}"
 
 
+student_id = 101
+student_name = "Alice"
+marks = 85.5

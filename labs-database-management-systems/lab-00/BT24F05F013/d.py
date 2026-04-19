@@ -9,3 +9,5 @@
 # Loop: for key, value in student.items():
 
 
+student = {"id": 101, "name": "Alice", "dept": "CSE"}
+print(student["name"])
