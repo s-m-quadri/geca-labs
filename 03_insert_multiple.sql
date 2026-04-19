@@ -8,3 +8,10 @@ USE school_db;
 -- ('Bob', 16, '11th'),
 -- ('Charlie', 15, '10th'),
 -- ('Diana', 17, '12th');
+
+INSERT INTO students (name,age,grade)
+VALUES
+("ash",19,"9th"),
+("serena",21,"8th"),
+("shreya",18,"10th"),
+("nami",14,"11th");

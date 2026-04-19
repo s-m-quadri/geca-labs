@@ -4,3 +4,8 @@
 USE school_db;
 
 -- TODO: SELECT all students ORDER BY age DESC
+-- SELECT * FROM students ORDER BY age ASC; -- Younger First
+
+SELECT * FROM students ORDER BY age DESC; -- Older First
+
+-- SELECT * FROM students ORDER BY name DESC; -- Sort as per Alpha
