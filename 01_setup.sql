@@ -11,6 +11,7 @@ CREATE TABLE accounts (
   balance DECIMAL(12,2) NOT NULL DEFAULT 0
 );
 
+
 CREATE TABLE payroll (
   emp_id          SERIAL PRIMARY KEY,
   name            VARCHAR(60) NOT NULL,
