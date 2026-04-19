@@ -15,3 +15,8 @@ BEGIN
   SET out_val = NULL;
 END//
 DELIMITER ;
+SET @result := 0;
+CALL apply_rate(100, 10, @result);
+SELECT @result AS new_value;
+
+
