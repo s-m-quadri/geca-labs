@@ -3,9 +3,8 @@
 
 USE school_db;
 
--- TODO: 
-SELECT full_name, hire_date,
-  YEAR(hire_date) AS year,
-  MONTH(hire_date) AS month,
-  DAY(hire_date) AS day
-FROM employees;
+-- TODO: SELECT full_name, hire_date,
+--   YEAR(hire_date) AS y,
+--   MONTH(hire_date) AS m,
+--   DAY(hire_date) AS d
+-- FROM employees;
