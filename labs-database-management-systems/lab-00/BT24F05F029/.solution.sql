@@ -1,6 +1,5 @@
 -- Solution file (for self-verification)
 -- Don't copy-paste! Understand and write your own code.
-
 -- setup.sql solution
 CREATE DATABASE IF NOT EXISTS student_db;
 USE student_db;

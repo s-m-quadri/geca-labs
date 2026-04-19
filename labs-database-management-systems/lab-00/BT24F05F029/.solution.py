@@ -1,6 +1,5 @@
 # Solution file for Python basics (for self-verification)
 # Don't copy-paste! Understand and write your own code.
-
 # a.py solution
 print("Hello, Python!")
 print("Welcome to DBMS Lab")
