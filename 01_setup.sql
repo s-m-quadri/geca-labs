@@ -17,3 +17,18 @@
 -- Optional: put leading/trailing spaces in some phone values for TRIM task later.
 
 -- TODO: SELECT * FROM employees;
+
+DROP DATABASE IF EXISTS school_db;
+CREATE DATABASE IF NOT EXISTS school_db;
+USE school_db;
+
+CREATE TABLE IF NOT EXISTS employees (
+emp_id INT PRIMARY KEY AUTO_INCREMENT,
+full_name VARCHAR(60) NOT NULL,
+dept VARCHAR(50),
+salary DECIMAL(10,2),
+hire_date DATE,
+phone VARCHAR(25)
+);
+
+SELECT * FROM employees;
