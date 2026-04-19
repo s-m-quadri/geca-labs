@@ -90,6 +90,13 @@ jobs:
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.data).head.ref }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
 
+          # Fork PRs: head ref may be "fork-owner:branch-name"
+          case "$HEAD_BRANCH" in
+            *:*)
+              HEAD_BRANCH="${HEAD_BRANCH#*:}"
+              ;;
+          esac
+
           ROLL=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
           if [ -z "$ROLL" ]; then
             ROLL=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)

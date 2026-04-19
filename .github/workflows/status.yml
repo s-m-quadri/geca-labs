@@ -79,6 +79,13 @@ jobs:
           PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
           PR_AUTHOR="${{ github.event.issue.user.login }}"
 
+          # Fork PRs: head ref may be "fork-owner:branch-name" — normalize to branch only
+          case "$HEAD_BRANCH" in
+            *:*)
+              HEAD_BRANCH="${HEAD_BRANCH#*:}"
+              ;;
+          esac
+
           PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
           if [ -z "$PRN" ]; then
             PRN=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
@@ -105,11 +112,16 @@ jobs:
           # Strip version suffix (-v1, -v2, ...) before numeric extraction
           CLEAN_BRANCH=$(echo "$HEAD_BRANCH" | sed 's/-v[0-9]*$//')
 
-          # Handle LAB_NUM extraction (special case for lab-{subject} without number)
-          if [[ "$CLEAN_BRANCH" =~ ^lab-[a-z]+$ ]]; then
+          # Lab number after lab-{subject}- (supports lab-dbms-6 and lab-dbms-06)
+          if [[ "$CLEAN_BRANCH" =~ ^lab-[a-z]+-([0-9]{1,2})$ ]]; then
+            LAB_NUM=$(printf '%02d' "$((10#${BASH_REMATCH[1]}))")
+          elif [[ "$CLEAN_BRANCH" =~ ^lab-[a-z]+$ ]]; then
             LAB_NUM="00"
           else
-            LAB_NUM=$(echo "$CLEAN_BRANCH" | grep -oP '\d{2}$' || true)
+            LAB_NUM=$(echo "$CLEAN_BRANCH" | grep -oP '[0-9]{1,2}$' || true)
+            if [ -n "$LAB_NUM" ]; then
+              LAB_NUM=$(printf '%02d' "$((10#$LAB_NUM))")
+            fi
           fi
 
           if [ -z "$LAB_NUM" ]; then

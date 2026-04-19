@@ -37,14 +37,23 @@ jobs:
           HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
           PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
 
-          # Extract lab branch pattern (lab-{subject}-{NN} or lab-{subject}-{NN}-v{N})
-          if [[ "$HEAD_BRANCH" =~ lab-dbms-[0-9]{2} ]]; then
-            LAB_BRANCH=$(echo "$HEAD_BRANCH" | grep -oP 'lab-dbms-\d{2}(-v\d+)?')
-          elif [[ "$HEAD_BRANCH" =~ lab-dbms ]]; then
+          # Fork PRs: head ref may be "fork-owner:branch-name"
+          case "$HEAD_BRANCH" in
+            *:*)
+              HEAD_BRANCH="${HEAD_BRANCH#*:}"
+              ;;
+          esac
+
+          # Baseline branch: lab-dbms-{N} with N one or two digits (e.g. lab-dbms-6-v2 → lab 06)
+          CLEAN_HEAD=$(echo "$HEAD_BRANCH" | sed 's/-v[0-9]*$//')
+          if [[ "$CLEAN_HEAD" =~ ^lab-dbms-([0-9]{1,2})$ ]]; then
+            N=$(printf '%02d' "$((10#${BASH_REMATCH[1]}))")
+            LAB_BRANCH="lab-dbms-${N}"
+          elif [[ "$CLEAN_HEAD" =~ ^lab-dbms$ ]] || [[ "$HEAD_BRANCH" =~ ^lab-dbms(-v[0-9]*)?$ ]]; then
             LAB_BRANCH="lab-dbms-00"
           else
             gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
-              -f body="Cannot determine DBMS lab from branch: \`$HEAD_BRANCH\`. Expected format: \`lab-dbms-NN\`"
+              -f body="Cannot determine DBMS lab from branch: \`$HEAD_BRANCH\`. Expected format: \`lab-dbms-NN\` or \`lab-dbms-N-v2\`"
             exit 1
           fi
 
