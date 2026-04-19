@@ -1,6 +1,5 @@
 -- proc_lab sanity check
-\c proc_lab
-
+USE proc_lab;
 SELECT 'accounts' AS t, COUNT(*) AS n FROM accounts
 UNION ALL
 SELECT 'payroll', COUNT(*) FROM payroll;

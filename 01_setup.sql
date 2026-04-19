@@ -1,9 +1,7 @@
--- Lab 5-v2 -- procedural SQL (PostgreSQL): schema
--- Run: sudo -u postgres psql -f 01_setup.sql
-
+-- Lab 5 — procedural SQL (MySQL stored programs): schema
+-- Run: sudo mysql < 01_setup.sql
 DROP DATABASE IF EXISTS proc_lab;
 CREATE DATABASE proc_lab;
-\c proc_lab
 
 CREATE TABLE accounts (
   id      SERIAL PRIMARY KEY,

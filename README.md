@@ -1,6 +1,5 @@
-# Lab 5-v2: Procedural SQL (PostgreSQL) — arithmetic, functions, cursors, puzzles
-
-PostgreSQL variant of Lab 5. Uses `$$ ... $$` dollar quoting — no `DELIMITER` or `run_source.sh` needed.
+# Lab 5: Procedural SQL (MySQL) — arithmetic, cursors, updates, puzzles
+Bundles **arithmetic in SQL**, **stored procedures**, **cursors**, **cursor-driven updates**, and **riddle-style** tasks (former syllabus spread across procedural topics).
 
 ## Environment
 
