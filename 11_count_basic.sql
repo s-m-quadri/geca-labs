@@ -3,12 +3,8 @@
 
 USE school_db;
 
--- TODO: 
-SELECT COUNT(*) AS total_employees 
-FROM employees;
+-- TODO: SELECT COUNT(*) AS total_employees FROM employees;
 
 -- TODO: One query: count rows where salary >= 40000
--- Hint: 
-SELECT 
-    (SELECT COUNT(*) FROM employees) AS total_employees,
-    (SELECT COUNT(*) FROM employees WHERE salary >= 40000) AS high_earners;
+-- Hint: SUM(CASE WHEN salary >= 40000 THEN 1 ELSE 0 END) AS high_earners
+--   or COUNT with WHERE in a subquery
