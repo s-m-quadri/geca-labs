@@ -3,5 +3,6 @@
 
 USE school_db;
 
--- TODO: UPDATE students SET age = 16 WHERE id = 1;
+-- Task 7 solution: Update one student by id
+UPDATE students SET age = 16 WHERE id = 1;
 -- Remember to use WHERE!

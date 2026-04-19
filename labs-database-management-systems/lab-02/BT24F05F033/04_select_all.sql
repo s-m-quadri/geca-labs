@@ -3,4 +3,5 @@
 
 USE school_db;
 
--- TODO: Write SELECT query to show all students
+-- Task 4 solution: Show all students
+SELECT * FROM students;
