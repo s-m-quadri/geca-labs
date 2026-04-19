@@ -11,3 +11,13 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+
+
+-- See who will be deleted
+SELECT * FROM students WHERE age < 15;
+ 
+-- Delete them
+DELETE FROM students WHERE age < 15;
+ 
+-- Check result
+SELECT * FROM students;
