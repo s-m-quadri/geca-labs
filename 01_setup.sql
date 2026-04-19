@@ -16,4 +16,9 @@
 -- TODO: INSERT at least 5 rows. Vary dept, salary, hire_date.
 -- Optional: put leading/trailing spaces in some phone values for TRIM task later.
 
--- TODO: SELECT * FROM employees;
+-- TODO: SELECT * FROM emploCREATE DATABASE school_db1;
+   USE school_db1;
+   delete from Employees where emp_id > 5;
+  select *from Employees;
+
+  
