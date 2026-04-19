@@ -42,12 +42,12 @@ INSERT INTO departments (dept_id, dept_name, floor_no) VALUES
   (4, 'Idle', 1);
 
 INSERT INTO staff (name, dept_id, joined_on) VALUES
-  ('Ada', 1, '2019-03-01'),
-  ('Bob', 1, '2020-06-15'),
-  ('Chen', 2, '2018-01-10'),
+  ('Amruta', 1, '2021-03-01'),
+  ('Bella', 1, '2020-06-15'),
+  ('Cara', 2, '2018-01-10'),
   ('Dina', 2, '2021-09-01'),
-  ('Eve', 3, '2017-11-20'),
-  ('Finn', 3, '2022-02-28');
+  ('siya', 3, '2017-11-20'),
+  ('riya', 3, '2022-02-28');
 
 INSERT INTO projects (proj_id, title, dept_id) VALUES
   (101, 'Riddle-UI', 1),

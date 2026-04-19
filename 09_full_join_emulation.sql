@@ -3,5 +3,36 @@
 -- also show projects with no assignments and staff who never appear in project_staff (use UNION of left + anti patterns, or two LEFT JOINs with UNION — choose a correct emulation you can explain)
 
 USE join_lab;
-
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+SELECT 
+    staff.name AS staff_name,
+    projects.title AS project_title,
+    project_staff.hours
+FROM project_staff
+LEFT JOIN staff 
+    ON project_staff.staff_id = staff.staff_id
+LEFT JOIN projects 
+    ON project_staff.proj_id = projects.proj_id
+
+UNION
+
+-- Staff with no project assignments
+SELECT 
+    staff.name AS staff_name,
+    NULL AS project_title,
+    NULL AS hours
+FROM staff
+LEFT JOIN project_staff 
+    ON staff.staff_id = project_staff.staff_id
+WHERE project_staff.staff_id IS NULL
+
+UNION
+-- Projects with no staff assignments
+SELECT 
+    NULL AS staff_name,
+    projects.title AS project_title,
+    NULL AS hours
+FROM projects
+LEFT JOIN project_staff 
+    ON projects.proj_id = project_staff.proj_id
+WHERE project_staff.proj_id IS NULL;
