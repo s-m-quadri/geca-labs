@@ -5,24 +5,3 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
-
-SELECT staff.name, projects.title, project_staff.hours
-FROM project_staff
-JOIN staff ON project_staff.staff_id = staff.staff_id
-JOIN projects ON project_staff.proj_id = projects.proj_id
-UNION
-SELECT staff.name, NULL AS title, NULL AS hours
-FROM staff
-LEFT JOIN project_staff ON staff.staff_id = project_staff.staff_id
-WHERE project_staff.staff_id IS NULL
-UNION
-SELECT NULL AS name, projects.title, NULL AS hours
-FROM projects                      
-LEFT JOIN project_staff ON projects.proj_id = project_staff.proj_id
-WHERE project_staff.proj_id IS NULL
-ORDER BY name, title;
-
--- Strategy: UNION:
--- the inner join of all three tables to get all staff-project pairs with hours
--- a left join of staff to project_staff to get all staff with no projects
--- a left join of projects to project_staff to get all projects with no staff
