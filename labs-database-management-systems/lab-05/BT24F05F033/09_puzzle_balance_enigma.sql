@@ -5,4 +5,4 @@
 
 USE proc_lab;
 
--- TODO: two queries or one subquery; no hard-coded numbers from the seed
+-- two queries or one subquery; no hard-coded numbers from the seed
