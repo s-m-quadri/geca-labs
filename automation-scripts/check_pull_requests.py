@@ -1,14 +1,22 @@
+import argparse
 import pandas as pd
 import re
 from pathlib import Path
 
+from lib.lab_course import LabCourse
+
 # ------------------------
 # CONFIG
 # ------------------------
-INPUT_FILE = "output/pull_requests.csv"
+_SCRIPTS = Path(__file__).resolve().parent
+_ap = argparse.ArgumentParser(description="Validate pull_requests.csv for a course.")
+_ap.add_argument("--course", default="daa")
+_args = _ap.parse_args()
+_course = LabCourse.load(_args.course, root=str(_SCRIPTS))
+INPUT_FILE = _course.pull_requests_csv
 
-# Resolve project root relative to this script for robust pathing
-PROJ_ROOT = Path(__file__).resolve().parent.parent
+# Legacy: repo root (geca-labs) for fallbacks
+PROJ_ROOT = _SCRIPTS.parent
 
 # ------------------------
 # HELPER FUNCTIONS
@@ -30,14 +38,16 @@ def is_open(row):
 # ------------------------
 # MAIN SCRIPT
 # ------------------------
-input_path = (PROJ_ROOT / INPUT_FILE).resolve()
+input_path = Path(INPUT_FILE).resolve()
 if not input_path.exists():
-    # Fallback: try current working directory
-    alt_path = Path(INPUT_FILE)
+    alt_path = PROJ_ROOT / "output" / "pull_requests.csv"
     if alt_path.exists():
         input_path = alt_path
     else:
-        raise FileNotFoundError(f"Input CSV not found at '{input_path}' or '{alt_path.resolve()}'")
+        raise FileNotFoundError(
+            f"Input CSV not found at '{input_path}'. Fetch with: "
+            f"python3 automation-scripts/fetch_pull_requests.py --course {_course.id}"
+        )
 
 df = pd.read_csv(input_path)
 

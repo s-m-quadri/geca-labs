@@ -1,0 +1,25 @@
+{
+  "id": "dbms",
+  "label": "Database Management Systems",
+  "base_branch": "dbms",
+  "github_blob_branch": "dbms",
+  "labs_repo_subdir": "labs-database-management-systems",
+  "course_code": "CSPCC3005",
+  "course_name_short": "Database Management Systems Lab",
+  "homepage_url": "https://s-m-quadri.me/geca/dbms",
+  "manual_url_template": "https://s-m-quadri.me/geca/dbms/{lab:02d}",
+  "lab_range": [0, 10],
+  "attendance_module": "attendance_dbms",
+  "problem_set_branch_template": "lab-dbms-{lab:02d}",
+  "problem_set_branch_overrides": {
+    "5": "lab-dbms-05-v2",
+    "6": "lab-dbms-06-v2"
+  },
+  "writeup_document_title": "Database Management Systems",
+  "writeup_header_subtitle": "DBMS Lab Writeup",
+  "writeup_footer_manual_url": "https://s-m-quadri.me/geca/dbms",
+  "features": { "writeup": true },
+  "students_csv": "students.csv",
+  "labs_index": "labs_dbms/index.md",
+  "writeup_provider_module": "lib.writeup.providers.dbms"
+}

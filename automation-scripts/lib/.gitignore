@@ -1,3 +1,5 @@
 *
 !.gitignore
 !*.py
+!writeup
+!writeup/providers

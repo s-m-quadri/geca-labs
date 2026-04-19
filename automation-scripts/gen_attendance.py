@@ -1,163 +1,59 @@
+#!/usr/bin/env python3
+"""Build attendance CSV from students.csv using course-specific roster data."""
+
+from __future__ import annotations
+
+import argparse
 import csv
+import importlib
+import os
+import sys
 
-# -----------------------------
-# CONFIGURATION
-# -----------------------------
-INPUT_FILE = "output/students.csv"
-OUTPUT_FILE = "output/attendance.csv"
+from lib.lab_course import LabCourse
 
-# -------------------------------
-# Batch mapping based on PRN rules
-# -------------------------------
-BATCH_RULES = [
-    {"prefix": "BT23F05F", "ranges": [(1,20,"A"), (21,40,"B"), (41,60,"C"), (61,67,"D")]},
-    {"prefix": "BT24S05F", "ranges": [(1,10,"D")]}
-]
+ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def get_batch(prn):
-    """Return batch letter (A/B/C/D) based on PRN and rules."""
-    for rule in BATCH_RULES:
-        if prn.startswith(rule["prefix"]):
-            num = int(prn[-3:])
-            for start, end, batch in rule["ranges"]:
-                if start <= num <= end:
-                    return batch, num, rule["prefix"]
-    return None, None, None
 
-# -------------------------------
-# Batch → Slot mapping
-# -------------------------------
-SLOT_GROUPS = {
-    "A": "morning",
-    "B": "morning",
-    "C": "afternoon",
-    "D": "evening"
-}
+def load_attendance_module(course: LabCourse):
+    """Import data.<attendance_module> (e.g. attendance_daa)."""
+    name = course.attendance_module
+    if "." in name or "/" in name:
+        raise ValueError(f"Invalid attendance_module name: {name!r}")
+    return importlib.import_module(f"data.{name}")
 
-SLOTS = {
-    "morning": "10:30 AM to 12:30 PM",
-    "afternoon": "1:15 PM to 3:15 PM",
-    "evening": "3:30 PM to 5:30 PM"
-}
 
-# -------------------------------
-# Attendance data
-# -------------------------------
-ATTENDANCE = {
-    "Misc.": {
-        "24/07/2025": {"A": [3,4,5,6,7,10,11,12,13,15,16,17,18,19]},
-        "28/07/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,56,57,59,60]},
-    },
-    "Lab 0": {
-        "04/08/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,57,58,59,60]},
-        "07/08/2025": {"A": [2,3,4,6,7,10,11,13,14,15,16,17,18,19,20],
-                 "D23": [61,62,63,64,65,67],
-                 "D24": [1,2,3,4,5,6,8,9,10]},
-        "08/08/2025": {"B": [21,22,23,24,25,26,27,28,30,33,36,37,38,39]}
-    },
-    "Lab 1": {
-        "11/08/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,53,56,57,58]},
-        "14/08/2025": {"A": [3,4,6,7,8,9,10,11,12,13,16,17,18,19,20],
-                 "D23": [61,63],
-                 "D24": [5,8,10]},
-        "22/08/2025": {"B": [21,22,26,28,30,32,33,35,37]}
-    },
-    "Lab 2": {
-        "18/08/2025": {"C": [43,44,46,47,49,50,51,60]},
-        "21/08/2025": {"A": [2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19],
-                 "D23": [61,62,63,64,65,67],
-                 "D24": [1,2,3,4,5,6,9]},
-        "12/09/2025": {"B": [21,22,24,25,28,30,32,33,35]}
-    },
-    "Lab 3": {
-        "25/08/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,57,58,59,60]},
-        "28/08/2025": {"A": [2,3,4,5,6,7,8,9,10,11,12,15,16,20],
-                 "D23": [61,63,64,65,67],
-                 "D24": [1,2,3,4,6,7,8,9,10]},
-        "19/09/2025": {"B": [22,23,24,27,28,29,30,32,33,35,36,38,39]}
-    },
-    "Lab 4": {
-        "08/09/2025": {"C": [42,43,44,45,46,47,48,49,50,51,52,57,60]},
-        "11/09/2025": {"A": [3,4,10,11,15,16],
-                       "D23": [61,63,64,65,67],
-                       "D24": [1,2,3,4,5,6,7,9]},
-        "26/09/2025": {"B": [21,22,24,26,28,29,30,33,35,36,37,38]}
-    },
-    "Lab 5": {
-        "15/09/2025": {"C": [44,47,49,51,56,59]},
-        "16/09/2025": {"D23": [63,67],
-                       "D24": [1,2,3,6,7,9]},
-        "18/09/2025": {"A": [2,3,4,7,10,11,13,15,18,19,20]},
-        "03/10/2025": {"B": [21,22,23,24,25,26,27,28,33,35,36,37,38,39]}
-    },
-    "Lab 6": {
-        "23/09/2025": {"D23": [61,62,63,64,67],
-                       "D24": [1,2,3,4,5,6,7,9,10]},
-        "25/09/2025": {"A": [3,7,10,11,12,13,14,15,16,17,18,19]},
-        "29/09/2025": {"C": [42,43,44,45,46,48,49,50,51,52,57,58,60]}
-    }
-}
+def run(course_id: str) -> int:
+    course = LabCourse.load(course_id, root=ROOT)
+    mod = load_attendance_module(course)
+    students_path = course.students_csv
+    out_path = course.attendance_csv
 
-# -------------------------------
-# Precompute attendance lookup
-# -------------------------------
-LOOKUP = {}
-for lab, dates in ATTENDANCE.items():
-    for date, rec in dates.items():
-        for batch_key, nums in rec.items():
-            for n in nums:
-                LOOKUP[(lab, batch_key, n)] = date
+    if not os.path.isfile(students_path):
+        print(f"Missing students CSV: {students_path}", file=sys.stderr)
+        return 2
 
-# -------------------------------
-# Helper to check presence
-# -------------------------------
-def was_present(prn, lab_key):
-    batch, num, prefix = get_batch(prn)
-    if not batch:
-        print(f"Warning: PRN {prn} did not match any batch rule")
-        return "-"
+    os.makedirs(course.output_dir, exist_ok=True)
+    fieldnames = mod.attendance_fieldnames()
 
-    # Resolve D-subgroup keys
-    if batch == "D":
-        d_key = "D23" if prefix == "BT23F05F" else "D24"
-    else:
-        d_key = batch
-
-    # Check if this batch had a session for the given lab
-    session_dates = [
-        date for (lab, bkey, n), date in LOOKUP.items()
-        if lab == lab_key and bkey == d_key
-    ]
-    if not session_dates:
-        return "n/a"  # no session conducted for this batch
-
-    date = LOOKUP.get((lab_key, d_key, num))
-    if date:
-        # return f"{date} {SLOTS[SLOT_GROUPS[batch]]}"
-        return f"{date}"
-    return "Absent"  # session was conducted but student absent
-
-# -------------------------------
-# Build one student's row
-# -------------------------------
-def build_output_row(row):
-    prn, name = row["PRN"], row["Name"]
-    output_row = {"PRN": prn, "Name": name}
-    for lab_key in ATTENDANCE.keys():
-        output_row[lab_key] = was_present(prn, lab_key)
-    return output_row
-
-# -------------------------------
-# Main processing
-# -------------------------------
-def process_file():
-    with open(INPUT_FILE, newline='', encoding='utf-8') as infile, \
-         open(OUTPUT_FILE, "w", newline='', encoding='utf-8') as outfile:
+    with open(students_path, newline="", encoding="utf-8") as infile, open(
+        out_path, "w", newline="", encoding="utf-8"
+    ) as outfile:
         reader = csv.DictReader(infile)
-        writer = csv.DictWriter(outfile, fieldnames=["PRN", "Name"] + list(ATTENDANCE.keys()))
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in reader:
-            writer.writerow(build_output_row(row))
+            writer.writerow(mod.build_output_row(row))
 
-process_file()
-print("attendance_output.csv generated.")
+    print(f"Attendance CSV ({course.id}) → {out_path}")
+    return 0
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(description="Generate attendance.csv for a lab course.")
+    p.add_argument("--course", default="daa", help="Course id: daa | dbms (see courses/<id>.json)")
+    args = p.parse_args()
+    return run(args.course)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

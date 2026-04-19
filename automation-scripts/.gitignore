@@ -9,3 +9,10 @@
 !gen_overview.py
 !test_submission.py
 !lib
+!courses
+!courses/**
+!data
+!data/**
+!labs_dbms
+!labs_dbms/**
+!lib/writeup/providers/**

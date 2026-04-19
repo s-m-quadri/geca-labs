@@ -1,16 +1,30 @@
+import argparse
+import os
+
 import numpy as np
 import pandas as pd
 import re
 
+from lib.common import student_sort_key
+from lib.lab_course import LabCourse
+from lib.latex_duplex import latex_duplex_even_page_suffix
+
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # ------------------------
 # CONFIG
 # ------------------------
+_ap = argparse.ArgumentParser(description="Overview LaTeX from attendance + PRs.")
+_ap.add_argument("--course", default="daa")
+_args = _ap.parse_args()
+course = LabCourse.load(_args.course, root=SCRIPT_ROOT)
+
 REPO_URL = "https://github.com/s-m-quadri/geca-labs"
-STUDENT_FILE = "output/students.csv"
-LATEX_FILE = "report/overview.tex"
-INPUT_FILE = "output/pull_requests.csv"
-ATTENDANCE_FILE = "output/attendance.csv"
-LAB_RANGE = range(0, 11)   # Lab 0 to Lab 10
+STUDENT_FILE = course.students_csv
+LATEX_FILE = os.path.join(SCRIPT_ROOT, "report", f"overview-{course.id}.tex")
+INPUT_FILE = course.pull_requests_csv
+ATTENDANCE_FILE = course.attendance_csv
+LAB_RANGE = course.lab_numbers()
 
 # Flag to show or hide marks column
 SHOW_MARKS = True  # Set to False to hide marks column
@@ -150,9 +164,8 @@ for _, student in students_df.iterrows():
         attendance_str = "0/0 (0%)"
         attendance_percent = 0
 
-    # Submission: denominator is always 7 as requested. Compute integer percentage.
-    SUBMISSION_DENOM = 7
-    submission_percent = int(round((labs_completed / SUBMISSION_DENOM) * 100)) if SUBMISSION_DENOM > 0 else 0
+    SUBMISSION_DENOM = max(1, len(LAB_RANGE))
+    submission_percent = int(round((labs_completed / SUBMISSION_DENOM) * 100))
     submission_str = f"{labs_completed}/{SUBMISSION_DENOM} ({submission_percent}%)"
     
     # Calculate marks breakdown
@@ -180,7 +193,10 @@ for _, student in students_df.iterrows():
     overview_data.append(row_data)
 
 overview_dff = pd.DataFrame(overview_data)
-overview_dff = overview_dff.sort_values(by="PRN")
+overview_dff = overview_dff.sort_values(
+    by="PRN",
+    key=lambda col: col.map(lambda p: student_sort_key(str(p))),
+)
 
 # Apply LaTeX escaping
 overview_dff = overview_dff.applymap(escape_latex)
@@ -189,7 +205,8 @@ overview_dff = overview_dff.applymap(escape_latex)
 # EXPORT TO LATEX
 # ------------------------
 with open(LATEX_FILE, "w", encoding="utf-8") as f:
-    f.write(r"""\documentclass[10pt]{article}
+    f.write(
+        r"""\documentclass[10pt]{article}
 \usepackage{booktabs}
 \usepackage{geometry}
 \usepackage{longtable}
@@ -211,17 +228,21 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \geometry{a4paper,margin=0.5in}
 \begin{document}
 \begin{center}
-    {\LARGE \textbf{DAA Labs Report Overview 2025}}
+    {\LARGE \textbf{"""
+        + escape_latex(course.label)
+        + r""" Report Overview 2025}}
 \end{center}
 \vspace{1em}
 \begin{center}
     {\large This table shows the attendance, submission, and writeup status for each student.}
 \end{center}
 \vspace{1em}
-""")
+"""
+    )
     f.write(overview_dff.to_latex(index=False, longtable=True, escape=False, column_format='lllllll'))
-    f.write(r"""
-\end{document}""")
+    f.write("\n")
+    f.write(latex_duplex_even_page_suffix())
+    f.write("\n\\end{document}\n")
 
 marks_column_info = "with marks column" if SHOW_MARKS else "without marks column"
 print(f"LaTeX overview report saved to {LATEX_FILE} ({marks_column_info})")

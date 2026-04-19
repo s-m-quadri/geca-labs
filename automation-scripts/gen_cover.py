@@ -1,27 +1,17 @@
 #!/usr/bin/env python3
 """
-Generate per-student, per-lab cover pages in LaTeX (+PDF) for DAA writeups.
+Generate per-student, per-lab cover pages (LaTeX/PDF).
 
-Inputs
-- automation-scripts/output/commits.csv
-- automation-scripts/output/students.csv
+Inputs (defaults from ``courses/<course>.json``):
+- ``output/<course>/commits.csv``, ``output/students.csv`` (or per-course path)
 
 Outputs
-- LaTeX + PDF under automation-scripts/output/daa-covers/{PRN}/
-  Filenames: {PRN}-{slug-name}-lab-{00..10}-cover.tex/.pdf
-
-Includes
-- Lab title, lab manual URL
-- Submission status, attached PR numbers, files changed, GitHub usernames, commit emails
-- Commit summary table: short SHA, PR no, date-time, message, additions, deletions
-- PR verification link(s)
-- Signature & remarks area
+- ``output/<course>/covers/{PRN}_{slug}_covers.tex`` (+ optional PDF)
+- PDFs use an extra blank page when needed so the total page count is even (duplex printing).
 
 CLI examples
-  python3 automation-scripts/gen_cover.py                   # generate all students, labs 00..10
-  python3 automation-scripts/gen_cover.py --only BT23F05F002 BT23F05F010
-  python3 automation-scripts/gen_cover.py --labs 0 1 2 3 --compile
-  python3 automation-scripts/gen_cover.py --out-dir automation-scripts/output/daa-covers --compile
+  python3 automation-scripts/gen_cover.py --course daa --compile
+  python3 automation-scripts/gen_cover.py --course dbms --only BT24F05F001 --labs 0 1
 """
 
 from __future__ import annotations
@@ -40,17 +30,15 @@ from lib.common import (
     ensure_dir,
     slugify,
     escape_latex,
-    latex_manual_url,
     lab_titles_default,
     read_students,
     compile_tex,
     Student,
 )
+from lib.latex_duplex import latex_duplex_even_page_suffix
+from lib.lab_course import LabCourse, repo_root_from_scripts
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_COMMITS_CSV = os.path.join(ROOT, "output", "commits.csv")
-DEFAULT_STUDENTS_CSV = os.path.join(ROOT, "output", "students.csv")
-DEFAULT_OUT_DIR = os.path.join(ROOT, "output", "daa-covers")
 
 # Repository info for PR links
 GITHUB_OWNER = "s-m-quadri"
@@ -164,7 +152,7 @@ def read_pull_requests(csv_path: str) -> List[dict]:
 _LAB_MSG_RE = re.compile(r"\b(?:lab|Lab)\s*[-:]?\s*0*([0-9]{1,2})\b")
 
 
-def infer_lab_from_files(files: Iterable[str]) -> Optional[int]:
+def infer_lab_from_files_daa(files: Iterable[str]) -> Optional[int]:
     files_list = list(files)
     if not files_list:
         return None
@@ -215,7 +203,7 @@ def infer_lab_from_files(files: Iterable[str]) -> Optional[int]:
     return None
 
 
-def infer_lab(commit: CommitRow) -> Optional[int]:
+def infer_lab_daa(commit: CommitRow) -> Optional[int]:
     # Prefer explicit lab mention in commit message
     m = _LAB_MSG_RE.search(commit.message or "")
     if m:
@@ -225,11 +213,55 @@ def infer_lab(commit: CommitRow) -> Optional[int]:
                 return num
         except Exception:
             pass
-    # Fallback to inferring from affected files
-    lab_from_files = infer_lab_from_files(commit.affected_files_list)
+    lab_from_files = infer_lab_from_files_daa(commit.affected_files_list)
     if lab_from_files is not None:
         return lab_from_files
     return None
+
+
+def infer_lab_dbms(commit: CommitRow) -> Optional[int]:
+    msg = commit.message or ""
+    m_branch = re.search(r"lab-dbms-(\d+)(?:-v\d+)?", msg, re.I)
+    if m_branch:
+        try:
+            num = int(m_branch.group(1))
+            if 0 <= num <= 30:
+                return num
+        except ValueError:
+            pass
+    m = _LAB_MSG_RE.search(msg)
+    if m:
+        try:
+            num = int(m.group(1))
+            if 0 <= num <= 30:
+                return num
+        except Exception:
+            pass
+    for p in commit.affected_files_list:
+        path = p.replace("\\", "/")
+        mm = re.search(r"lab-dbms-(\d+)(?:-v\d+)?", path, re.I)
+        if mm:
+            try:
+                num = int(mm.group(1))
+                if 0 <= num <= 30:
+                    return num
+            except ValueError:
+                continue
+        mm = re.search(r"lab[-_/ ](\d+)", path, re.I)
+        if mm:
+            try:
+                num = int(mm.group(1))
+                if 0 <= num <= 30:
+                    return num
+            except ValueError:
+                continue
+    return None
+
+
+def infer_lab(commit: CommitRow, course: LabCourse) -> Optional[int]:
+    if course.id == "dbms":
+        return infer_lab_dbms(commit)
+    return infer_lab_daa(commit)
 
 
 def infer_lab_from_pr_row(pr_row: dict) -> Optional[int]:
@@ -259,6 +291,15 @@ def infer_lab_from_pr_row(pr_row: dict) -> Optional[int]:
                 return num
         except Exception:
             pass
+    for blob in (labels, title):
+        m2 = re.search(r"lab-dbms-(\d+)(?:-v\d+)?", blob or "", re.I)
+        if m2:
+            try:
+                num = int(m2.group(1))
+                if 0 <= num <= 30:
+                    return num
+            except ValueError:
+                pass
     return None
 
 
@@ -266,12 +307,8 @@ def infer_lab_from_pr_row(pr_row: dict) -> Optional[int]:
 # LaTeX rendering
 # -----------------------------
 
-COURSE_CODE = "CSPCC3004"
-COURSE_NAME = "Lab Design and Analysis of Algorithms"
-HOMEPAGE_URL = "https://s-m-quadri.me/geca/daa"
 
-
-def latex_global_preamble(student: Student) -> str:
+def latex_global_preamble(student: Student, course: LabCourse) -> str:
     b = "\\"
     head: List[str] = []
     head.append("\\documentclass[11pt]{article}")
@@ -315,7 +352,7 @@ def latex_global_preamble(student: Student) -> str:
     head.append("\\fancyhf{}")
     head.append("\\setlength{\\headheight}{14pt}")
     head.append(f"{b}fancyhead[R]{{PRN: {escape_latex(student.prn)}}}")
-    head.append(f"{b}fancyfoot[L]{{{b}url{{{HOMEPAGE_URL}}}}}")
+    head.append(f"{b}fancyfoot[L]{{{b}url{{{course.homepage_url}}}}}")
     head.append("\\begin{document}")
     return "\n".join(head) + "\n"
 
@@ -332,11 +369,11 @@ def latex_title_block(lab: int, title: str) -> str:
     return "\n".join(lines) + "\n"
 
 
-def latex_course_block(lab: int) -> str:
+def latex_course_block(lab: int, course: LabCourse) -> str:
     lines: List[str] = []
-    lines.append(f"Course code: \\textbf{{{COURSE_CODE}}}\\\\")
-    lines.append(f"Course name: \\textbf{{{escape_latex(COURSE_NAME)}}}\\\\")
-    lines.append(f"Lab manual: \\textbf{{\\url{{{latex_manual_url(lab)}}}}}")
+    lines.append(f"Course code: \\textbf{{{course.course_code}}}\\\\")
+    lines.append(f"Course name: \\textbf{{{escape_latex(course.course_name_short)}}}\\\\")
+    lines.append(f"Lab manual: \\textbf{{\\url{{{course.manual_url(lab)}}}}}")
     lines.append("\\vspace{0.6em}")
     return "\n".join(lines) + "\n"
 
@@ -502,17 +539,18 @@ def latex_bottom_row(height_cm: float = 3.0) -> str:
 # Source files rendering
 # -----------------------------
 
-def _problem_set_url(lab: int) -> str:
-    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/tree/lab-daa-{lab:02d}"
+def _problem_set_url(lab: int, course: LabCourse) -> str:
+    branch = course.problem_set_branch(lab)
+    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/tree/{branch}"
 
 
-def _student_lab_dir(prn: str, lab: int) -> str:
-    repo_root = os.path.abspath(os.path.join(ROOT, os.pardir))
-    return os.path.join(repo_root, "labs-design-analysis-algorithms", f"lab-{lab:02d}", prn)
+def _student_lab_dir(prn: str, lab: int, course: LabCourse) -> str:
+    repo_root = repo_root_from_scripts()
+    return os.path.join(repo_root, course.labs_repo_subdir, f"lab-{lab:02d}", prn)
 
 
-def _list_source_files_for_lab(prn: str, lab: int) -> List[str]:
-    lab_dir = _student_lab_dir(prn, lab)
+def _list_source_files_for_lab(prn: str, lab: int, course: LabCourse) -> List[str]:
+    lab_dir = _student_lab_dir(prn, lab, course)
     if not os.path.isdir(lab_dir):
         return []
     files: List[str] = []
@@ -521,7 +559,11 @@ def _list_source_files_for_lab(prn: str, lab: int) -> List[str]:
             p = os.path.join(lab_dir, name)
             if not os.path.isfile(p):
                 continue
-            if lab == 0:
+            if course.id == "dbms":
+                low = name.lower()
+                if low.endswith(".sql") or low.endswith(".md"):
+                    files.append(p)
+            elif lab == 0:
                 # Match single-letter files like a.py .. z.py. The previous pattern used a double
                 # backslash which failed to match names like 'a.py'. Use a single escaped dot.
                 if re.fullmatch(r"[a-z]\.py", name) or name in {"z+.py", "z++.py", "z+++.py"}:
@@ -534,19 +576,20 @@ def _list_source_files_for_lab(prn: str, lab: int) -> List[str]:
     return files
 
 
-def _file_github_url(lab: int, prn: str, filename: str) -> str:
-    # Link to stable branch for visibility
-    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/blob/stable/labs-design-analysis-algorithms/lab-{lab:02d}/{prn}/{filename}"
+def _file_github_url(lab: int, prn: str, filename: str, course: LabCourse) -> str:
+    blob_branch = course.github_blob_branch
+    sub = course.labs_repo_subdir
+    return f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/blob/{blob_branch}/{sub}/lab-{lab:02d}/{prn}/{filename}"
 
 
-def latex_sources_for_lab(student: Student, lab: int, output_dir: str) -> str:
+def latex_sources_for_lab(student: Student, lab: int, output_dir: str, course: LabCourse) -> str:
     lines: List[str] = []
     # Problem set link
     lines.append("\\vspace{0.4em}")
-    lines.append(f"\\textbf{{Problem set}}: \\url{{{_problem_set_url(lab)}}}")
+    lines.append(f"\\textbf{{Problem set}}: \\url{{{_problem_set_url(lab, course)}}}")
     lines.append("\\vspace{0.6em}\\\\")
 
-    abs_files = _list_source_files_for_lab(student.prn, lab)
+    abs_files = _list_source_files_for_lab(student.prn, lab, course)
     if not abs_files:
         # Friendly note when no local files exist
         lines.append("\\begin{tcolorbox}[colback=gray!5,colframe=gray!40,boxrule=0.3pt]")
@@ -586,7 +629,7 @@ def latex_sources_for_lab(student: Student, lab: int, output_dir: str) -> str:
                 src_for_tex = safe_base
             except Exception:
                 src_for_tex = rel_path  # last resort
-        url = _file_github_url(lab, student.prn, filename)
+        url = _file_github_url(lab, student.prn, filename, course)
         # File header with name and clickable URL (URL can wrap)
         lines.append("\\noindent\\textbf{File}: " + escape_latex(filename))
         lines.append("\\vspace{0.6em}")
@@ -603,7 +646,13 @@ def latex_sources_for_lab(student: Student, lab: int, output_dir: str) -> str:
 # Aggregation
 # -----------------------------
 
-def aggregate_for_student_lab(student: Student, lab: int, all_commits: List[CommitRow], pr_lab_map: Optional[dict] = None) -> Tuple[List[CommitRow], List[int], List[str], List[str], List[str]]:
+def aggregate_for_student_lab(
+    student: Student,
+    lab: int,
+    all_commits: List[CommitRow],
+    pr_lab_map: Optional[dict],
+    course: LabCourse,
+) -> Tuple[List[CommitRow], List[int], List[str], List[str], List[str]]:
     """Collect commits for a student and lab.
 
     If pr_lab_map is provided (mapping PR number -> lab), prefer that mapping when
@@ -624,7 +673,7 @@ def aggregate_for_student_lab(student: Student, lab: int, all_commits: List[Comm
             continue
 
         # Otherwise infer from commit message / files
-        lab_inferred = infer_lab(c)
+        lab_inferred = infer_lab(c, course)
         if lab_inferred is None or lab_inferred != lab:
             continue
         commits.append(c)
@@ -671,7 +720,15 @@ def _cleanup_keep_only(pdf_path: str, folder: str) -> None:
                 pass
 
 
-def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns: Optional[List[str]], labs: Optional[List[int]], compile_pdf: bool) -> int:
+def generate_covers(
+    students_csv: str,
+    commits_csv: str,
+    out_dir: str,
+    only_prns: Optional[List[str]],
+    labs: Optional[List[int]],
+    compile_pdf: bool,
+    course: LabCourse,
+) -> int:
     students = read_students(students_csv)
     if only_prns:
         only = {s.upper() for s in only_prns}
@@ -684,7 +741,7 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
     pr_rows = read_pull_requests(pr_csv)
     pr_lab_map: dict = {}
     for r in pr_rows:
-        pr_no = _to_int(r.get("PR Number") or r.get("PR Number") )
+        pr_no = _to_int(r.get("PR Number"))
         if pr_no is None:
             continue
         lab_n = infer_lab_from_pr_row(r)
@@ -692,7 +749,8 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
             pr_lab_map[int(pr_no)] = lab_n
 
     lab_titles = lab_titles_default()
-    lab_list = [i for i in range(0, 11)] if not labs else [l for l in labs if 0 <= l <= 10]
+    allowed_labs = set(course.lab_numbers())
+    lab_list = list(course.lab_numbers()) if not labs else [l for l in labs if l in allowed_labs]
 
     ensure_dir(out_dir)
     total_students = len(students)
@@ -700,15 +758,17 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
         stu_dir = out_dir
         ensure_dir(stu_dir)
         doc_parts: List[str] = []
-        doc_parts.append(latex_global_preamble(stu))
+        doc_parts.append(latex_global_preamble(stu, course))
         for idx, lab in enumerate(lab_list):
             title = lab_titles.get(lab, f"Lab {lab:02d}")
-            commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(stu, lab, commits, pr_lab_map)
+            commits_lab, pr_numbers, pr_users, emails, files = aggregate_for_student_lab(
+                stu, lab, commits, pr_lab_map, course
+            )
 
             # Cover page for this lab
             doc_parts.append(latex_set_header_lab(lab))
             doc_parts.append(latex_title_block(lab, title))
-            doc_parts.append(latex_course_block(lab))
+            doc_parts.append(latex_course_block(lab, course))
             doc_parts.append(latex_student_block(stu, "Submitted" if pr_numbers else "Not submitted", pr_users, emails))
             doc_parts.append(latex_submission_block(pr_users, emails, pr_numbers, files))
             doc_parts.append(latex_commit_table(commits_lab, lab))
@@ -723,12 +783,13 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
             # Sources section on a fresh page
             doc_parts.append("\\newpage")
             doc_parts.append(latex_set_header_lab(lab))
-            doc_parts.append(latex_sources_for_lab(stu, lab, stu_dir))
+            doc_parts.append(latex_sources_for_lab(stu, lab, stu_dir, course))
 
             # Page break between labs
             if idx != len(lab_list) - 1:
                 doc_parts.append("\\newpage")
 
+        doc_parts.append(latex_duplex_even_page_suffix())
         doc_parts.append("\\end{document}")
 
         base = f"{stu.prn}_{slugify(stu.name)}_covers"
@@ -754,21 +815,27 @@ def generate_covers(students_csv: str, commits_csv: str, out_dir: str, only_prns
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    p = argparse.ArgumentParser(description="Generate DAA lab cover pages (LaTeX/PDF) per student per lab")
-    p.add_argument("--students", default=DEFAULT_STUDENTS_CSV, help="Path to students.csv")
-    p.add_argument("--commits", default=DEFAULT_COMMITS_CSV, help="Path to commits.csv")
-    p.add_argument("--out-dir", default=DEFAULT_OUT_DIR, help="Output folder for covers")
+    p = argparse.ArgumentParser(description="Generate lab cover pages (LaTeX/PDF) per student per lab")
+    p.add_argument("--course", default="daa", help="Course id (daa, dbms) — see courses/<id>.json")
+    p.add_argument("--students", default=None, help="Path to students.csv (default: from course config)")
+    p.add_argument("--commits", default=None, help="Path to commits.csv (default: output/<course>/commits.csv)")
+    p.add_argument("--out-dir", default=None, help="Output folder for covers (default: output/<course>/covers)")
     p.add_argument("--only", nargs="*", help="Only process these PRNs")
-    p.add_argument("--labs", nargs="*", type=int, help="Only process these lab numbers (0..10)")
+    p.add_argument("--labs", nargs="*", type=int, help="Only process these lab numbers (must be in course lab_range)")
     p.add_argument("--compile", action="store_true", help="Compile LaTeX to PDF")
     args = p.parse_args(argv)
 
-    for need in (args.students, args.commits):
+    course = LabCourse.load(args.course, root=ROOT)
+    students_path = args.students or course.students_csv
+    commits_path = args.commits or course.commits_csv
+    out_dir = args.out_dir or course.covers_dir
+
+    for need in (students_path, commits_path):
         if not os.path.exists(need):
             print(f"Missing input: {need}", file=sys.stderr)
             return 2
 
-    return generate_covers(args.students, args.commits, args.out_dir, args.only, args.labs, args.compile)
+    return generate_covers(students_path, commits_path, out_dir, args.only, args.labs, args.compile, course)
 
 
 if __name__ == "__main__":

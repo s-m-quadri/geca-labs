@@ -16,9 +16,52 @@ import subprocess
 import unicodedata
 import csv
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def load_env_file(path: str) -> None:
+    """Load ``KEY=value`` pairs from ``path`` into ``os.environ`` without extra deps.
+
+    Does not override variables already set in the environment (same idea as dotenv).
+    Supports optional single- or double-quoted values.
+    """
+    if not path or not os.path.isfile(path):
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            for raw in f:
+                line = raw.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" not in line:
+                    continue
+                key, _, rest = line.partition("=")
+                key = key.strip()
+                if not key or key in os.environ:
+                    continue
+                val = rest.strip()
+                if len(val) >= 2 and ((val[0] == val[-1] == '"') or (val[0] == val[-1] == "'")):
+                    val = val[1:-1]
+                os.environ[key] = val
+    except OSError:
+        pass
+
+
+# PRN prefixes treated as Direct Second Year (DSY) — listed last in rosters and reports.
+DSY_PRN_PREFIXES: Tuple[str, ...] = ("BT25S05F",)
+
+
+def is_dsy_prn(prn: str) -> bool:
+    u = (prn or "").strip().upper()
+    return any(u.startswith(pref) for pref in DSY_PRN_PREFIXES)
+
+
+def student_sort_key(prn: str) -> Tuple[int, str]:
+    """Sort key: non-DSY first (0), DSY last (1); then PRN alphabetically."""
+    u = (prn or "").strip().upper()
+    return (1 if is_dsy_prn(u) else 0, u)
 
 # Paths
 STUDENTS_CSV = os.path.join(ROOT, "output", "students.csv")
@@ -117,6 +160,7 @@ def read_students(csv_path: Optional[str] = None) -> List[Student]:
             name = str(row.get("Name", "")).strip()
             if prn:
                 students.append(Student(prn=prn, name=name))
+    students.sort(key=lambda s: student_sort_key(s.prn))
     return students
 
 

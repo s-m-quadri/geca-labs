@@ -1,18 +1,33 @@
+import argparse
+import os
+
 import numpy as np
 import pandas as pd
 import re
 
+from lib.common import student_sort_key
+from lib.lab_course import LabCourse
+from lib.latex_duplex import latex_duplex_even_page_suffix
+
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # ------------------------
-# CONFIG
+# CONFIG (per --course)
 # ------------------------
 REPO_URL = "https://github.com/s-m-quadri/geca-labs"
-LAB_RANGE = range(0, 7)   # Lab 0 to Lab 10
-INPUT_FILE = "output/pull_requests.csv"
-STUDENT_FILE = "output/students.csv"
-ATTENDANCE_FILE = "output/attendance.csv"
-OUTPUT_FILE_CSV = "output/summary.csv"
-OUTPUT_FILE_MD = "report/summary.md"
-LATEX_FILE = "report/summary.tex"
+
+_ap = argparse.ArgumentParser(description="Summary CSV/Markdown/LaTeX from pull_requests + attendance.")
+_ap.add_argument("--course", default="daa", help="Course id (see courses/<id>.json)")
+_args = _ap.parse_args()
+course = LabCourse.load(_args.course, root=SCRIPT_ROOT)
+
+LAB_RANGE = course.lab_numbers()
+INPUT_FILE = course.pull_requests_csv
+STUDENT_FILE = course.students_csv
+ATTENDANCE_FILE = course.attendance_csv
+OUTPUT_FILE_CSV = course.summary_csv
+OUTPUT_FILE_MD = os.path.join(SCRIPT_ROOT, "report", f"summary-{course.id}.md")
+LATEX_FILE = os.path.join(SCRIPT_ROOT, "report", f"summary-{course.id}.tex")
 
 # ------------------------
 # HELPER FUNCTIONS
@@ -96,12 +111,16 @@ for _, student in students_df.iterrows():
 
     row["Start"] = labs_started
     row["Done"] = labs_completed
-    row["Total"] = len(LAB_RANGE)
-    row["Percent"] = f"{(labs_completed / len(LAB_RANGE)) * 100:.2f}%"
+    _den = len(LAB_RANGE)
+    row["Total"] = _den
+    row["Percent"] = f"{(labs_completed / _den) * 100:.2f}%" if _den else "0.00%"
     summary.append(row)
 
 summary_df = pd.DataFrame(summary)
-summary_df = summary_df.sort_values(by="PRN")
+summary_df = summary_df.sort_values(
+    by="PRN",
+    key=lambda col: col.map(lambda p: student_sort_key(str(p))),
+)
 
 # ------------------------
 # EXPORT CSV
@@ -274,7 +293,8 @@ pr_latex_df["PR Number"] = pr_latex_df["PR Number"].apply(lambda x: format_pr_li
 # Export to LaTeX
 # ------------------------
 with open(LATEX_FILE, "w", encoding="utf-8") as f:
-    f.write(r"""\documentclass[10pt]{article}
+    f.write(
+        r"""\documentclass[10pt]{article}
 \usepackage{booktabs}
 \usepackage{geometry}
 \usepackage{longtable}
@@ -300,10 +320,13 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \begin{landscape}
 \small
 \begin{center}
-    {\LARGE \textbf{DAA Labs} Attendance and Submission Report \textbf{2025}}
+    {\LARGE \textbf{"""
+        + escape_latex(course.label)
+        + r"""} Attendance and Submission Report \textbf{2025}}
 \end{center}
 \vspace{1em} % small space before first table
-""")
+"""
+    )
     f.write(r"""
 \section*{1. Student Attendance}
 This table shows the attendance record for each student.
@@ -328,6 +351,8 @@ Err & Error (Closed without merge) \\
 This table lists all pull requests made by students, along with their details.
 """)
     f.write(pr_latex_df.to_latex(index=False, longtable=True, escape=False, caption="List of Pull Requests"))
+    f.write("\n")
+    f.write(latex_duplex_even_page_suffix())
     f.write(r"""
 \end{landscape}
 \end{document}""")
