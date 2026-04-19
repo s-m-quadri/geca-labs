@@ -11,3 +11,8 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+
+SELECT * FROM students WHERE age > 21;
+DELETE FROM students WHERE age > 21;
+SELECT * FROM students;
+
