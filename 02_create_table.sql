@@ -5,3 +5,18 @@
 USE school_db;
 
 -- TODO: Write your CREATE TABLE command here
+
+
+CREATE TABLE students(
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    email VARCHAR(100) UNIQUE
+);
+
+SHOW CREATE TABLE students;
+
+
+
+
+
