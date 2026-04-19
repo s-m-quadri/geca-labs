@@ -43,7 +43,7 @@ INSERT INTO departments (dept_id, dept_name, floor_no) VALUES
 
 INSERT INTO staff (name, dept_id, joined_on) VALUES
   ('Ada', 1, '2019-03-01'),
-  ('Bob', 1, '2020-06-15'),
+  ('Bob', 1, '2020-05-15'),
   ('Chen', 2, '2018-01-10'),
   ('Dina', 2, '2021-09-01'),
   ('Eve', 3, '2017-11-20'),
