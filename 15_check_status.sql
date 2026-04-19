@@ -16,7 +16,7 @@ DESCRIBE students;
 -- Total rows
 SELECT COUNT(*) as total_students FROM students;
 
--- View all data
+-- View all dat
 SELECT * FROM students;
 
 -- Summary by grade
