@@ -73,13 +73,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
-      - name: Acknowledge test request
-        run: |
-          gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
-            -f body="Running tests for \`${LAB_BRANCH}\`... Please wait."
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-
       - name: Checkout repository (main branch for scripts)
         uses: actions/checkout@v4
         with:
@@ -135,8 +128,9 @@ jobs:
           EXIT_CODE=$?
           set -e
 
-          # Save output for next step
-          echo "$OUTPUT" > /tmp/test_output.md
+          # One PR comment later: prepend marker (same line old "Acknowledge" step used) for tooling
+          HEADER=$(printf 'Running tests for `%s`... report below.' "$LAB_BRANCH")
+          printf '%s\n\n%s\n' "$HEADER" "$OUTPUT" > /tmp/test_output.md
 
           # Determine status
           if [ $EXIT_CODE -eq 0 ]; then

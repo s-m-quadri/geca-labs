@@ -18,9 +18,6 @@ jobs:
             gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
               -f body="😏 Who are you? Only @s-m-quadri can do it."
             exit 1
-          else
-            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="👍 Got it, I’ll start merging and organizing your submission."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -49,9 +46,7 @@ jobs:
             exit 1
           fi
 
-          echo "✅ Base branch validated: $BASE_BRANCH"
-          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-            -f body="✅ Base branch validated: \`$BASE_BRANCH\`. Proceeding with merge..."
+          echo "✅ Base branch validated: $BASE_BRANCH — merging."
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -144,8 +139,7 @@ jobs:
           LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
           if [ -z "$LAB_NUM" ]; then
             LAB_NUM="00"
-            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -f body="⚠️ Lab number not found in branch name, defaulting to lab-00."
+            echo "::notice title=Lab folder::Lab number not found in branch name; defaulting to lab-00."
           fi
           LAB_DIR="$LAB_BASE/lab-$LAB_NUM"
           echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
