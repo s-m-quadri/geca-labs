@@ -9,3 +9,11 @@ USE join_lab;
 -- INNER JOIN departments ON ...
 
 -- Optional: explain in one line why NATURAL JOIN is risky in real schemas
+USE join_lab;
+
+SELECT projects.title, departments.dept_name, departments.floor_no
+FROM projects
+INNER JOIN departments ON projects.dept_id = departments.dept_id;
+
+-- Why NATURAL JOIN is risky: It automatically joins on all columns with matching names, 
+-- which can cause unexpected results if unrelated tables share common column names (like 'name' or 'id').
