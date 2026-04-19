@@ -8,3 +8,9 @@ USE school_db;
 -- ('Bob', 16, '11th'),
 -- ('Charlie', 15, '10th'),
 -- ('Diana', 17, '12th');
+SELECT * FROM students; -- Check existing records
+INSERT INTO students (name, age, grade) VALUES
+('Bob', 16, '11th'),
+('Charlie', 15, '10th'),
+('Diana', 17, '12th');
+SELECT * FROM students; -- Verify all insertions    
