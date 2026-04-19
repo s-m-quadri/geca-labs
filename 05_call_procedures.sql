@@ -4,4 +4,10 @@
 USE proc_lab;
 
 -- TODO: CALL apply_rate(200, 10, @out);
+CALL apply_rate(200,10, @out);
 -- TODO: SELECT @out AS with_tax;
+SELECT @out AS with_tax;
+
+
+
+
