@@ -8,6 +8,8 @@ USE school_db;
 
 -- TODO: Then delete them
 -- DELETE FROM students WHERE age < 15;
+DELETE FROM students WHERE 
+id = 2 OR id = 6 OR id = 7 OR id = 8 OR id = 9 OR id = 10;
 
 -- TODO: Check result
--- SELECT * FROM students;
+SELECT * FROM students;
