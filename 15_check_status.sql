@@ -2,7 +2,7 @@
 -- Inspect database state anytime
 
 SHOW DATABASES;
-
+  --dbms
 USE school_db;
 
 SHOW TABLES;
