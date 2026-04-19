@@ -7,3 +7,11 @@ USE join_lab;
 -- (departments on the left, staff on the right) so every staff appears once.
 
 
+USE join_lab;
+
+SELECT 
+    staff.*, 
+    departments.dept_name
+FROM departments
+RIGHT JOIN staff 
+    ON departments.dept_id = staff.dept_id;
