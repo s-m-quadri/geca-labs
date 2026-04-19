@@ -5,7 +5,7 @@
 SHOW DATABASES;
 
 -- Switch to your database
-USE school_db;
+USE school_db1;
 
 -- Show tables
 SHOW TABLES;
