@@ -17,3 +17,20 @@
 -- Optional: put leading/trailing spaces in some phone values for TRIM task later.
 
 -- TODO: SELECT * FROM employees;
+CREATE DATABASE school_db;
+USE school_db;
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(60) NOT NULL,
+    dept VARCHAR(40),
+    salary DECIMAL(10,2),
+    hire_date DATE,
+    phone VARCHAR(25)
+);
+INSERT INTO employees (full_name, dept, salary, hire_date, phone) VALUES
+('jha', 'HR', 55000.00, '2018-03-15', ' 123-456-7890 '),
+('prabhat', 'Engineering', 75000.00, '2019-06-01', '987-654-3210'),
+('akhilesh', 'Marketing', 60000.00, '2020-01-20', ' 555-555-5555'),
+('vedant', 'Engineering', 80000.00, '2017-11-30', '444-444-4444'),
+('aditya', 'HR', 58000.00, '2021-05-10', '333-333-3333');
+SELECT * FROM employees;
