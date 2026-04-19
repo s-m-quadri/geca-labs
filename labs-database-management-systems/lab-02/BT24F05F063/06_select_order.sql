@@ -4,3 +4,5 @@
 USE school_db;
 
 -- TODO: SELECT all students ORDER BY age DESC
+SELECT name, age FROM students ORDER BY age DESC;
+SELECT name , grade FROM students ORDER BY grade;
