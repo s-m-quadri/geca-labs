@@ -1,18 +1,19 @@
 -- Task 15: Check Status
 -- Inspect database state anytime
 
-SHOW DATABASES;
-
 USE school_db;
 
-SHOW TABLES;
+-- Part A: Departments with average salary > 35000
+SELECT 
+    dept, 
+    AVG(salary) AS avg_pay
+FROM employees
+GROUP BY dept
+HAVING AVG(salary) > 35000;
 
-DESCRIBE employees;
-
-SELECT COUNT(*) AS total_employees FROM employees;
-
-SELECT * FROM employees;
-
-SELECT dept, COUNT(*) AS n, SUM(salary) AS total_pay, AVG(salary) AS avg_pay
+-- Part B: List of employee names per department
+SELECT 
+    dept,
+    GROUP_CONCAT(full_name ORDER BY full_name SEPARATOR ', ') AS members
 FROM employees
 GROUP BY dept;
