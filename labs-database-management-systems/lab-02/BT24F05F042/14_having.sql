@@ -7,3 +7,11 @@ USE school_db;
 -- FROM students
 -- GROUP BY grade
 -- HAVING count > 1;
+-- See who will be deleted
+SELECT * FROM students WHERE age < 15;
+ 
+-- Delete them
+DELETE FROM students WHERE age < 15;
+ 
+-- Check result
+SELECT * FROM students;

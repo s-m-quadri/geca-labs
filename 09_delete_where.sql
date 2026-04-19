@@ -11,16 +11,3 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
--- Total students
-SELECT COUNT(*) as total_students FROM students;
- 
--- Average age
-SELECT AVG(age) as average_age FROM students;
- 
--- Oldest and youngest
-SELECT MAX(age) as oldest, MIN(age) as youngest FROM students;
- 
--- Count by grade
-SELECT grade, COUNT(*) as count
-FROM students
-GROUP BY grade;
