@@ -2,6 +2,10 @@
 -- Remove students younger than 15
 
 USE school_db;
+select * from students where age < 15;
+delete from students where age < 15;
+select * from students;
+
 
 -- TODO: First, see who will be deleted
 -- SELECT * FROM students WHERE age < 15;
