@@ -1,6 +1,7 @@
 -- Lab 4 — Task 1: schema and seed data for join practice + puzzles
 -- Run: sudo mysql < 01_setup.sql
 
+
 DROP DATABASE IF EXISTS join_lab;
 CREATE DATABASE join_lab;
 USE join_lab;
@@ -49,11 +50,13 @@ INSERT INTO staff (name, dept_id, joined_on) VALUES
   ('Eve', 3, '2017-11-20'),
   ('Finn', 3, '2022-02-28');
 
+
 INSERT INTO projects (proj_id, title, dept_id) VALUES
   (101, 'Riddle-UI', 1),
   (102, 'Riddle-API', 1),
   (201, 'Kernel', 2),
   (301, 'Warehouse', 3);
+
 
 INSERT INTO project_staff (staff_id, proj_id, hours) VALUES
   (1, 101, 10), (1, 102, 5),
@@ -64,3 +67,5 @@ INSERT INTO project_staff (staff_id, proj_id, hours) VALUES
   (6, 301, 20);
 
 SELECT 'join_lab ready' AS status;
+
+
