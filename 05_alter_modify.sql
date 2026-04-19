@@ -2,5 +2,6 @@
 -- Change 'age' column to be TINYINT with NOT NULL constraint
 
 USE school_db;
+alter table students modify column age TINYINT NOT NULL;
 
 -- TODO: Write your ALTER TABLE MODIFY COLUMN command here
