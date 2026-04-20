@@ -3,7 +3,8 @@
 
 DROP DATABASE IF EXISTS proc_lab;
 CREATE DATABASE proc_lab;
-\c proc_lab
+USE proc_lab;
+
 
 CREATE TABLE accounts (
   id      SERIAL PRIMARY KEY,
