@@ -9,3 +9,8 @@ USE join_lab;
 -- INNER JOIN departments ON ...
 
 -- Optional: explain in one line why NATURAL JOIN is risky in real schemas
+USE join_lab;
+-- NATURAL JOIN silently matches ALL same-named columns — breaks when schema changes.
+SELECT p.title, d.dept_name, d.floor_no
+FROM projects AS p
+JOIN departments AS d ON p.dept_id = d.dept_id;
