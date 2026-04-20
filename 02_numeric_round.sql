@@ -12,3 +12,4 @@ SELECT full_name, salary,
   ROUND(salary, 2) AS salary_two_dec
 FROM employees;
 
+

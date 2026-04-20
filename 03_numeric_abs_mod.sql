@@ -13,3 +13,4 @@ SELECT emp_id, full_name, salary,
   MOD(emp_id, 3) AS id_mod_3
 FROM employees;
 
+
