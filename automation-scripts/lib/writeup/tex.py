@@ -43,6 +43,7 @@ def to_ascii(text: str) -> str:
         "\u00d7": "x",
         "\u00b7": "-",
         "\u2022": "-",
+        "\u2026": "...",
         "\u2013": "-",
         "\u2014": "-",
         "\u2212": "-",
@@ -51,6 +52,7 @@ def to_ascii(text: str) -> str:
         "\u201c": '"',
         "\u201d": '"',
         "\u00a0": " ",
+        "\ufeff": "",
     }
     for k, v in replacements.items():
         text = text.replace(k, v)

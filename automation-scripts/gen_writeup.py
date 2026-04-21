@@ -20,7 +20,7 @@ import re
 import sys
 from typing import Any, Dict, List, Tuple
 
-from lib.common import Student, compile_tex, read_students
+from lib.common import Student, cleanup_latex_auxiliary_files_in_directory, compile_tex, read_students
 from lib.lab_course import LabCourse, repo_root_from_scripts
 from lib.latex_duplex import latex_duplex_even_page_suffix
 from lib.writeup import load_writeup_provider
@@ -85,10 +85,12 @@ def resolve_lab_titles(course: LabCourse) -> Dict[int, str]:
     return titles
 
 
-def latex_preamble(title: str, student: Student, course: LabCourse, provider: Any) -> str:
+def latex_document_setup(student: Student, course: LabCourse, provider: Any) -> str:
+    """Packages, listings, headers, and \\begin{document} plus either a custom cover or default front matter."""
     b = "\\"
     lines: List[str] = []
     lines.append("\\documentclass[11pt]{article}")
+    lines.append("\\usepackage[T1]{fontenc}")
     lines.append("\\usepackage[a4paper,margin=0.8in]{geometry}")
     lines.append("\\usepackage[hidelinks]{hyperref}")
     lines.append("\\usepackage{enumitem}")
@@ -100,6 +102,12 @@ def latex_preamble(title: str, student: Student, course: LabCourse, provider: An
     lines.append("\\usepackage{fancyhdr}")
     lines.append("\\usepackage{url}")
     lines.append("\\usepackage{amsmath}")
+    lines.append("\\usepackage{setspace}")
+    lines.append("\\usepackage{array}")
+    extra_lines = getattr(provider, "latex_extra_usepackage_lines", None)
+    if callable(extra_lines):
+        for ln in extra_lines():
+            lines.append(ln)
     lines.append("\\pagestyle{fancy}")
     lines.append("\\fancyhf{}")
     lines.append("\\definecolor{headercolor}{RGB}{26,26,0}")
@@ -114,7 +122,11 @@ def latex_preamble(title: str, student: Student, course: LabCourse, provider: An
     lang = "SQL" if getattr(provider, "listings_style", "py") == "sql" else "Python"
     lines.append("\\lstdefinestyle{labcode}{")
     lines.append(f"  language={lang},")
-    lines.append(f"  basicstyle={b}ttfamily{b}small,")
+    listings_bs = getattr(provider, "listings_basicstyle_latex", None)
+    if listings_bs:
+        lines.append(f"  basicstyle={{{listings_bs}}},")
+    else:
+        lines.append(f"  basicstyle={b}ttfamily{b}small,")
     lines.append("  keywordstyle=\\color[rgb]{0.0,0.0,0.6}\\bfseries,")
     lines.append("  commentstyle=\\color[rgb]{0.0,0.5,0.0}\\itshape,")
     lines.append("  stringstyle=\\color[rgb]{0.6,0.0,0.0},")
@@ -129,22 +141,44 @@ def latex_preamble(title: str, student: Student, course: LabCourse, provider: An
     lines.append("  keepspaces=true")
     lines.append("}")
     lines.append("\\setlist[itemize]{noitemsep, topsep=2pt}")
-    lines.append("\\setlist[enumerate]{noitemsep, topsep=2pt}")
+    if getattr(provider, "loose_enumerate_layout", False):
+        lines.append("\\setlist[enumerate]{itemsep=0.55em, parsep=0.35em, topsep=0.45em}")
+    else:
+        lines.append("\\setlist[enumerate]{noitemsep, topsep=2pt}")
     lines.append(f"{b}pretitle{{{b}begin{{center}}{b}color{{headercolor}} {b}Huge {b}bfseries}}")
     lines.append(f"{b}posttitle{{{b}par{b}end{{center}}{b}vspace{{-0.3em}}{b}color{{headercolor}} {b}vspace{{0.6em}}}}")
-    lines.append(f"{b}title{{{prof_title}}}")
+    lines.append(f"{b}title{{{latex_text(course.writeup_document_title)}}}")
     lines.append(f"{b}author{{{latex_text(student.name)} (Enroll: {latex_text(student.prn)})}}")
-    lines.append(f"{b}date{{Date: October 2024}}")
+    lines.append(f"{b}date{{{b}today}}")
     lines.append(f"{b}begin{{document}}")
-    lines.append(f"{b}maketitle")
-    lines.append(f"{b}small")
-    lines.append(f"{b}hrule")
-    lines.append(f"{b}vspace{{0.5em}}")
-    lines.append(
-        f"{b}textbf{{Instructions}}: {latex_text('Keep answers brief (3-5 sentences) unless specified. Focus on thinking, not writing. Your numeric data is personalized; do not copy.')}"
-    )
-    lines.append("")
+    cover_fn = getattr(provider, "build_cover_page", None)
+    if callable(cover_fn):
+        chunk = cover_fn(student, course)
+        if chunk:
+            lines.append(chunk)
+        else:
+            lines.append(latex_default_front_matter(student, course, provider))
+    else:
+        lines.append(latex_default_front_matter(student, course, provider))
     return "\n".join(lines) + "\n"
+
+
+def latex_default_front_matter(student: Student, course: LabCourse, provider: Any) -> str:
+    b = "\\"
+    default_instr = (
+        "Keep answers clear and your own. Length is up to you unless a question needs detail. "
+        "Numeric values are personalized; do not copy another student's numbers."
+    )
+    instr = getattr(provider, "instruction_blurb", None) or default_instr
+    parts = [
+        f"{b}maketitle",
+        f"{b}small",
+        f"{b}hrule",
+        f"{b}vspace{{0.5em}}",
+        f"{b}textbf{{Instructions}}: {latex_text(instr)}",
+        "",
+    ]
+    return "\n".join(parts) + "\n"
 
 
 def latex_lab_section(
@@ -156,21 +190,28 @@ def latex_lab_section(
     source_tuple: Tuple[str, str] | None,
     course: LabCourse,
     provider: Any,
+    rng: random.Random | None = None,
 ) -> str:
     lab_title = f"Lab {lab_num:02d}: {title}"
-    parts = [f"\\section*{{{latex_text(lab_title)}}}"]
+    parts = ["\\clearpage", f"\\section*{{{latex_text(lab_title)}}}"]
     parts.append(f"\\noindent\\textit{{Lab Manual: \\url{{{course.manual_url(lab_num)}}}}}")
     parts.append(f"\\subsection*{{{lab_num}.1: Subjective}}")
-    parts.append(latex_text("Answer in 3-5 sentences each."))
+    subj_intro_fn = getattr(provider, "subjective_section_intro_tex", None)
+    parts.append(
+        subj_intro_fn(lab_num)
+        if callable(subj_intro_fn)
+        else latex_text("Answer each part briefly and clearly.")
+    )
     parts.append("\\begin{enumerate}")
     for q in subj:
         parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     parts.append(f"\\subsection*{{{lab_num}.2: Objective}}")
+    obj_intro_fn = getattr(provider, "objective_section_intro_tex", None)
     parts.append(
-        latex_text(
-            "Very short answers, often numeric or a phrase. Write justifications in 3-5 sentences as needed."
-        )
+        obj_intro_fn(lab_num)
+        if callable(obj_intro_fn)
+        else latex_text("Concise answers are fine; add brief reasoning where it helps.")
     )
     parts.append("\\begin{enumerate}")
     for q in obj:
@@ -185,14 +226,24 @@ def latex_lab_section(
         subsec = getattr(provider, "source_subsection_title", "Source code")
         kind = getattr(provider, "source_kind_label", "code")
         parts.append(f"\\subsection*{{{latex_text(subsec)}}}")
-        parts.append(
-            f"\\noindent\\textit{{{latex_text(title)} — reference {latex_text(kind)} ({latex_text(_fname)})}}"
-        )
+        list_intro = getattr(provider, "reference_listing_intro_tex", None)
+        if callable(list_intro):
+            parts.append(list_intro(lab_num, title, _fname))
+        else:
+            parts.append(
+                f"\\noindent\\textit{{{latex_text(title)} -- reference {latex_text(kind)} ({latex_text(_fname)})}}"
+            )
         parts.append("\\begin{lstlisting}[style=labcode]")
         parts.append(code)
         parts.append("\\end{lstlisting}")
-    parts.append(f"\\subsection*{{{lab_num}.3: Code Digest}}")
-    parts.append(latex_text(getattr(provider, "digest_instruction", "Hand-run or trace as in the lab.")))
+    digest_label = getattr(provider, "digest_subsection_title", "Code Digest")
+    parts.append(f"\\subsection*{{{latex_text(f'{lab_num}.3: {digest_label}')}}}")
+    digest_intro_fn = getattr(provider, "code_digest_section_intro_tex", None)
+    parts.append(
+        digest_intro_fn(lab_num)
+        if callable(digest_intro_fn)
+        else latex_text(getattr(provider, "digest_instruction", "Hand-run or trace as in the lab."))
+    )
     parts.append("\\begin{enumerate}")
     for q in code_qs:
         if isinstance(q, str) and q.strip().startswith("\\[") and q.strip().endswith("\\]"):
@@ -202,9 +253,9 @@ def latex_lab_section(
             parts.append(f"  \\item {latex_text(q)}")
     parts.append("\\end{enumerate}")
     parts.append(f"\\subsection*{{{lab_num}.4: Conclusion}}")
-    parts.append(latex_text("Briefly summarize your key learnings from this lab in a paragraph."))
-    parts.append("\\vspace{0.5em}")
-    parts.append("\\hrule\\vspace{0.5em}")
+    parts.append(latex_text("Summarize your main takeaways from this lab."))
+    parts.append("\\vspace{0.35em}")
+    parts.append("\\hrule\\vspace{0.35em}")
     return "\n".join(parts) + "\n"
 
 
@@ -226,15 +277,26 @@ def build_writeup_for_student(
         repo_root=repo_root_from_scripts(),
         course=course,
     )
-    content = [latex_preamble(course.writeup_document_title, student, course, provider)]
+    content = [latex_document_setup(student, course, provider)]
 
+    skip_labs = getattr(provider, "skip_lab_numbers", frozenset())
     for lab in course.lab_numbers():
+        if lab in skip_labs:
+            continue
         title = lab_titles.get(lab, f"Lab {lab:02d}")
-        subj = provider.subjective_questions(lab, title)
+        subj = provider.subjective_questions(lab, title, rng)
         obj = provider.objective_questions(lab, rng)
         code_qs = provider.code_digest_questions(lab, rng)
         source = provider.lab_source_tuple(lab, ctx)
-        content.append(latex_lab_section(lab, title, subj, obj, code_qs, source, course, provider))
+        content.append(
+            latex_lab_section(lab, title, subj, obj, code_qs, source, course, provider, rng)
+        )
+
+    appendix_fn = getattr(provider, "build_appendix_tex", None)
+    if callable(appendix_fn):
+        appendix_chunk = appendix_fn(student, course, rng)
+        if appendix_chunk:
+            content.append(appendix_chunk)
 
     content.append(latex_footer())
     tex_text = "\n".join(content)
@@ -285,6 +347,9 @@ def main(argv: List[str] | None = None) -> int:
         tex, pdf = build_writeup_for_student(stu, lab_titles, args.compile, course, provider)
         status = "PDF" if args.compile and os.path.exists(pdf) else "TEX"
         print(f"[{i:03d}] {stu.prn} {stu.name} → {status}: {os.path.basename(tex)}")
+
+    if args.compile:
+        cleanup_latex_auxiliary_files_in_directory(course.writeups_dir)
 
     print("Done.")
     return 0

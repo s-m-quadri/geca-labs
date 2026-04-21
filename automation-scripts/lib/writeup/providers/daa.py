@@ -18,7 +18,7 @@ class DaaWriteupProvider:
     source_subsection_title = "Source code"
     digest_instruction = "Hand-run or compute using the lab's source code behavior."
 
-    def subjective_questions(self, lab_num: int, title: str) -> List[str]:
+    def subjective_questions(self, lab_num: int, title: str, rng: random.Random | None = None) -> List[str]:
         common = {
             0: [
                 "What are lists and tuples in Python?",
@@ -81,7 +81,13 @@ class DaaWriteupProvider:
                 "How many solutions exist for N=8?",
             ],
         }
-        return common.get(lab_num, [f"Briefly state two key concepts of: {title}."])
+        items = list(common.get(lab_num, [f"Briefly state two key concepts of: {title}."]))
+        if rng is not None and items:
+            if len(items) >= 4:
+                items = rng.sample(items, 3)
+            else:
+                rng.shuffle(items)
+        return items
 
     def objective_questions(self, lab_num: int, rng: random.Random) -> List[str]:
         Q: List[str] = []
