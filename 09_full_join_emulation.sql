@@ -4,4 +4,15 @@
 
 USE join_lab;
 
--- TODO: Write a query your instructor can run; add a short comment on your strategy
+-- Strategy: UNION of (1) all projects with their staff assignments, and (2) staff with no project assignments
+-- This captures: matched pairs, orphan projects (no staff), and orphan staff (no projects)
+
+SELECT projects.title, staff.name
+FROM projects
+LEFT JOIN project_staff ON projects.proj_id = project_staff.proj_id
+LEFT JOIN staff ON project_staff.staff_id = staff.staff_id
+UNION
+SELECT NULL, staff.name
+FROM staff
+LEFT JOIN project_staff ON staff.staff_id = project_staff.staff_id
+WHERE project_staff.staff_id IS NULL;
