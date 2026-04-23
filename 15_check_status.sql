@@ -10,6 +10,7 @@ SHOW TABLES;
 DESCRIBE employees;
 
 SELECT COUNT(*) AS total_employees FROM employees;
+SELECT COUNT(DISTINCT dept) AS distinct_departments FROM employees;
 
 SELECT * FROM employees;
 
