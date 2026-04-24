@@ -2,5 +2,12 @@
 
 USE join_lab;
 
--- TODO: From project_staff, join staff and projects (and departments if you want dept_name)
--- Columns: staff.name, departments.dept_name, projects.title, project_staff.hours
+SELECT s.name,
+       d.dept_name,
+       p.title,
+       ps.hours
+FROM project_staff ps
+JOIN staff s ON s.staff_id = ps.staff_id
+JOIN projects p ON p.proj_id = ps.proj_id
+JOIN departments d ON d.dept_id = p.dept_id
+ORDER BY s.staff_id, p.proj_id;
