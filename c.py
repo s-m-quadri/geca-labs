@@ -8,4 +8,14 @@
 # Loop: for student in students:
 # Count: len(students)
 
+# List of student names
+students = ["Alice", "Bob", "Charlie", "David", "Emma"]
+
+# Print each name using a for loop
+print("Student Names:")
+for student in students:
+    print(student)
+
+# Print total count of students
+print("Total number of students:", len(students))
 
