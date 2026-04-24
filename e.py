@@ -7,4 +7,12 @@
 # def function_name(param1, param2):
 #     print(f"Student: {param1}")
 
+def display_student(name, age, dept):
+	print(f"Student: {name}, Age: {age}, Department: {dept}")
+
+
+display_student("Alice", 20, "CSE")
+display_student("Bob", 21, "ECE")
+display_student("Charlie", 19, "MECH")
+
 

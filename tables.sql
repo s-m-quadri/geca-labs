@@ -15,3 +15,11 @@ USE student_db;
 
 -- Verify table creation
 -- DESCRIBE students;
+
+--ans:
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    department VARCHAR(30)
+);
