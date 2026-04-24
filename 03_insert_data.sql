@@ -5,7 +5,3 @@ USE school_db;
 
 -- TODO: Write your INSERT commands here
 -- Example: INSERT INTO students VALUES (...);
-INSERT INTO students (name, age, email) VALUES ('Alice', 20, 'alice@example.com');
-INSERT INTO students (name, age, email) VALUES ('Bob', 22, 'bob@example.com');
-INSERT INTO students (name, age, email) VALUES ('Charlie', 21, 'charlie@example.com');
-                    
