@@ -5,3 +5,7 @@ USE school_db;
 
 -- TODO: Write your DROP TABLE command here
 -- Warning: This will permanently delete the table!
+
+USE school_db;
+
+DROP TABLE students;
