@@ -9,3 +9,17 @@
 # Loop: for key, value in student.items():
 
 
+# Create a dictionary
+student = {
+    "id": 101,
+    "name": "Alice",
+    "age": 15,
+    "grade": "10th"
+}
+
+# Access specific value
+print("Student Name:", student["name"])
+
+# Loop through dictionary
+for key, value in student.items():
+    print(key, ":", value)
