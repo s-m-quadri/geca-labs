@@ -1,7 +1,1 @@
--- Task 5: Right outer join (MySQL supports RIGHT JOIN)
--- All staff rows, with department name when present
-
-USE join_lab;
-
--- TODO: Rewrite the left-join pattern using RIGHT JOIN
--- (departments on the left, staff on the right) so every staff appears once.
+-- Hint: To ensure every staff member appears once with their department name when available, think about which table should be on the "right" side of the RIGHT JOIN. Which key links staff to departments? Sketch the join: departments (left) RIGHT JOIN staff (right) on dept_id.
