@@ -12,3 +12,7 @@ BEGIN
   RETURN NULL;
 END;
 $$;
+
+
+SELECT apply_rate(100, 10) AS result;
+
