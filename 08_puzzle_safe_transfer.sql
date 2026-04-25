@@ -14,8 +14,22 @@ DECLARE
   donor_bal DECIMAL(12,2);
 BEGIN
   -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+
   -- TODO: IF donor_bal < amount THEN RETURN; END IF;
+  IF donor_bal < amount THEN 
+      RETURN; 
+    END IF;
+
   -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+
 END;
 $$;
+
+SELECT * FROM accounts;
+CALL safe_transfer(1, 2, 100.00);
+SELECT * FROM accounts;
