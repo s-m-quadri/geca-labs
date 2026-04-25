@@ -60,3 +60,8 @@ INSERT INTO order_lines VALUES
   (1004, 10, 5);
 
 SELECT 'view_lab ready' AS status;
+SELECT '----------------' AS status;
+SELECT 'Customers:' AS status;
+SELECT * FROM customers;
+SELECT 'Products:' AS status;
+SELECT * FROM products; 
