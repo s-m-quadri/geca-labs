@@ -23,3 +23,25 @@ SELECT * FROM students;
 SELECT grade, COUNT(*) as count, AVG(age) as avg_age
 FROM students
 GROUP BY grade;
+-- Show all databases
+SHOW DATABASES;
+
+-- Use your database
+USE school_db;
+
+-- Show all tables
+SHOW TABLES;
+
+-- View table structure
+DESCRIBE students;
+
+-- Count total students
+SELECT COUNT(*) AS total_students FROM students;
+
+-- View all student data
+SELECT * FROM students;
+
+-- Summary by grade (count + average age)
+SELECT grade, COUNT(*) AS count, AVG(age) AS avg_age
+FROM students
+GROUP BY grade;
