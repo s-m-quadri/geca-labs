@@ -13,7 +13,11 @@ BEGIN
   LOOP
     FETCH cur INTO eid;
     EXIT WHEN NOT FOUND;
-    -- TODO: UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
+
+    UPDATE payroll 
+    SET salary = salary + 100 
+    WHERE emp_id = eid;  -- ✅ update each eligible employee
+
   END LOOP;
   CLOSE cur;
 END;
