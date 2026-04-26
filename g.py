@@ -14,6 +14,6 @@ try:
     student_id = int(input("Enter Student ID: "))
     print(f"ID: {student_id}")
 except ValueError:
-    print("Invalid input! Please enter a number.")
+    print("INvvalid input! Please enter a number.")
 
 
