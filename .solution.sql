@@ -30,3 +30,7 @@ SELECT * FROM students WHERE department = 'CSE';
 SELECT COUNT(*) as total FROM students;
 SELECT department, COUNT(*) as count FROM students GROUP BY department;
 SELECT * FROM students WHERE age = (SELECT MAX(age) FROM students);
+
+
+
+
