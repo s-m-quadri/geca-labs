@@ -10,3 +10,12 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
+
+create database school_db;
+use school_db;
+create table students (
+    id int primary key auto_increment,
+    name varchar(50),
+    age int,
+    grade varchar(10)
+);
