@@ -10,7 +10,13 @@
   "editor.tabCompletion": "off",
   "editor.parameterHints.enabled": false,
   "editor.inlineSuggest.enabled": true,
-  "github.copilot.enable": { "*": true },
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "sql": true
+  },
   "github.copilot.editor.enableAutoCompletions": true,
   "telemetry.telemetryLevel": "off"
 }
