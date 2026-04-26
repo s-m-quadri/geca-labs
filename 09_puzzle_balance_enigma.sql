@@ -1,7 +1,7 @@
 -- Puzzle B (riddle)
 -- "The smallest balance whispers with the largest: their product is the code."
--- Compute (MIN balance) * (MAX balance) from accounts and label it secret_code.
-\c proc_lab
+-- Using only SQL (user variables allowed), set @code := (min balance) * (max balance) from accounts
+-- and SELECT @code AS secret_code.
 
 -- TODO: SELECT
 --   (SELECT MIN(balance) FROM accounts) *
