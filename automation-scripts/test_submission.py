@@ -129,6 +129,7 @@ def validate_files(files: List[str], is_lab_07: bool = False) -> List[Validation
         if is_lab_07:
             result = validate_basic_sql(file_path)
         else:
+            # MySQL first (labs 1–3, etc.). If MySQL rejects the file, try PostgreSQL — lab-dbms-04/05/06-v2 use Postgres.
             result = validate_sql_syntax(file_path, try_mysql=True, try_postgres=True)
         
         results.append(result)

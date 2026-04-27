@@ -98,13 +98,32 @@ jobs:
           echo "Testing PR head with baseline: ${LAB_BRANCH}"
           ls -la automation-scripts/
 
-      - name: Install SQL parsers
+      - name: Install SQL parsers, MariaDB, and PostgreSQL (syntax validation)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y mysql-client postgresql-client
-
+          sudo apt-get install -y mysql-client postgresql postgresql-contrib mariadb-server
+          sudo systemctl start mariadb
+          sudo systemctl start postgresql
+          sleep 2
+          # MySQL/MariaDB — TCP user for `mysql` CLI (root@localhost is often socket-only)
+          sudo mariadb -e "CREATE DATABASE IF NOT EXISTS _lint; CREATE USER IF NOT EXISTS 'lint'@'127.0.0.1' IDENTIFIED BY 'lintpass'; GRANT ALL PRIVILEGES ON *.* TO 'lint'@'127.0.0.1' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+          echo "SQL_VALIDATE_MYSQL_FLAGS=-h127.0.0.1 -ulint -plintpass" >> "$GITHUB_ENV"
           mysql --version
+          mysql -h127.0.0.1 -ulint -plintpass -e "SELECT 1 AS ok"
+          # PostgreSQL — used when MySQL rejects (e.g. lab-dbms-04/05/06-v2 problem sets)
+          sudo -u postgres psql -tc "SELECT 1" | grep -q 1
+          sudo -u postgres psql -v ON_ERROR_STOP=1 <<'EOSQL'
+          DROP DATABASE IF EXISTS _lint_pg;
+          DROP USER IF EXISTS lint_pg;
+          CREATE USER lint_pg WITH PASSWORD 'lintpass';
+          CREATE DATABASE _lint_pg OWNER lint_pg;
+          EOSQL
+          echo "PGHOST=127.0.0.1" >> "$GITHUB_ENV"
+          echo "PGUSER=lint_pg" >> "$GITHUB_ENV"
+          echo "PGPASSWORD=lintpass" >> "$GITHUB_ENV"
+          echo "PGDATABASE=_lint_pg" >> "$GITHUB_ENV"
           psql --version
+          PGPASSWORD=lintpass psql -h 127.0.0.1 -U lint_pg -d _lint_pg -c "SELECT 1 AS ok"
 
       - name: Set up Python
         uses: actions/setup-python@v5

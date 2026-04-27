@@ -1,5 +1,7 @@
-import subprocess
+import os
 import re
+import shlex
+import subprocess
 from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
@@ -56,17 +58,31 @@ def validate_sql_syntax(file_path: Path, try_mysql: bool = True, try_postgres: b
     )
 
 
+def _mysql_cli_prefix() -> List[str]:
+    """Optional extra args, e.g. CI: ``-h127.0.0.1 -ulint -plint`` from ``SQL_VALIDATE_MYSQL_FLAGS``."""
+    flags = os.environ.get("SQL_VALIDATE_MYSQL_FLAGS", "").strip()
+    return shlex.split(flags) if flags else []
+
+
 def _validate_mysql(file_path: Path) -> ValidationResult:
     """Validate SQL syntax using MySQL parser."""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             sql_content = f.read()
-        
+
+        cmd = [
+            "mysql",
+            *_mysql_cli_prefix(),
+            "--batch",
+            "--skip-column-names",
+            "-e",
+            f"delimiter //\n{sql_content}\n//",
+        ]
         result = subprocess.run(
-            ['mysql', '--batch', '--skip-column-names', '-e', f'delimiter //\n{sql_content}\n//'],
+            cmd,
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=10,
         )
         
         if result.returncode == 0:
@@ -76,8 +92,18 @@ def _validate_mysql(file_path: Path) -> ValidationResult:
                 errors=[],
                 parser_used='mysql'
             )
-        
-        errors = _parse_mysql_errors(str(file_path), result.stderr)
+
+        errors = _parse_mysql_errors(str(file_path), result.stderr + "\n" + result.stdout)
+        if not errors:
+            msg = (result.stderr or result.stdout or "").strip() or f"mysql exited with code {result.returncode}"
+            errors = [
+                ValidationError(
+                    file=str(file_path),
+                    line=None,
+                    message=msg[:500],
+                    parser='mysql',
+                )
+            ]
         return ValidationResult(
             file=str(file_path),
             valid=False,
@@ -129,23 +155,37 @@ def _validate_postgres(file_path: Path) -> ValidationResult:
         with open(file_path, 'r', encoding='utf-8') as f:
             sql_content = f.read()
         
+        # Inherit PATH and PG* from the environment (CI sets PGHOST/PGUSER/PGPASSWORD/PGDATABASE via GITHUB_ENV).
+        env = {**os.environ}
         result = subprocess.run(
-            ['psql', '--no-psqlrc', '--set', 'ON_ERROR_STOP=1', '-c', sql_content],
+            ["psql", "--no-psqlrc", "--set", "ON_ERROR_STOP=1", "-c", sql_content],
             capture_output=True,
             text=True,
             timeout=10,
-            env={'PGHOST': 'localhost', 'PGDATABASE': 'postgres'}
+            env=env,
         )
-        
-        if result.returncode == 0 or 'FATAL' not in result.stderr:
+
+        # Only a zero exit code means success. The old `or 'FATAL' not in stderr`
+        # treated connection failures and syntax errors as OK when MySQL had already failed.
+        if result.returncode == 0:
             return ValidationResult(
                 file=str(file_path),
                 valid=True,
                 errors=[],
                 parser_used='postgresql'
             )
-        
-        errors = _parse_postgres_errors(str(file_path), result.stderr)
+
+        errors = _parse_postgres_errors(str(file_path), result.stderr + "\n" + result.stdout)
+        if not errors:
+            msg = (result.stderr or result.stdout or "").strip() or f"psql exited with code {result.returncode}"
+            errors = [
+                ValidationError(
+                    file=str(file_path),
+                    line=None,
+                    message=msg[:500],
+                    parser='postgresql',
+                )
+            ]
         return ValidationResult(
             file=str(file_path),
             valid=False,
