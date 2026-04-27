@@ -98,40 +98,14 @@ jobs:
           echo "Testing PR head with baseline: ${LAB_BRANCH}"
           ls -la automation-scripts/
 
-      - name: Install SQL parsers, MariaDB, and PostgreSQL (syntax validation)
-        run: |
-          sudo apt-get update -qq
-          # On Ubuntu 24.04, `mariadb-server` conflicts with `mysql-client` (mysql-client-core-8.0).
-          # Use MariaDB's `mysql` / `mariadb` CLI (pulled in with the server) for validation.
-          sudo apt-get remove -y mysql-client mysql-client-core-8.0 2>/dev/null || true
-          sudo apt-get install -y mariadb-server postgresql postgresql-contrib
-          sudo systemctl start mariadb
-          sudo systemctl start postgresql
-          sleep 2
-          # MySQL/MariaDB — TCP user for `mysql` CLI (root@localhost is often socket-only)
-          sudo mariadb -e "CREATE DATABASE IF NOT EXISTS _lint; CREATE USER IF NOT EXISTS 'lint'@'127.0.0.1' IDENTIFIED BY 'lintpass'; GRANT ALL PRIVILEGES ON *.* TO 'lint'@'127.0.0.1' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-          echo "SQL_VALIDATE_MYSQL_FLAGS=-h127.0.0.1 -ulint -plintpass" >> "$GITHUB_ENV"
-          mysql --version
-          mysql -h127.0.0.1 -ulint -plintpass -e "SELECT 1 AS ok"
-          # PostgreSQL — used when MySQL rejects (e.g. lab-dbms-04/05/06-v2 problem sets)
-          sudo -u postgres psql -tc "SELECT 1" | grep -q 1
-          sudo -u postgres psql -v ON_ERROR_STOP=1 <<'EOSQL'
-          DROP DATABASE IF EXISTS _lint_pg;
-          DROP USER IF EXISTS lint_pg;
-          CREATE USER lint_pg WITH PASSWORD 'lintpass';
-          CREATE DATABASE _lint_pg OWNER lint_pg;
-          EOSQL
-          echo "PGHOST=127.0.0.1" >> "$GITHUB_ENV"
-          echo "PGUSER=lint_pg" >> "$GITHUB_ENV"
-          echo "PGPASSWORD=lintpass" >> "$GITHUB_ENV"
-          echo "PGDATABASE=_lint_pg" >> "$GITHUB_ENV"
-          psql --version
-          PGPASSWORD=lintpass psql -h 127.0.0.1 -U lint_pg -d _lint_pg -c "SELECT 1 AS ok"
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Install test dependencies (SQL syntax validation)
+        run: |
+          pip install -r automation-scripts/requirements-test.txt
 
       - name: Run tests
         id: test

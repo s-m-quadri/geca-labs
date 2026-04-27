@@ -6,6 +6,8 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
+from lib.writeup.source import strip_sql_comments
+
 
 @dataclass
 class ValidationError:
@@ -25,37 +27,101 @@ class ValidationResult:
 
 def validate_sql_syntax(file_path: Path, try_mysql: bool = True, try_postgres: bool = True) -> ValidationResult:
     """
-    Validate SQL file syntax using MySQL and/or PostgreSQL parsers.
-    Tries MySQL first, falls back to PostgreSQL if MySQL fails and try_postgres=True.
-    
-    Args:
-        file_path: Path to SQL file
-        try_mysql: Whether to try MySQL parser
-        try_postgres: Whether to try PostgreSQL parser
-    
-    Returns:
-        ValidationResult with syntax check results
+    Validate SQL syntax without requiring databases or tables.
+
+    Prefer **sqlglot** parse-only checks (matches MySQL then PostgreSQL dialects). That avoids false
+    failures when scripts contain ``USE db`` / queries against tables created in other files.
+
+    If sqlglot is not installed, falls back to ``mysql`` / ``psql`` subprocess validation (needs live servers).
     """
-    errors = []
-    
+    fp = str(file_path)
+    try:
+        content = Path(file_path).read_text(encoding="utf-8")
+    except OSError as e:
+        return ValidationResult(
+            file=fp,
+            valid=False,
+            errors=[
+                ValidationError(file=fp, line=None, message=str(e), parser="read"),
+            ],
+            parser_used=None,
+        )
+
+    # Comment-only files: nothing executable to validate
+    if not strip_sql_comments(content).strip():
+        return ValidationResult(file=fp, valid=True, errors=[], parser_used="mysql")
+
+    parsed = _validate_sqlglot_only(fp, content, try_mysql=try_mysql, try_postgres=try_postgres)
+    if parsed is not None:
+        return parsed
+
+    errors: List[ValidationError] = []
+
     if try_mysql:
         result = _validate_mysql(file_path)
         if result.valid:
             return result
         errors.extend(result.errors)
-    
+
     if try_postgres:
         result = _validate_postgres(file_path)
         if result.valid:
             return result
         errors.extend(result.errors)
-    
+
     return ValidationResult(
-        file=str(file_path),
+        file=fp,
         valid=False,
         errors=errors,
-        parser_used=None
+        parser_used=None,
     )
+
+
+def _validate_sqlglot_only(
+    fp: str,
+    content: str,
+    *,
+    try_mysql: bool,
+    try_postgres: bool,
+) -> Optional[ValidationResult]:
+    """Parse-only validation; returns None if sqlglot is unavailable."""
+    try:
+        import sqlglot
+        from sqlglot.errors import ParseError
+    except ImportError:
+        return None
+
+    mysql_fail: Optional[str] = None
+    pg_fail: Optional[str] = None
+
+    if try_mysql:
+        try:
+            sqlglot.parse(content, dialect="mysql")
+            return ValidationResult(file=fp, valid=True, errors=[], parser_used="mysql")
+        except ParseError as e:
+            mysql_fail = str(e).strip()[:800]
+
+    if try_postgres:
+        try:
+            sqlglot.parse(content, dialect="postgres")
+            return ValidationResult(file=fp, valid=True, errors=[], parser_used="postgresql")
+        except ParseError as e:
+            pg_fail = str(e).strip()[:800]
+
+    errs: List[ValidationError] = []
+    if mysql_fail:
+        errs.append(
+            ValidationError(file=fp, line=None, message=f"MySQL dialect parse: {mysql_fail}", parser="mysql")
+        )
+    if pg_fail:
+        errs.append(
+            ValidationError(file=fp, line=None, message=f"PostgreSQL dialect parse: {pg_fail}", parser="postgresql")
+        )
+    if not errs:
+        errs.append(
+            ValidationError(file=fp, line=None, message="Could not parse SQL with sqlglot.", parser="sqlglot")
+        )
+    return ValidationResult(file=fp, valid=False, errors=errs, parser_used=None)
 
 
 def _mysql_cli_prefix() -> List[str]:
