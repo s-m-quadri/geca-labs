@@ -1,37 +1,35 @@
--- Lab 6 — views & subqueries: schema
--- sudo mysql < 01_setup.sql
+-- Lab 6-v2 -- views & subqueries (PostgreSQL): schema
+-- Run: sudo -u postgres psql -f 01_setup.sql
 
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
-USE view_lab;
+\c view_lab
 
 CREATE TABLE customers (
   cust_id INT PRIMARY KEY,
-  name VARCHAR(60) NOT NULL
+  name    VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE products (
   prod_id INT PRIMARY KEY,
   name    VARCHAR(60) NOT NULL,
-  price   NUMERIC(10,2) NOT NULL
-  name VARCHAR(60) NOT NULL,
-  price DECIMAL(10,2) NOT NULL
+  price   DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE orders (
-  order_id INT PRIMARY KEY,
-  cust_id INT NOT NULL,
+  order_id   INT PRIMARY KEY,
+  cust_id    INT NOT NULL,
   order_date DATE NOT NULL,
   FOREIGN KEY (cust_id) REFERENCES customers(cust_id)
 );
 
 CREATE TABLE order_lines (
   order_id INT NOT NULL,
-  prod_id INT NOT NULL,
-  qty INT NOT NULL,
+  prod_id  INT NOT NULL,
+  qty      INT NOT NULL,
   PRIMARY KEY (order_id, prod_id),
   FOREIGN KEY (order_id) REFERENCES orders(order_id),
-  FOREIGN KEY (prod_id) REFERENCES products(prod_id)
+  FOREIGN KEY (prod_id)  REFERENCES products(prod_id)
 );
 
 INSERT INTO customers VALUES
@@ -42,9 +40,9 @@ INSERT INTO customers VALUES
 
 INSERT INTO products VALUES
   (10, 'Notebook', 12.00),
-  (20, 'PenSet', 25.00),
-  (30, 'DeskMat', 25.00),
-  (40, 'Lamp', 40.00);
+  (20, 'PenSet',   25.00),
+  (30, 'DeskMat',  25.00),
+  (40, 'Lamp',     40.00);
 
 INSERT INTO orders VALUES
   (1001, 1, '2024-01-05'),
