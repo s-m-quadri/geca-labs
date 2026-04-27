@@ -6,7 +6,7 @@ DELIMITER $$
 CREATE PROCEDURE sum_balances(OUT total DECIMAL(14,2))
 BEGIN
   DECLARE done INT DEFAULT 0;
-  DECLARE b DECIMAL(12,2);
+  DECLARE b DECIMAL(12,2) DEFAULT 0;
 
   DECLARE cur CURSOR FOR SELECT balance FROM accounts;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
@@ -17,7 +17,7 @@ BEGIN
 
   read_loop: LOOP
     FETCH cur INTO b;
-    IF done THEN
+    IF done = 1 THEN
       LEAVE read_loop;
     END IF;
 
