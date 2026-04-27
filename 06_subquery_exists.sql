@@ -1,5 +1,4 @@
--- Task 6: EXISTS -- customers who have at least one order
-\c view_lab
+-- Task 6: EXISTS — customers who have at least one order
 
 -- TODO: SELECT c.name FROM customers c
 --       WHERE EXISTS (

@@ -2,29 +2,22 @@
 applyTo: "**"
 ---
 
-# Copilot — Lab 6-v2: Views & Subqueries (PostgreSQL)
+# Copilot — Lab 6: Views & subqueries
 
 ## Policy
 
-- **Views:** Don't write the `SELECT` inside the view; ask what columns/joins are needed.
-- **Subqueries:** Ask whether the value changes per outer row (correlated) or is fixed (scalar/IN).
-- **Puzzles:** Ask what makes a product "silver tier", how to detect zero orders, how to spot a mixed basket.
+- **Views:** Ask what should be hidden vs exposed; do not write the full `CREATE VIEW` body.
+- **Subqueries:** Contrast `IN` vs `EXISTS` with empty-result examples; avoid dropping a finished nested query into chat.
+- **Puzzles:** Paraphrase the story as relational predicates (second distinct value, zero related rows, two constraints on one parent key).
 - **Manual:** https://www.s-m-quadri.me/geca/dbms/06
 
-## Tools
+## Schema (view_lab)
 
-- Intended stack: **GitHub Copilot + Copilot Chat** only; other AI extensions should be disabled.
+- `customers(cust_id, name)`
+- `products(prod_id, name, price)`
+- `orders(order_id, cust_id, order_date)`
+- `order_lines(order_id, prod_id, qty)`
 
-## Schema
+## Silver-medal puzzle hint direction only
 
-- `view_lab.customers(cust_id, name)`
-- `view_lab.products(prod_id, name, price)`
-- `view_lab.orders(order_id, cust_id, order_date)`
-- `view_lab.order_lines(order_id, prod_id, qty)`
-
-## PostgreSQL notes
-
-- `\c view_lab` instead of `USE view_lab`
-- `SELECT tablename FROM pg_tables WHERE schemaname = 'public';` instead of `SHOW TABLES`
-- `CREATE OR REPLACE VIEW` works the same way
-- Run: `sudo -u postgres psql -d view_lab -f file.sql`
+- Ask: “What is the set of distinct prices? What is the max of the set after removing the overall max?”
