@@ -1,7 +1,6 @@
 
 USE proc_lab;
-DELIMITER //
-DROP PROCEDURE IF EXISTS sum_balances//
+DROP PROCEDURE IF EXISTS sum_balances;
 CREATE PROCEDURE sum_balances(OUT total DECIMAL(14,2))
 BEGIN
   -- TODO: DECLARE done INT DEFAULT 0;
@@ -30,6 +29,4 @@ BEGIN
   END LOOP;
 
   CLOSE cur;
-END//
-DELIMITER ;
-DELIMITER ;
+END;

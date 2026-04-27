@@ -3,8 +3,7 @@
 -- Implement: out_val = base increased by pct percent (e.g. base=100, pct=10 → 110)
 
 USE proc_lab;
-DELIMITER //
-DROP PROCEDURE IF EXISTS apply_rate//
+DROP PROCEDURE IF EXISTS apply_rate;
 CREATE PROCEDURE apply_rate(
   IN base DECIMAL(10,2),
   IN pct DECIMAL(5,2),
@@ -12,7 +11,5 @@ CREATE PROCEDURE apply_rate(
 )
 BEGIN
   -- TODO: SET out_val = ...
-  SET out_val = NULL;
   SET out_val = base + (base * pct / 100);
-END//
-DELIMITER ;
+END;

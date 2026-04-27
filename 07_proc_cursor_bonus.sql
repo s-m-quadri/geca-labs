@@ -1,8 +1,7 @@
-DROP PROCEDURE IF EXISTS apply_bonuses//
+DROP PROCEDURE IF EXISTS apply_bonuses;
 CREATE PROCEDURE apply_bonuses()
 BEGIN
   -- TODO: cursor over (emp_id) where bonus_eligible = 1, loop UPDATE payroll SET salary = salary + 100 WHERE emp_id = ...
-  SET @lab5_bonus_cursor_done := 0;
   DECLARE done INT DEFAULT 0;
   DECLARE eid INT;
 
@@ -25,6 +24,4 @@ BEGIN
   END LOOP;
 
   CLOSE cur;
-END//
-DELIMITER ;
-DELIMITER ;
+END;
