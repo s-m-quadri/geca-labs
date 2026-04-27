@@ -3,6 +3,7 @@
 -- Test: SELECT sum_balances();
 \c proc_lab
 
+
 CREATE OR REPLACE FUNCTION sum_balances()
 RETURNS DECIMAL(14,2) LANGUAGE plpgsql AS $$
 DECLARE
@@ -14,6 +15,7 @@ BEGIN
   LOOP
     FETCH cur INTO b;
     EXIT WHEN NOT FOUND;
+    -- TODO: total := total + b;
     total := total + b;
   END LOOP;
   CLOSE cur;
@@ -21,4 +23,5 @@ BEGIN
 END;
 $$;
 
+-- TODO: SELECT sum_balances();
 SELECT sum_balances();
