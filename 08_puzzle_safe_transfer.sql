@@ -1,28 +1,41 @@
-
 USE proc_lab;
 DROP PROCEDURE IF EXISTS safe_transfer;
-CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(12,2))
+
+DELIMITER $$
+
+CREATE PROCEDURE safe_transfer(
+  IN from_id INT, 
+  IN to_id INT, 
+  IN amount DECIMAL(12,2)
+)
 BEGIN
-  -- TODO: DECLARE donor_balance ... SELECT balance INTO ... IF ...
-  -- TODO: UPDATE accounts twice or use transactions mindset (single-threaded lab OK)
   DECLARE donor_balance DECIMAL(12,2);
+
+  START TRANSACTION;
 
   -- Get donor balance
   SELECT balance INTO donor_balance
   FROM accounts
-  WHERE id = from_id;
+  WHERE id = from_id
+  FOR UPDATE;
 
-  -- Check if sufficient balance
-  IF donor_balance >= amount THEN
-    -- Deduct from donor
+  -- Validate conditions
+  IF donor_balance IS NOT NULL AND donor_balance >= amount AND amount > 0 THEN
+
     UPDATE accounts
     SET balance = balance - amount
     WHERE id = from_id;
 
-    -- Add to receiver
     UPDATE accounts
     SET balance = balance + amount
     WHERE id = to_id;
+
+    COMMIT;
+
+  ELSE
+    ROLLBACK;
   END IF;
 
-END;
+END$$
+
+DELIMITER ;
