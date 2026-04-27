@@ -3,7 +3,6 @@
 
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
-\c view_lab
 
 CREATE TABLE customers (
   cust_id INT PRIMARY KEY,
@@ -13,7 +12,7 @@ CREATE TABLE customers (
 CREATE TABLE products (
   prod_id INT PRIMARY KEY,
   name    VARCHAR(60) NOT NULL,
-  price   DECIMAL(10,2) NOT NULL
+  price   NUMERIC(10,2) NOT NULL
 );
 
 CREATE TABLE orders (
