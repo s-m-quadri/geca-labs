@@ -5,9 +5,9 @@
 CREATE OR REPLACE FUNCTION apply_rate(
   base DECIMAL(10,2),
   pct  DECIMAL(5,2)
-) RETURNS DECIMAL(10,2) LANGUAGE plpgsql AS $$
+) RETURNS DECIMAL(10,2)
+LANGUAGE plpgsql AS $$
 BEGIN
-  -- TODO: SET out_val = ...
-  SET out_val = base + (base * pct / 100);
-END//
-DELIMITER ;
+  RETURN base + (base * pct / 100);
+END;
+$$;

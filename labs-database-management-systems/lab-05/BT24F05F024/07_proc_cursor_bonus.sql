@@ -8,16 +8,12 @@ DECLARE
   eid INT;
   cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = TRUE;
 BEGIN
-  DECLARE done INT DEFAULT 0;
-  DECLARE eid INT;
-  DECLARE cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = 1;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
   OPEN cur;
-  bonus_loop: LOOP
+  LOOP
     FETCH cur INTO eid;
-    IF done THEN LEAVE bonus_loop; END IF;
+    EXIT WHEN NOT FOUND;
     UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
   END LOOP;
   CLOSE cur;
-END//
-DELIMITER ;
+END;
+$$;
