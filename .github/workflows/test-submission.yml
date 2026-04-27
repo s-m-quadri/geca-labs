@@ -105,7 +105,13 @@ jobs:
 
       - name: Install test dependencies (SQL syntax validation)
         run: |
-          pip install -r automation-scripts/requirements-test.txt
+          # Prefer requirements file when present on ``stable``; otherwise install sqlglot directly
+          # (avoids CI failure before ``requirements-test.txt`` is merged to the branch used for restore).
+          if [ -f automation-scripts/requirements-test.txt ]; then
+            pip install -r automation-scripts/requirements-test.txt
+          else
+            pip install "sqlglot>=24.0.0"
+          fi
 
       - name: Run tests
         id: test
