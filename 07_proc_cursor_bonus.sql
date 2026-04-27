@@ -1,26 +1,30 @@
--- Task 7: Procedure that UPDATEs rows (bonus on payroll)
--- For each row with bonus_eligible = TRUE, add 100 to salary using a cursor loop.
--- Reset with 01_setup.sql if you need fresh numbers.
-\c proc_lab
-
-CREATE OR REPLACE PROCEDURE apply_bonuses()
-LANGUAGE plpgsql AS $$
-DECLARE
-  eid INT;
-  cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = TRUE;
+DROP PROCEDURE IF EXISTS apply_bonuses//
+CREATE PROCEDURE apply_bonuses()
 BEGIN
-  OPEN cur;
-  LOOP
-    FETCH cur INTO eid;
-    EXIT WHEN NOT FOUND;
-    -- TODO: UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
-    UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
-  END LOOP;
-  CLOSE cur;
-END;
-$$;
+  -- TODO: cursor over (emp_id) where bonus_eligible = 1, loop UPDATE payroll SET salary = salary + 100 WHERE emp_id = ...
+  SET @lab5_bonus_cursor_done := 0;
+  DECLARE done INT DEFAULT 0;
+  DECLARE eid INT;
 
--- TODO: CALL apply_bonuses();
--- TODO: SELECT * FROM payroll;
-CALL apply_bonuses();
-SELECT * FROM payroll;
+  DECLARE cur CURSOR FOR 
+    SELECT emp_id FROM payroll WHERE bonus_eligible = 1;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO eid;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    UPDATE payroll 
+    SET salary = salary + 100 
+    WHERE emp_id = eid;
+  END LOOP;
+
+  CLOSE cur;
+END//
+DELIMITER ;
+DELIMITER ;

@@ -1,7 +1,8 @@
 -- Puzzle B (riddle)
 -- "The smallest balance whispers with the largest: their product is the code."
--- Compute (MIN balance) * (MAX balance) from accounts and label it secret_code.
-\c proc_lab
-SELECT
-  (SELECT MIN(balance) FROM accounts) *
-  (SELECT MAX(balance) FROM accounts) AS secret_code;
+USE proc_lab;
+
+-- TODO: two queries or one subquery; no hard-coded numbers from the seed
+
+SELECT @code := MIN(balance) * MAX(balance) AS secret_code
+FROM accounts;

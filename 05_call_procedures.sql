@@ -1,4 +1,6 @@
-\c proc_lab
+USE proc_lab;
 
--- TODO: SELECT apply_rate(200, 10) AS with_tax;
-SELECT apply_rate(200, 10) AS with_tax;
+-- TODO: CALL apply_rate(200, 10, @out);
+-- TODO: SELECT @out AS with_tax;
+CALL apply_rate(200, 10, @out);
+SELECT @out AS with_tax;

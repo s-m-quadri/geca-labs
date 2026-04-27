@@ -1,27 +1,35 @@
--- Task 6: Function with cursor loop -- sum every row in accounts.balance
--- Returns total as DECIMAL(14,2)
--- Test: SELECT sum_balances();
-\c proc_lab
 
-
-CREATE OR REPLACE FUNCTION sum_balances()
-RETURNS DECIMAL(14,2) LANGUAGE plpgsql AS $$
-DECLARE
-  total DECIMAL(14,2) := 0;
-  b     DECIMAL(12,2);
-  cur   CURSOR FOR SELECT balance FROM accounts;
+USE proc_lab;
+DELIMITER //
+DROP PROCEDURE IF EXISTS sum_balances//
+CREATE PROCEDURE sum_balances(OUT total DECIMAL(14,2))
 BEGIN
-  OPEN cur;
-  LOOP
-    FETCH cur INTO b;
-    EXIT WHEN NOT FOUND;
-    -- TODO: total := total + b;
-    total := total + b;
-  END LOOP;
-  CLOSE cur;
-  RETURN total;
-END;
-$$;
+  -- TODO: DECLARE done INT DEFAULT 0;
+  -- TODO: DECLARE b DECIMAL(12,2);
+  -- TODO: DECLARE cur CURSOR FOR SELECT balance FROM accounts;
+  -- TODO: DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+  -- TODO: SET total = 0; OPEN cur; loop FETCH; IF done LEAVE; total := total + b; END LOOP; CLOSE cur;
+  SET total = -1;
+  DECLARE done INT DEFAULT 0;
+  DECLARE b DECIMAL(12,2);
 
--- TODO: SELECT sum_balances();
-SELECT sum_balances();
+  DECLARE cur CURSOR FOR SELECT balance FROM accounts;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  SET total = 0;
+
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO b;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    SET total = total + b;
+  END LOOP;
+
+  CLOSE cur;
+END//
+DELIMITER ;
+DELIMITER ;
