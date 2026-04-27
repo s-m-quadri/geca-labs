@@ -3,4 +3,6 @@
 
 USE school_db;
 
+SELECT COUNT(*) AS total_students
+FROM students;
 -- TODO: SELECT COUNT(*) as total_students FROM students;
