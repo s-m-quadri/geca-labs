@@ -1,6 +1,5 @@
 -- Lab 6-v2 -- views & subqueries (PostgreSQL): schema
 -- Run: sudo -u postgres psql -f 01_setup.sql
-
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
 \c view_lab
