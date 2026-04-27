@@ -1,6 +1,3 @@
--- Lab 6 — views & subqueries: schema
--- sudo mysql < 01_setup.sql
-
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
 USE view_lab;
@@ -12,8 +9,6 @@ CREATE TABLE customers (
 
 CREATE TABLE products (
   prod_id INT PRIMARY KEY,
-  name    VARCHAR(60) NOT NULL,
-  price   NUMERIC(10,2) NOT NULL
   name VARCHAR(60) NOT NULL,
   price DECIMAL(10,2) NOT NULL
 );
