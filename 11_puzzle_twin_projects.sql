@@ -6,4 +6,13 @@
 
 USE join_lab;
 
+SELECT s.name
+FROM staff s
+JOIN project_staff ps ON s.staff_id = ps.staff_id
+JOIN projects p ON ps.project_id = p.project_id
+GROUP BY s.staff_id, s.name, p.dept_id
+HAVING 
+    COUNT(DISTINCT p.project_id) >= 2
+    AND COUNT(DISTINCT LEFT(p.title, 3)) = 1;
+
 -- TODO: Write one SELECT that returns exactly one name (the solver).
