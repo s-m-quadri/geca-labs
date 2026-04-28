@@ -19,3 +19,4 @@ JOIN staff ON ps1.staff_id = staff.staff_id
 WHERE p1.title LIKE 'Alpha%' AND p2.title LIKE 'Alpha%'
 AND d1.dept_id = d2.dept_id
 AND p1.project_id != p2.project_id;
+ 

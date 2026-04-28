@@ -13,3 +13,4 @@ JOIN projects ON project_staff.project_id = projects.project_id
 JOIN departments ON staff.dept_id = departments.dept_id
 WHERE projects.dept_id != staff.dept_id
 ORDER BY staff.name, projects.title;
+ 

@@ -10,3 +10,4 @@ SELECT staff.name, departments.dept_name
 FROM staff
 RIGHT JOIN departments ON staff.dept_id = departments.dept_id
 ORDER BY departments.dept_id, staff.name;
+ 

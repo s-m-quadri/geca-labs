@@ -21,3 +21,4 @@ FROM projects
 LEFT JOIN project_staff ON projects.project_id = project_staff.project_id
 WHERE project_staff.project_id IS NULL
 ORDER BY name, title;
+ 

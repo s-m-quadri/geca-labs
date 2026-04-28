@@ -12,3 +12,4 @@ FROM staff a
 JOIN staff b ON a.dept_id = b.dept_id AND a.staff_id < b
 .staff_id
 ORDER BY a.dept_id, a.name, b.name;
+ 

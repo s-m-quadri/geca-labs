@@ -10,3 +10,4 @@ FROM departments
 LEFT JOIN projects ON departments.dept_id = projects.dept_id
 WHERE projects.project_id IS NULL
 ORDER BY departments.dept_name;
+ 
