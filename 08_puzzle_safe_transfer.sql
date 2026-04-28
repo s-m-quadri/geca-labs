@@ -6,13 +6,16 @@
 -- Test with SELECT * FROM accounts before/after CALL safe_transfer(1,2,100);
 
 USE proc_lab;
-DELIMITER //
-DROP PROCEDURE IF EXISTS safe_transfer//
+DELIMITER $$
+DROP PROCEDURE IF EXISTS safe_transfer$$
 CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(12,2))
 BEGIN
+  DECLARE donor_bal DECIMAL(12,2) DEFAULT 0;
+
   SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  IF donor_bal < amount THEN RETURN; END IF;
-  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
-END;
-$$;
+  IF donor_bal >= amount THEN
+    UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+    UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  END IF;
+END$$
+DELIMITER ;
