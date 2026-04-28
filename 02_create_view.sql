@@ -1,4 +1,4 @@
-\c view_lab
+-- \c view_lab
 
 CREATE OR REPLACE VIEW v_order_lines_detail AS
 SELECT 
