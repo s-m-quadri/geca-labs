@@ -1,32 +1,35 @@
-USE proc_lab;
-DROP PROCEDURE IF EXISTS safe_transfer;
+-- Puzzle A (riddle)
+-- "Two vaults move coins only if the donor can afford it; otherwise the bank stays silent."
+-- Implement safe_transfer(from_id, to_id, amount) on table accounts.
+-- Rules: if balance < amount, do not change any row; else subtract from donor, add to receiver.
+-- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
+-- \c proc_lab
 
-DELIMITER $$
-
-CREATE PROCEDURE safe_transfer(
-  IN from_id INT,
-  IN to_id INT,
-  IN amount DECIMAL(12,2)
-)
+CREATE OR REPLACE PROCEDURE safe_transfer(
+  from_id INT,
+  to_id   INT,
+  amount  DECIMAL(12,2)
+) LANGUAGE plpgsql AS $$
+DECLARE
+  donor_bal DECIMAL(12,2);
 BEGIN
-  DECLARE donor_balance DECIMAL(12,2);
+  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
 
-  SELECT balance INTO donor_balance
-  FROM accounts
-  WHERE id = from_id;
+  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
+  IF donor_bal < amount THEN 
+      RETURN; 
+    END IF;
 
-  IF donor_balance IS NOT NULL AND donor_balance >= amount THEN
+  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
 
-    UPDATE accounts
-    SET balance = balance - amount
-    WHERE id = from_id;
+  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 
-    UPDATE accounts
-    SET balance = balance + amount
-    WHERE id = to_id;
+END;
+$$;
 
-  END IF;
-
-END$$
-
-DELIMITER ;
+SELECT * FROM accounts;
+CALL safe_transfer(1, 2, 100.00);
+SELECT * FROM accounts;
