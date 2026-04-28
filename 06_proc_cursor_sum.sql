@@ -2,7 +2,6 @@
 -- Run: ./run_source.sh proc_lab 06_proc_cursor_sum.sql
 -- Test: CALL sum_balances(@t); SELECT @t;
 
-\c proc_lab
 CREATE OR REPLACE FUNCTION sum_balances()
 RETURNS DECIMAL LANGUAGE plpgsql AS $$
 DECLARE

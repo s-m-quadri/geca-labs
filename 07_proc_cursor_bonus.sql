@@ -3,7 +3,6 @@
 -- Run: ./run_source.sh proc_lab 07_proc_cursor_bonus.sql
 -- Reset DB with 01_setup.sql if you need fresh numbers.
 
-\c proc_lab
 CREATE OR REPLACE PROCEDURE apply_bonuses()
 LANGUAGE plpgsql AS $$
 DECLARE

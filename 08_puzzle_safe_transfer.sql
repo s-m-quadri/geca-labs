@@ -5,7 +5,6 @@
 -- Run: ./run_source.sh proc_lab 08_puzzle_safe_transfer.sql
 -- Test with SELECT * FROM accounts before/after CALL safe_transfer(1,2,100);
 
-\c proc_lab
 CREATE OR REPLACE PROCEDURE safe_transfer(from_id INT, to_id INT, amount DECIMAL)
 LANGUAGE plpgsql AS $$
 DECLARE
