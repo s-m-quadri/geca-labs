@@ -3,27 +3,25 @@
 -- Run: ./run_source.sh proc_lab 07_proc_cursor_bonus.sql
 -- Reset DB with 01_setup.sql if you need fresh numbers.
 
-USE proc_lab;
-DELIMITER $$
-DROP PROCEDURE IF EXISTS apply_bonuses$$
-CREATE PROCEDURE apply_bonuses()
+\c proc_lab
+CREATE OR REPLACE PROCEDURE apply_bonuses()
+LANGUAGE plpgsql AS $$
+DECLARE
+  eid INT;
+  cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = 1;
 BEGIN
-  DECLARE done INT DEFAULT 0;
-  DECLARE eid INT DEFAULT 0;
-  DECLARE cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = 1;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
   OPEN cur;
-  update_loop: LOOP
+  LOOP
     FETCH cur INTO eid;
-    IF done THEN
-      LEAVE update_loop;
-    END IF;
+    EXIT WHEN NOT FOUND;
     UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
-  END LOOP update_loop;
+  END LOOP;
   CLOSE cur;
-END$$
-DELIMITER ;
-
+END;
+$$;
+ 
+-- Check before
+SELECT * FROM payroll;
 CALL apply_bonuses();
+-- Check after
 SELECT * FROM payroll;

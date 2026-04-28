@@ -5,17 +5,24 @@
 -- Run: ./run_source.sh proc_lab 08_puzzle_safe_transfer.sql
 -- Test with SELECT * FROM accounts before/after CALL safe_transfer(1,2,100);
 
-USE proc_lab;
-DELIMITER $$
-DROP PROCEDURE IF EXISTS safe_transfer$$
-CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(12,2))
+\c proc_lab
+CREATE OR REPLACE PROCEDURE safe_transfer(from_id INT, to_id INT, amount DECIMAL)
+LANGUAGE plpgsql AS $$
+DECLARE
+  donor_bal DECIMAL;
 BEGIN
-  DECLARE donor_bal DECIMAL(12,2) DEFAULT 0;
-
   SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  IF donor_bal >= amount THEN
-    UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-    UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  IF donor_bal < amount THEN
+    RETURN;  -- donor can't afford it; do nothing
   END IF;
-END$$
-DELIMITER ;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+END;
+$$;
+ 
+-- Test: Alice (id=1) has 1200, Bob (id=2) has 450.50
+SELECT * FROM accounts;
+CALL safe_transfer(1, 2, 100);   -- should succeed
+SELECT * FROM accounts;
+CALL safe_transfer(2, 1, 9999);  -- should fail silently
+SELECT * FROM accounts;
