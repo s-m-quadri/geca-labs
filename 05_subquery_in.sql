@@ -1,5 +1,5 @@
 -- Task 5: IN subquery -- customers who ordered product id 20 (PenSet)
-\c view_lab
+-- \c view_lab
 
 SELECT name 
 FROM customers
