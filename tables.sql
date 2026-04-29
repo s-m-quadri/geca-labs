@@ -3,15 +3,12 @@
 
 USE student_db;
 
--- TODO: Create students table with the following columns:
--- - id (integer, primary key)
--- - name (string, max 50 characters, not null)
--- - age (integer)
--- - department (string, max 30 characters)
-
--- CREATE TABLE students (
---     ...
--- );
+CREATE TABLE IF NOT EXISTS students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT,
+    department VARCHAR(30)
+);
 
 -- Verify table creation
--- DESCRIBE students;
+DESCRIBE students;
