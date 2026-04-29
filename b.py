@@ -9,12 +9,12 @@
 # Use f-strings for formatting: f"ID: {student_id}"
 
 
-id = 101          # declare id properly
-name = "hola"     # string type
-mark = 12.5       # float type
-dept = "cse"      # string type
+student_id = 101          # integer type
+student_name = "Alice"   # string type
+marks = 85.5               # float type
+department = "CSE"       # string type
 
-print(id)
-print(name)
-print(mark)
-print(dept)
+print(f"ID: {student_id}")
+print(f"Name: {student_name}")
+print(f"Marks: {marks}")
+print(f"Department: {department}")
