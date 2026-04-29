@@ -7,3 +7,12 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+SELECT staff.name
+FROM staff
+JOIN project_staff ON staff.staff_id = project_staff.staff_id
+JOIN projects ON project_staff.project_id = projects.project_id
+JOIN departments ON projects.dept_id = departments.dept_id
+WHERE projects.title LIKE 'Twin%'
+GROUP BY staff.name
+HAVING COUNT(DISTINCT projects.project_id) = 2;
+
