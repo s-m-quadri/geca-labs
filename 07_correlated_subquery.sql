@@ -1,6 +1,8 @@
 -- Task 7: Correlated subquery -- customers who spent more than 50 total
 -- (sum of qty * price across all their order lines)
 \c view_lab
+
+
 SELECT 
     c.customer_id, 
     c.customer_name -- or other relevant customer columns
