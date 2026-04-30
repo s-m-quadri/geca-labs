@@ -21,3 +21,5 @@ $$;
 
 CALL apply_bonuses();
 SELECT * FROM payroll;
+
+
