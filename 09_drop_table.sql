@@ -7,4 +7,4 @@ USE school_db;
 -- Warning: This will permanently delete the table!
 USE school_db;
 
-DROP TABLE students;
+DROP TABLE students;  -- recheck
