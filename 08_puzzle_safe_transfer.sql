@@ -19,3 +19,24 @@ BEGIN
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+
+SELECT * FROM accounts;
+CALL safe_transfer(1, 2, 100);
+SELECT * FROM accounts;
+
+CREATE OR REPLACE PROCEDURE safe_transfer(
+  from_id INT,
+  to_id   INT,
+  amount  DECIMAL(12,2)
+) LANGUAGE plpgsql AS $$
+DECLARE
+  donor_bal DECIMAL(12,2);
+BEGIN
+  SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  IF donor_bal < amount THEN
+    RETURN;
+  END IF;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+END;
+$$;   
