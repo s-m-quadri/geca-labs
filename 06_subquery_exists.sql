@@ -8,5 +8,4 @@
 select c.name from customers c
 where exists(
     select 1 from orders o where o.cust_id=c.cust_id
-
 );
