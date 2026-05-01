@@ -5,3 +5,7 @@ USE school_db;
 
 -- TODO: Write your DELETE command here
 -- Remember to use WHERE clause!
+USE school_db;
+
+DELETE FROM students
+WHERE student_id = 2;
