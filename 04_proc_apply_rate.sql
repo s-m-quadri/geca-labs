@@ -10,5 +10,6 @@ CREATE OR REPLACE FUNCTION apply_rate(
 BEGIN
   -- TODO: RETURN base + (base * pct / 100);
   RETURN NULL;
+  RETURN base + (base * pct / 100);
 END;
 $$;
