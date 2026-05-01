@@ -4,4 +4,17 @@
 
 USE join_lab;
 
--- TODO: Write a query your instructor can run; add a short comment on your strategy
+-- Strategy: Use UNION of two LEFT JOINs to emulate FULL OUTER JOIN
+-- First part: LEFT JOIN staff with project_staff
+-- Second part: LEFT JOIN projects with project_staff
+ SELECT s.name, p.title
+FROM staff s
+LEFT JOIN project_staff ps ON s.staff_id = ps.staff_id
+LEFT JOIN projects p ON ps.project_id = p.project_id
+
+UNION
+
+ SELECT s.name, p.title
+FROM projects p
+LEFT JOIN project_staff ps ON p.project_id = ps.project_id
+LEFT JOIN staff s ON ps.staff_id = s.staff_id
