@@ -1,5 +1,6 @@
 USE join_lab;
 
+<<<<<<< HEAD
 SELECT s.name
 FROM staff s
 JOIN project_staff ps1 ON s.staff_id = ps1.staff_id
@@ -11,3 +12,11 @@ WHERE p1.dept_id = p2.dept_id
   AND p1.proj_id <> p2.proj_id
 GROUP BY s.staff_id
 HAVING COUNT(DISTINCT p1.proj_id) >= 2;
+=======
+SELECT projects.title,
+       departments.dept_name,
+       departments.floor_no
+FROM projects
+INNER JOIN departments
+  ON projects.dept_id = departments.dept_id;
+>>>>>>> c5bc72027f82f845608c3256226d1211c296effc
