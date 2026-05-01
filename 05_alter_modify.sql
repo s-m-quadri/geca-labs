@@ -4,3 +4,5 @@
 USE school_db;
 
 ALTER TABLE students MODIFY COLUMN age TINYINT NOT NULL;
+
+SHOW COLUMNS FROM students LIKE 'age';

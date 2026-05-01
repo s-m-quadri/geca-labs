@@ -5,3 +5,5 @@ USE school_db;
 
 DELETE FROM students
 WHERE student_name = 'Rohan Gupta';
+
+SELECT * FROM students;
