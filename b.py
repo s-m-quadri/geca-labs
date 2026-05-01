@@ -12,10 +12,16 @@ student_id = 101
 student_name = "Alice"
 marks = 85.5
 department = "CSE"
+passtatus = "Pass" if marks >= 40 else "Fail"
 
+print("\n" + "="*40)
+print("STUDENT RECORD")
+print("="*40)
 print(f"Student ID: {student_id}")
 print(f"Name: {student_name}")
 print(f"Marks: {marks}")
 print(f"Department: {department}")
+print(f"Status: {passtatus}")
+print("="*40)
 
 

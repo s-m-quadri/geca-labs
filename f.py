@@ -11,13 +11,24 @@
 #          print(f.read())
 
 # Write student records to file
-with open("students.txt", "w") as f:
-    f.write("Alice,20,CSE\n")
-    f.write("Bob,21,ECE\n")
-    f.write("Charlie,19,ME\n")
+student_data = [
+    "Alice,20,CSE,8.5",
+    "Bob,21,ECE,7.8",
+    "Charlie,19,ME,8.2",
+    "Diana,20,CSE,8.9"
+]
 
-print("File contents:")
+with open("students.txt", "w") as f:
+    f.write("Name,Age,Department,CGPA\n")
+    for record in student_data:
+        f.write(record + "\n")
+
+print("\n" + "="*50)
+print("FILE CONTENTS - students.txt")
+print("="*50)
 with open("students.txt", "r") as f:
-    print(f.read())
+    for line_num, line in enumerate(f, 1):
+        print(f"Line {line_num}: {line.rstrip()}")
+print("="*50)
 
 

@@ -10,10 +10,16 @@
 
 students = ["Alice", "Bob", "Charlie", "Diana", "Eve"]
 
+print("\n" + "="*40)
+print("STUDENT LIST")
+print("="*40)
 print("Student Names:")
-for student in students:
-    print(f"  - {student}")
+for idx, student in enumerate(students, 1):
+    print(f"  {idx}. {student}")
 
-print(f"\nTotal number of students: {len(students)}")
+print("\n" + "-"*40)
+print(f"Total number of students: {len(students)}")
+print(f"Sorted order: {', '.join(sorted(students))}")
+print("="*40)
 
 
