@@ -5,10 +5,9 @@
 USE school_db;
 
 -- TODO: Write your CREATE TABLE command here
-CREATE TABLE IF NOT EXISTS students (
-    id INT,
-    name VARCHAR(20),
+CREATE TABLE students(
+    id INT PRIMARRY KEY AUTO_INCRIMENT,
+    name VARCHAR(100),
     age INT,
-    email VARCHAR(50)
+    email VARCHAR(100)
 );
-DESCRIBE students;
