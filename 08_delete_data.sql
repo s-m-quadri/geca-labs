@@ -6,6 +6,7 @@ USE school_db;
 -- TODO: Write your DELETE command here
 -- Remember to use WHERE clause!
 USE school_db;
-
-DELETE FROM students
-WHERE student_id = 2;
+-- Always SELECT first to confirm which rows you are deleting
+SELECT * FROM students WHERE id = 3;
+DELETE FROM students WHERE id = 3;
+SELECT * FROM students;
