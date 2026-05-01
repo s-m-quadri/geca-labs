@@ -4,6 +4,7 @@ USE join_lab;
 
 -- TODO: JOIN staff a to staff b on same dept_id AND a.joined_on < b.joined_on
 -- Show a.name, b.name, a.joined_on, b.joined_on
+<<<<<<< HEAD
 SELECT 
     a.name AS person_a,
     b.name AS person_b,
@@ -14,3 +15,10 @@ JOIN staff b
 ON a.dept_id = b.dept_id
 AND a.joined_on < b.joined_on;
 
+=======
+USE join_lab;
+SELECT a.name AS earlier, b.name AS later
+FROM staff AS a
+JOIN staff AS b
+  ON a.dept_id = b.dept_id AND a.joined_on < b.joined_on;
+>>>>>>> e2f4f0375b403b79b5fcba93999f68f26d20175a
