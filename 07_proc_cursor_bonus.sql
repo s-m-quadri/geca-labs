@@ -21,3 +21,6 @@ $$;
 
 -- TODO: CALL apply_bonuses();
 -- TODO: SELECT * FROM payroll;
+update payroll set salary = salary - 100 where bonus_eligible = true;
+call apply_bonuses();
+select * from payroll;
