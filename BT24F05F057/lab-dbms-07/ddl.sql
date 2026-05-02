@@ -5,7 +5,7 @@
 
 DROP DATABASE IF EXISTS hospital_db;
 CREATE DATABASE hospital_db;
-\c hospital_db;
+-- \c hospital_db;
 
 -- -----------------------------------------------
 -- 1. DEPARTMENT

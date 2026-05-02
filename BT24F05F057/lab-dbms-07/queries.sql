@@ -3,7 +3,7 @@
 -- queries.sql - Non-trivial Query Set (10 queries)
 -- ============================================================
 
-\c hospital_db;
+-- \c hospital_db;
 
 -- ============================================================
 -- Q1. MULTI-TABLE JOIN

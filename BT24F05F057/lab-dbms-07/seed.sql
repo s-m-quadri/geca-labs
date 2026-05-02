@@ -3,7 +3,7 @@
 -- seed.sql - Realistic Sample Data
 -- ============================================================
 
-\c hospital_db;
+-- \c hospital_db;
 
 -- -----------------------------------------------
 -- DEPARTMENTS  (6 rows)
