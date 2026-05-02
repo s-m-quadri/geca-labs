@@ -4,9 +4,8 @@
 
 USE join_lab;
 
-SELECT projects.title, departments.dept_name, departments.floor_no
-FROM projects
-INNER JOIN departments ON projects.dept_id = departments.dept_id;
+-- TODO: SELECT projects.title, departments.dept_name, departments.floor_no
+-- FROM projects
+-- INNER JOIN departments ON ...
 
--- Why NATURAL JOIN is risky: it silently matches on ALL columns with the same name across tables.
--- If you add a new column (e.g., 'updated_at') to both tables, the join behavior changes unexpectedly.
+-- Optional: explain in one line why NATURAL JOIN is risky in real schemas
