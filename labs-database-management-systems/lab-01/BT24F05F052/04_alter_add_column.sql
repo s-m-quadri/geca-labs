@@ -2,5 +2,5 @@
 -- Add a 'grade' column (VARCHAR(10)) to students table
 
 USE school_db;
-
+alter table students add column grade VARCHAR(10);  
 -- TODO: Write your ALTER TABLE ADD COLUMN command here
