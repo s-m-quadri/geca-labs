@@ -9,3 +9,9 @@
 # Count: len(students)
 
 
+students = ["Aarav", "Ishani", "Vihaan", "Ananya", "Rohan"]
+
+for student in students:
+    print(student)
+
+print(f"Total students: {len(students)}")
