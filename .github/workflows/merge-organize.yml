@@ -106,6 +106,10 @@ jobs:
           BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
           echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
           ORIGINAL_BRANCH=$(echo "$BASE_BRANCH" | sed 's/^sub-//')
+          # Prefer -v2 variant if it exists (e.g. lab-dbms-05-v2 over lab-dbms-05)
+          if git ls-remote --exit-code origin "${ORIGINAL_BRANCH}-v2" &>/dev/null; then
+            ORIGINAL_BRANCH="${ORIGINAL_BRANCH}-v2"
+          fi
           echo "ORIGINAL_BRANCH=$ORIGINAL_BRANCH" >> $GITHUB_ENV
           echo "Extracted ROLL=$ROLL BASE_BRANCH=$BASE_BRANCH ORIGINAL_BRANCH=$ORIGINAL_BRANCH"
         env:
