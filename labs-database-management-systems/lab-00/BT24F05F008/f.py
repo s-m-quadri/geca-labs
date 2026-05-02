@@ -10,12 +10,4 @@
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
 
-# Writing student records to the file
-with open("students.txt", "w") as f:
-    f.write("Alice,20,CSE\n")
-    f.write("Bob,22,ECE\n")
-    f.write("Charlie,21,ME\n")
-# Reading and printing the file contents
-with open("students.txt", "r") as f:
-    print(f.read())
 
