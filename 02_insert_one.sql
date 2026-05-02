@@ -3,6 +3,5 @@
 
 USE school_db;
 
-INSERT INTO students (name, age, grade)
-VALUES ('Alice', 15, '10th');
- 
+-- TODO: Insert one student record
+-- Example: INSERT INTO students (name, age, grade) VALUES ('Alice', 15, '10th');

@@ -3,12 +3,11 @@
 
 USE school_db;
 
--- See which rows will be deleted
-SELECT * FROM students WHERE age < 15;
+-- TODO: First, see who will be deleted
+-- SELECT * FROM students WHERE age < 15;
 
--- Delete students younger than 15
-DELETE FROM students WHERE age < 15;
+-- TODO: Then delete them
+-- DELETE FROM students WHERE age < 15;
 
--- Check the remaining rows
-SELECT * FROM students;
-
+-- TODO: Check result
+-- SELECT * FROM students;
