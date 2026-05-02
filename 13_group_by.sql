@@ -4,4 +4,11 @@
 USE school_db;
 
 -- TODO: SELECT grade, COUNT(*) as count FROM students GROUP BY grade;
+<<<<<<< 
 SELECT grade, COUNT(*) as count FROM students GROUP BY grade;
+=======
+
+SELECT grade, COUNT(*) as count
+    FROM students 
+        GROUP BY grade;
+>>>>>>> (BT24F05F008)

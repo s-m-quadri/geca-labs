@@ -4,4 +4,8 @@
 USE school_db;
 
 -- TODO: SELECT COUNT(*) as total_students FROM students;
+<<<<<<< 
+=======
+
+>>>>>>> (BT24F05F008)
 SELECT COUNT(*) as total_students FROM students;
