@@ -3,7 +3,7 @@
 
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
-\c view_lab
+--\c view_lab
 
 CREATE TABLE customers (
   cust_id INT PRIMARY KEY,
@@ -49,6 +49,7 @@ INSERT INTO orders VALUES
   (1002, 1, '2024-02-10'),
   (1003, 2, '2024-01-20'),
   (1004, 3, '2024-03-01');
+  
 
 INSERT INTO order_lines VALUES
   (1001, 10, 2),
@@ -60,3 +61,4 @@ INSERT INTO order_lines VALUES
   (1004, 10, 5);
 
 SELECT 'view_lab ready' AS status;
+
