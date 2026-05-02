@@ -3,9 +3,4 @@
 --  Print their product names." (second-highest distinct price)
 \c view_lab
 
--- one SELECT; avoid hard-coded price values from the seed in the outer query
-SELECT name FROM products
-WHERE price = (
-  SELECT MAX(price) FROM products
-  WHERE price < (SELECT MAX(price) FROM products)
-);
+-- TODO: one SELECT; avoid hard-coded price values from the seed in the outer query
