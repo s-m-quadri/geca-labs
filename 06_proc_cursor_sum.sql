@@ -10,15 +10,22 @@ DECLARE
   b     DECIMAL(12,2);
   cur   CURSOR FOR SELECT balance FROM accounts;
 BEGIN
-  OPEN cur;
-  LOOP
-    FETCH cur INTO b;
-    EXIT WHEN NOT FOUND;
-    -- TODO: total := total + b;
-  END LOOP;
-  CLOSE cur;
-  RETURN total;
-END;
-$$;
+  DECLARE done INT DEFAULT 0;
+  DECLARE b DECIMAL(12,2);
+  DECLARE cur CURSOR FOR SELECT balance FROM accounts;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
--- TODO: SELECT sum_balances();
+  SET total = 0;
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO b;
+    IF done = 1 THEN
+      LEAVE read_loop;
+    END IF;
+    SET total = total + b;
+  END LOOP;
+
+  CLOSE cur;
+END//
+DELIMITER ;
