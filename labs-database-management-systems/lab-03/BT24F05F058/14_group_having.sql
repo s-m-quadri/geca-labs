@@ -13,3 +13,6 @@ USE school_db;
 --   GROUP_CONCAT(full_name ORDER BY full_name SEPARATOR ', ') AS members
 -- FROM employees
 -- GROUP BY dept;
+
+SELECT UPPER(dept) AS dept_upper, LOWER(full_name) AS name_lower 
+FROM employees;
