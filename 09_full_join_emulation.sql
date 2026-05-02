@@ -5,3 +5,7 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+
+SELECT s.name AS staff_name, d.dept_name
+FROM departments AS d
+RIGHT JOIN staff AS s ON d.dept_id = s.dept_id;
