@@ -3,7 +3,7 @@
 
 DROP DATABASE IF EXISTS view_lab;
 CREATE DATABASE view_lab;
-\c view_lab
+-- \c view_lab
 
 CREATE TABLE customers (
   cust_id INT PRIMARY KEY,
@@ -60,3 +60,4 @@ INSERT INTO order_lines VALUES
   (1004, 10, 5);
 
 SELECT 'view_lab ready' AS status;
+
