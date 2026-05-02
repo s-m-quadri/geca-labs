@@ -7,3 +7,8 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+USE join_lab;
+SELECT s.name
+FROM staff AS s
+WHERE s.staff_id IN (SELECT staff_id FROM project_staff WHERE proj_id = 101)
+  AND s.staff_id IN (SELECT staff_id FROM project_staff WHERE proj_id = 102);
