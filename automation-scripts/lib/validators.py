@@ -25,6 +25,17 @@ class ValidationResult:
     parser_used: Optional[str] = None
 
 
+_PSQL_META_RE = re.compile(r'^\\[^\\]', re.MULTILINE)
+
+
+def _strip_psql_metacommands(content: str) -> str:
+    """Remove psql client meta-commands (\\c, \\d, \\l, etc.) before SQL parsing."""
+    return '\n'.join(
+        line for line in content.split('\n')
+        if not line.strip().startswith('\\')
+    )
+
+
 def validate_sql_syntax(file_path: Path, try_mysql: bool = True, try_postgres: bool = True) -> ValidationResult:
     """
     Validate SQL syntax without requiring databases or tables.
@@ -46,6 +57,8 @@ def validate_sql_syntax(file_path: Path, try_mysql: bool = True, try_postgres: b
             ],
             parser_used=None,
         )
+
+    content = _strip_psql_metacommands(content)
 
     # Comment-only files: nothing executable to validate
     if not strip_sql_comments(content).strip():
@@ -87,9 +100,12 @@ def _validate_sqlglot_only(
     """Parse-only validation; returns None if sqlglot is unavailable."""
     try:
         import sqlglot
-        from sqlglot.errors import ParseError
+        from sqlglot.errors import ParseError, TokenError
     except ImportError:
         return None
+
+    import logging
+    logging.getLogger("sqlglot").setLevel(logging.ERROR)
 
     mysql_fail: Optional[str] = None
     pg_fail: Optional[str] = None
@@ -98,14 +114,14 @@ def _validate_sqlglot_only(
         try:
             sqlglot.parse(content, dialect="mysql")
             return ValidationResult(file=fp, valid=True, errors=[], parser_used="mysql")
-        except ParseError as e:
+        except (ParseError, TokenError) as e:
             mysql_fail = str(e).strip()[:800]
 
     if try_postgres:
         try:
             sqlglot.parse(content, dialect="postgres")
             return ValidationResult(file=fp, valid=True, errors=[], parser_used="postgresql")
-        except ParseError as e:
+        except (ParseError, TokenError) as e:
             pg_fail = str(e).strip()[:800]
 
     errs: List[ValidationError] = []
