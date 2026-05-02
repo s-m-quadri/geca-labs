@@ -3,4 +3,10 @@
 
 USE view_lab;
 
--- TODO: anti-join or NOT EXISTS
+SELECT c.name
+FROM customers AS c
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM orders AS o
+  WHERE o.cust_id = c.cust_id
+);
