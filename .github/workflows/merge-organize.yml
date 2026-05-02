@@ -222,6 +222,11 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y mysql-client postgresql-client
+          if [ -f automation-scripts/requirements-test.txt ]; then
+            pip install -r automation-scripts/requirements-test.txt
+          else
+            pip install "sqlglot>=24.0.0"
+          fi
 
       - name: Checkout PR head for testing
         run: |
