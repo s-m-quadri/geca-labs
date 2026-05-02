@@ -4,3 +4,7 @@
 USE school_db;
 
 -- TODO: Write your ALTER TABLE MODIFY COLUMN command here
+ALTER TABLE students
+MODIFY COLUMN grade VARCHAR(20);
+ 
+DESCRIBE students;
