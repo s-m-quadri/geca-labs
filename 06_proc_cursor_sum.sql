@@ -3,14 +3,25 @@
 -- Test: SELECT sum_balances();
 \c proc_lab
 
-
-
 CREATE OR REPLACE FUNCTION sum_balances()
-RETURNS DECIMAL(14,2) LANGUAGE plpgsql AS $$
+RETURNS DECIMAL(14,2) AS $$
 DECLARE
-  total DECIMAL(14,2);
+  v_bal DECIMAL(12,2);
+  v_total DECIMAL(14,2) := 0;
+  cur CURSOR FOR SELECT balance FROM accounts;
 BEGIN
-  SELECT SUM(balance) INTO total FROM accounts;
-  RETURN total;
+  OPEN cur;
+  LOOP
+    FETCH cur INTO v_bal;
+    EXIT WHEN NOT FOUND;
+    -- Add current row balance to running total here.
+    -- TODO: v_total := ...
+  END LOOP;
+  CLOSE cur;
+
+  RETURN v_total;
 END;
-$$;
+$$ LANGUAGE plpgsql;
+
+-- TODO: Uncomment after completing the TODO in the loop.
+-- SELECT sum_balances();
