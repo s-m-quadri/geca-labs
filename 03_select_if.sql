@@ -1,6 +1,15 @@
 -- Task 3: Conditional expression in a query (MySQL IF(expr, a, b))
 -- Label each account as 'high' if balance >= 1000 else 'low'
+use proc_lab;
 
-USE proc_lab;
-
--- TODO: SELECT holder, balance, IF(balance >= 1000, 'high', 'low') AS tier FROM accounts;
+-- TODO: SELECT holder, balance,
+--              CASE WHEN balance >= 1000 THEN 'high' ELSE 'low' END AS tier
+--       FROM accounts;
+SELECT 
+    holder, 
+    balance,
+    CASE 
+        WHEN balance >= 1000 THEN 'high' 
+        ELSE 'low' 
+    END AS tier
+FROM accounts;

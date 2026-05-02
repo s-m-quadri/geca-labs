@@ -1,7 +1,6 @@
--- Task 5: CALL apply_rate (created in task 4)
--- Run after ./run_source.sh proc_lab 04_proc_apply_rate.sql
-
+-- Task 5: Call apply_rate (created in task 4)
+-- PostgreSQL functions are called with SELECT, not CALL + session variable
 USE proc_lab;
 
--- TODO: CALL apply_rate(200, 10, @out);
--- TODO: SELECT @out AS with_tax;
+-- TODO: SELECT apply_rate(200, 10) AS with_tax;
+SELECT apply_rate(200, 10) AS with_tax;
