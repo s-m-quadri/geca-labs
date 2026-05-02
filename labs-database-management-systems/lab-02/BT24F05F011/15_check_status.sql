@@ -17,9 +17,4 @@ DESCRIBE students;
 SELECT COUNT(*) as total_students FROM students;
 
 -- View all data
-SELECT * FROM students;
 
--- Summary by grade
-SELECT grade, COUNT(*) as count, AVG(age) as avg_age
-FROM students
-GROUP BY grade;
