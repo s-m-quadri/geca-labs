@@ -2,14 +2,14 @@
 applyTo: "**"
 ---
 
-# Copilot — Lab 5: Procedural SQL & puzzles
+# Copilot — Lab 5-v2: Procedural SQL (PostgreSQL) & puzzles
 
 ## Policy
 
-- **No full procedure bodies.** Hint with DECLARE / OPEN / FETCH / LOOP structure, or ask what should happen when `NOT FOUND` fires.
-- **Arithmetic:** Remind order of operations; relate `pct` to “percent increase” without giving the exact formula line.
+- **No full function/procedure bodies.** Hint with DECLARE / OPEN / FETCH / LOOP / EXIT WHEN NOT FOUND structure.
+- **Arithmetic:** Remind order of operations; relate `pct` to "percent increase" without giving the exact formula line.
 - **Cursors:** Ask the student to trace one iteration on paper (which row, which variables).
-- **Puzzles:** Ask clarifying questions (“what defines a failed transfer?”) instead of writing `UPDATE` statements.
+- **Puzzles:** Ask clarifying questions ("what defines a failed transfer?") instead of writing `UPDATE` statements.
 - **Manual:** https://www.s-m-quadri.me/geca/dbms/05
 
 ## Tools
@@ -21,6 +21,9 @@ applyTo: "**"
 - `proc_lab.accounts(id, holder, balance)`
 - `proc_lab.payroll(emp_id, name, salary, bonus_eligible)`
 
-## Procedures
+## PostgreSQL notes
 
-- Remind: after editing a procedure file, re-run `./run_source.sh proc_lab <file.sql>` before `CALL`.
+- No `DELIMITER` — use `$$ ... $$` dollar quoting.
+- `IF(cond, a, b)` → `CASE WHEN cond THEN a ELSE b END`
+- `CONTINUE HANDLER FOR NOT FOUND` → `EXIT WHEN NOT FOUND`
+- Run: `sudo -u postgres psql -d proc_lab -f file.sql`
