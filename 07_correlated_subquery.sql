@@ -3,7 +3,7 @@
 
 
 -- TODO: correlated pattern on customers + orders + order_lines + products
-select name from customers c
+select c.name from customers c
 where (
   select sum(ol.qty * p.price)
   from orders o

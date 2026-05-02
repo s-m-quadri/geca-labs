@@ -5,12 +5,11 @@
 
 -- TODO: HAVING with conditional sums, or EXISTS pair, or intersect of two subqueries
 select order_id from (
-  select ol.order_id,
-    sum(case when p.price < 15 then 1 else 0 end) as bargain_count,
-    sum(case when p.price > 30 then 1 else 0 end) as premium_count
-  from order_lines ol
-  join products p on ol.prod_id = p.prod_id
-  group by ol.order_id
+  select order_id,
+    sum(case when unit_price < 15 then 1 else 0 end) as bargain_count,
+    sum(case when unit_price > 30 then 1 else 0 end) as premium_count
+  from v_order_lines_detail
+  group by order_id
 ) as t
-where t.bargain_count > 0 and t.premium_count > 0;
+where bargain_count > 0 and premium_count > 0;
 

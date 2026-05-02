@@ -8,4 +8,3 @@
 select order_id, sum(line_total) as order_total
 from v_order_lines_detail
 group by order_id;
-
