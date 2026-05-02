@@ -1,8 +1,8 @@
 {
-  "name": "GECA DBMS Lab 5 — Procedural SQL",
+  "name": "GECA DBMS Lab 5-v2 — Procedural SQL (PostgreSQL)",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  "postCreateCommand": "chmod +x .devcontainer/setup-mysql.sh run_source.sh && bash .devcontainer/setup-mysql.sh",
-  "postStartCommand": "sudo service mysql start 2>/dev/null || sudo service mysqld start 2>/dev/null || true",
+  "postCreateCommand": "chmod +x .devcontainer/setup-postgres.sh && bash .devcontainer/setup-postgres.sh",
+  "postStartCommand": "sudo service postgresql start 2>/dev/null || true",
   "customizations": {
     "vscode": {
       "settings": {

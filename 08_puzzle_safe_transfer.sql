@@ -2,13 +2,16 @@
 -- "Two vaults move coins only if the donor can afford it; otherwise the bank stays silent."
 -- Implement safe_transfer(from_id, to_id, amount) on table accounts.
 -- Rules: if balance < amount, do not change any row; else subtract from donor, add to receiver.
--- Run: ./run_source.sh proc_lab 08_puzzle_safe_transfer.sql
--- Test with SELECT * FROM accounts before/after CALL safe_transfer(1,2,100);
+-- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
+\c proc_lab
 
-USE proc_lab;
-DELIMITER //
-DROP PROCEDURE IF EXISTS safe_transfer//
-CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(12,2))
+CREATE OR REPLACE PROCEDURE safe_transfer(
+  from_id INT,
+  to_id   INT,
+  amount  DECIMAL(12,2)
+) LANGUAGE plpgsql AS $$
+DECLARE
+  donor_bal DECIMAL(12,2);
 BEGIN
   DECLARE donor_balance DECIMAL(12,2);
 
