@@ -4,4 +4,9 @@
 
 USE view_lab;
 
--- TODO: HAVING with SUM of conditions, or intersection of two subqueries, or EXISTS pair — your choice
+SELECT ol.order_id
+FROM order_lines AS ol
+JOIN products AS p ON ol.prod_id = p.prod_id
+GROUP BY ol.order_id
+HAVING SUM(p.price < 15) > 0
+   AND SUM(p.price > 30) > 0;
