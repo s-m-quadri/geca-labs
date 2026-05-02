@@ -19,3 +19,9 @@ BEGIN
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+
+
+SELECT * FROM accounts;
+CALL safe_transfer(1, 2, 100);
+SELECT * FROM accounts;
+
