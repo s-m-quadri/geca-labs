@@ -1,14 +1,10 @@
--- Task 4: Function that returns base increased by pct percent
--- e.g. apply_rate(100, 10) returns 110.00
--- PostgreSQL uses RETURNS, not OUT parameters + DELIMITER
-\c proc_lab
+-- Task 4: Stored procedure with OUT parameter (percentage bump)
+-- Run: ./run_source.sh proc_lab 04_proc_apply_rate.sql
+-- Implement: out_val = base increased by pct percent (e.g. base=100, pct=10 → 110)
 
-CREATE OR REPLACE FUNCTION apply_rate(
-  base DECIMAL(10,2),
-  pct  DECIMAL(5,2)
-) RETURNS DECIMAL(10,2) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION apply_rate(base DECIMAL, pct DECIMAL)
+RETURNS DECIMAL LANGUAGE plpgsql AS $$
 BEGIN
-  -- TODO: RETURN base + (base * pct / 100);
-  RETURN NULL;
+  RETURN base * (1 + pct / 100.0);
 END;
 $$;
