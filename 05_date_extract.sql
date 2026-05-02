@@ -8,3 +8,9 @@ USE school_db;
 --   MONTH(hire_date) AS m,
 --   DAY(hire_date) AS d
 -- FROM employees;
+USE school_db;
+SELECT full_name,
+       YEAR(hire_date)  AS yr,
+       MONTH(hire_date) AS mo,
+       DAY(hire_date)   AS dy
+FROM employees;
