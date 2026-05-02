@@ -17,3 +17,12 @@
 -- Optional: put leading/trailing spaces in some phone values for TRIM task later.
 
 -- TODO: SELECT * FROM employees;
+INSERT INTO employees (full_name, dept, salary, hire_date, phone) VALUES
+('Alice Johnson', 'HR', 55000.00, '2018-03-15', ' 123-456-7890 '),
+('Bob Smith', 'IT', 75000.50, '2019-07-22', '987-654-3210'),
+('Charlie Brown', 'Finance', 62000.75, '2020-01-10', '555-123-4567'),
+('Diana Prince', 'HR', 58000.25, '2017-11-05', '444-555-6666'),
+('Ethan Hunt', 'IT', 80000.00, '2021-05-30', '333-444-5555');
+
+
+
