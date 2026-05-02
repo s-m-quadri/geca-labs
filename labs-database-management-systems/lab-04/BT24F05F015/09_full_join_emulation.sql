@@ -5,3 +5,25 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+
+SELECT 
+  p.title,
+  s.name,
+  ps.hours
+FROM projects p
+LEFT JOIN project_staff ps 
+  ON p.proj_id = ps.proj_id
+LEFT JOIN staff s 
+  ON ps.staff_id = s.staff_id
+
+UNION
+
+SELECT 
+  p.title,
+  s.name,
+  ps.hours
+FROM projects p
+RIGHT JOIN project_staff ps 
+  ON p.proj_id = ps.proj_id
+RIGHT JOIN staff s 
+  ON ps.staff_id = s.staff_id;
