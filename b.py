@@ -9,3 +9,12 @@
 # Use f-strings for formatting: f"ID: {student_id}"
 
 
+student_id = 101          # integer type
+student_name = "Alice"   # string type
+marks = 85.5               # float type
+department = "CSE"       # string type
+
+print(f"ID: {student_id}")
+print(f"Name: {student_name}")
+print(f"Marks: {marks}")
+print(f"Department: {department}")
