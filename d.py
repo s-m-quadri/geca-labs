@@ -8,4 +8,14 @@
 # Access: student["name"]
 # Loop: for key, value in student.items():
 
+student = {
+    "id": 102,
+    "name": "Aditya Sharma",
+    "age": 20,
+    "department": "IT"
+}
 
+for key, value in student.items():
+    print(f"{key.capitalize()}: {value}")
+
+print(f"Accessed Name: {student['name']}")
