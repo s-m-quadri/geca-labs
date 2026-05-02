@@ -23,4 +23,4 @@ $$;
 
 -- TODO: SELECT sum_balances();
 
-SELECT sum_balances();
+SELECT sum_balances() AS total_balance;

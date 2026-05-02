@@ -10,7 +10,3 @@
 SELECT
   (SELECT MIN(balance) FROM accounts) *
   (SELECT MAX(balance) FROM accounts) AS secret_code;
-<<<<<<< HEAD
-=======
-  
->>>>>>> ae84b5a5 (BT24F05F068)
