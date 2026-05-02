@@ -8,3 +8,6 @@ USE school_db;
 -- TODO: SELECT full_name, hire_date, CURDATE() AS today,
 --   (CURDATE() >= hire_date) AS hired_on_or_before_today
 -- FROM employees;
+USE school_db;
+SELECT full_name, salary, ROUND(salary, 0) AS rounded, ROUND(salary, 2) AS two_dp
+FROM employees;
