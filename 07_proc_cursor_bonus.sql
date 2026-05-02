@@ -19,5 +19,5 @@ BEGIN
 END;
 $$;
 
-CALL apply_bonuses();
-SELECT * FROM payroll;
+-- TODO: CALL apply_bonuses();
+-- TODO: SELECT * FROM payroll;

@@ -21,4 +21,4 @@ BEGIN
 END;
 $$;
 
-SELECT sum_balances();
+-- TODO: SELECT sum_balances();
