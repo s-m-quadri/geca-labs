@@ -47,7 +47,7 @@ def validate_sql_syntax(file_path: Path, try_mysql: bool = True, try_postgres: b
     """
     fp = str(file_path)
     try:
-        content = Path(file_path).read_text(encoding="utf-8")
+        content = Path(file_path).read_text(encoding="utf-8-sig")
     except OSError as e:
         return ValidationResult(
             file=fp,
