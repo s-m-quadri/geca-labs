@@ -11,3 +11,14 @@ USE school_db;
 
 -- TODO: Check result
 -- SELECT * FROM students;
+
+
+INSERT INTO students (name, age, grade) VALUES
+('Alice', 15, '10th'),
+('Bob', 16, '11th'),
+('Charlie', 14, '9th'),
+('Diana', 17, '12th');
+SELECT * FROM students WHERE age < 15;
+DELETE FROM students WHERE age < 15;
+SELECT * FROM students;
+    
