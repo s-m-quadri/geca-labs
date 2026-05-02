@@ -7,3 +7,11 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+select staff.name
+from project_staff
+join staff on project_staff.staff_id = staff.staff_id
+join projects on project_staff.project_id = projects.project_id
+join departments on projects.dept_id = departments.dept_id
+where projects.title like 'Twin%' -- same name prefix
+group by staff.name
+having count(distinct projects.project_id) = 2; -- booked hours on both projects    
