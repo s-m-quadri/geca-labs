@@ -4,3 +4,12 @@
 \c view_lab
 
 -- TODO: HAVING with conditional sums, or EXISTS pair, or intersect of two subqueries
+SELECT order_id
+FROM order_lines ol 
+JOIN products p ON ol.prod_id = p.prod_id 
+WHERE p.price < 15
+INTERSECT
+SELECT order_id
+FROM order_lines ol 
+JOIN products p ON ol.prod_id = p.prod_id 
+WHERE p.price > 30;
