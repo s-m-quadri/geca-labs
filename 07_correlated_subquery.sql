@@ -1,8 +1,10 @@
 -- Task 7: Correlated subquery -- customers who spent more than 50 total
 -- (sum of qty * price across all their order lines)
-\c view_lab
 
+<<<<<<< HEAD
 -- TODO: correlated pattern on customers + orders + order_lines + products
+=======
+>>>>>>> d1e2bff (BT24F05F008)
 SELECT c.name 
 FROM customers c
 WHERE 50 < (

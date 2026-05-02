@@ -1,8 +1,10 @@
 -- Puzzle B (riddle)
 -- "Who never pressed checkout? List customer names with zero orders."
-\c view_lab
 
+<<<<<<< HEAD
 -- TODO: anti-join or NOT EXISTS
+=======
+>>>>>>> d1e2bff (BT24F05F008)
 SELECT name 
 FROM customers c
 WHERE NOT EXISTS (

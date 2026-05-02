@@ -2,6 +2,15 @@
 -- Columns: order_id, prod_id, qty, product name, unit price, line_total (qty * price)
 --\c view_lab
 
+<<<<<<<
+=======
+-- TODO: CREATE OR REPLACE VIEW v_order_lines_detail AS
+-- SELECT ...
+-- Task 2: Create a view v_order_lines_detail with line revenue
+-- Columns: order_id, prod_id, qty, product name, unit price, line_total (qty * price)
+--\c view_lab
+
+>>>>>>>  (BT24F05F008)
 CREATE OR REPLACE VIEW v_order_lines_detail AS
 SELECT 
   ol.order_id, 

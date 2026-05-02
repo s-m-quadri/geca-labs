@@ -1,7 +1,7 @@
 -- Task 8: Derived table in FROM
 -- From a subquery that computes per-order revenue, select orders where revenue > 30
-\c view_lab
 
+<<<<<<< HEAD
 -- TODO: SELECT * FROM (
 --   SELECT order_id, SUM(ol.qty * p.price) AS rev
 --   FROM order_lines ol
@@ -9,6 +9,8 @@
 --   GROUP BY order_id
 -- ) AS t
 -- WHERE t.rev > 30;
+=======
+>>>>>>> d1e2bff (BT24F05F008)
 SELECT * FROM (
   SELECT order_id, SUM(ol.qty * p.price) AS rev
   FROM order_lines ol
