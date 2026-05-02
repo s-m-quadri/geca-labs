@@ -5,3 +5,19 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+SELECT staff.name, projects.title
+FROM staff
+JOIN project_staff ON staff.staff_id = project_staff.staff_id
+JOIN projects ON project_staff.project_id = projects.project_id
+UNION ALL
+SELECT staff.name, NULL AS title
+FROM staff
+LEFT JOIN project_staff ON staff.staff_id = project_staff.staff_id
+WHERE project_staff.staff_id IS NULL
+UNION ALL
+SELECT NULL AS name, projects.title
+FROM projects
+LEFT JOIN project_staff ON projects.project_id = project_staff.project_id
+WHERE project_staff.project_id IS NULL
+ORDER BY name, title;
+-- Strategy: combine assigned pairs, unassigned staff, and unassigned projects with UNION ALL.
