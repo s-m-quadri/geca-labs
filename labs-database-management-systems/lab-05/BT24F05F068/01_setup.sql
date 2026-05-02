@@ -3,7 +3,7 @@
 
 DROP DATABASE IF EXISTS proc_lab;
 CREATE DATABASE proc_lab;
-\c proc_lab
+-- \c proc_lab
 
 CREATE TABLE accounts (
   id      SERIAL PRIMARY KEY,
@@ -29,3 +29,4 @@ INSERT INTO payroll (name, salary, bonus_eligible) VALUES
   ('Cal', 52000.00, TRUE);
 
 SELECT 'proc_lab ready' AS status;
+

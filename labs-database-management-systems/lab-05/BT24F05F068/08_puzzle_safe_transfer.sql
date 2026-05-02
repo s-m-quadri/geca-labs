@@ -3,7 +3,7 @@
 -- Implement safe_transfer(from_id, to_id, amount) on table accounts.
 -- Rules: if balance < amount, do not change any row; else subtract from donor, add to receiver.
 -- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
-\c proc_lab
+-- \c proc_lab
 
 CREATE OR REPLACE PROCEDURE safe_transfer(
   from_id INT,
@@ -19,3 +19,4 @@ BEGIN
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+
