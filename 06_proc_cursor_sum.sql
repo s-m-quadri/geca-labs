@@ -8,19 +8,9 @@
 CREATE OR REPLACE FUNCTION sum_balances()
 RETURNS DECIMAL(14,2) LANGUAGE plpgsql AS $$
 DECLARE
-  total DECIMAL(14,2) := 0;
-  b     DECIMAL(12,2);
-  cur   CURSOR FOR SELECT balance FROM accounts;
+  total DECIMAL(14,2);
 BEGIN
-  OPEN cur;
-  LOOP
-    FETCH cur INTO b;
-    EXIT WHEN NOT FOUND;
-    -- TODO: total := total + b;
-  END LOOP;
-  CLOSE cur;
+  SELECT SUM(balance) INTO total FROM accounts;
   RETURN total;
 END;
 $$;
-
-TODO: SELECT sum_balances();
