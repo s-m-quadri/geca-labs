@@ -17,5 +17,12 @@ BEGIN
   -- TODO: IF donor_bal < amount THEN RETURN; END IF;
   -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  IF donor_bal < amount THEN RETURN; END IF;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+  SELECT * FROM accounts;
+CALL safe_transfer(1,2,100);
+SELECT * FROM accounts; 
