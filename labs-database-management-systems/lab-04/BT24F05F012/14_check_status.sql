@@ -1,4 +1,4 @@
--- Sanity check for join_lab
+-- Sanity check for join_lab.
 
 SHOW DATABASES;
 USE join_lab;
