@@ -3,7 +3,7 @@
 -- Implement safe_transfer(from_id, to_id, amount) on table accounts.
 -- Rules: if balance < amount, do not change any row; else subtract from donor, add to receiver.
 -- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
-\c proc_lab
+USE proc_lab;
 
 CREATE OR REPLACE PROCEDURE safe_transfer(
   from_id INT,
@@ -12,10 +12,18 @@ CREATE OR REPLACE PROCEDURE safe_transfer(
 ) LANGUAGE plpgsql AS $$
 DECLARE
   donor_bal DECIMAL(12,2);
-BEGIN
+BEGIN   
   -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
+  SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  
+    -- TODO: IF donor_bal < amount THEN RETURN; END IF;
+  IF donor_bal < amount THEN
+    RETURN;
+  END IF;
   -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  UPDATE accounts SET balance = balance - amount WHERE id = from_id;
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+      
 END;
 $$;
