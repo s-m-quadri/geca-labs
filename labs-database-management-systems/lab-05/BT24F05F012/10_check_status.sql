@@ -1,4 +1,4 @@
--- proc_lab sanity check
+-- proc_lab sanity check.
 \c proc_lab
 
 SELECT 'accounts' AS t, COUNT(*) AS n FROM accounts
