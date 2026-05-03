@@ -6,13 +6,4 @@
 
 USE join_lab;
 
-SELECT DISTINCT s.name
-FROM staff s
-JOIN project_staff ps1 ON ps1.staff_id = s.staff_id
-JOIN projects p1 ON p1.proj_id = ps1.proj_id
-JOIN project_staff ps2 ON ps2.staff_id = s.staff_id
-JOIN projects p2 ON p2.proj_id = ps2.proj_id
-WHERE p1.proj_id < p2.proj_id
-  AND p1.dept_id = p2.dept_id
-  AND p1.title LIKE 'Riddle-%'
-  AND p2.title LIKE 'Riddle-%';
+-- TODO: Write one SELECT that returns exactly one name (the solver).

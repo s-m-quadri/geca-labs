@@ -2,12 +2,5 @@
 
 USE join_lab;
 
-SELECT a.name AS joined_earlier,
-       b.name AS joined_later,
-       a.joined_on AS earlier_date,
-       b.joined_on AS later_date
-FROM staff a
-JOIN staff b
-  ON a.dept_id = b.dept_id
- AND a.joined_on < b.joined_on
-ORDER BY a.dept_id, a.joined_on, b.joined_on;
+-- TODO: JOIN staff a to staff b on same dept_id AND a.joined_on < b.joined_on
+-- Show a.name, b.name, a.joined_on, b.joined_on

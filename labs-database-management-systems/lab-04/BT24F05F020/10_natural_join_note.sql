@@ -4,8 +4,9 @@
 
 USE join_lab;
 
--- TODO: SELECT projects.title, departments.dept_name, departments.floor_no
--- FROM projects
--- INNER JOIN departments ON ...
+SELECT p.title, d.dept_name, d.floor_no
+FROM projects p
+INNER JOIN departments d ON p.dept_id = d.dept_id;
 
 -- Optional: explain in one line why NATURAL JOIN is risky in real schemas
+-- NATURAL JOIN can silently change behavior if new same-named columns are added.
