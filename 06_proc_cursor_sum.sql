@@ -14,7 +14,7 @@ BEGIN
   LOOP
     FETCH cur INTO b;
     EXIT WHEN NOT FOUND;
-    -- TODO: total := total + b;
+    total := total + b;
   END LOOP;
   CLOSE cur;
   RETURN total;
