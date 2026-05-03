@@ -1,0 +1,5 @@
+Name,Age,Department,CGPA
+Alice,20,CSE,8.5
+Bob,21,ECE,7.8
+Charlie,19,ME,8.2
+Diana,20,CSE,8.9

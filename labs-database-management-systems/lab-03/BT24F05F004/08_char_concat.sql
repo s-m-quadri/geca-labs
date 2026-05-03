@@ -1,0 +1,13 @@
+-- Task 8: Character — CONCAT
+-- Build a single label column: "Name | Dept | Salary"
+
+USE school_db;
+
+-- TODO: SELECT full_name,
+--   CONCAT(full_name, ' | ', dept, ' | ', salary) AS label
+-- FROM employees;
+
+SELECT full_name,
+  CONCAT(full_name, ' | ', dept, ' | ', salary) AS label
+FROM employees;
+

@@ -1,0 +1,22 @@
+{
+  "id": "daa",
+  "label": "Design and Analysis of Algorithms",
+  "base_branch": "stable",
+  "github_blob_branch": "stable",
+  "labs_repo_subdir": "labs-design-analysis-algorithms",
+  "course_code": "CSPCC3004",
+  "course_name_short": "Lab Design and Analysis of Algorithms",
+  "homepage_url": "https://s-m-quadri.me/geca/daa",
+  "manual_url_template": "https://s-m-quadri.me/geca/daa/{lab:02d}",
+  "lab_range": [0, 10],
+  "attendance_module": "attendance_daa",
+  "problem_set_branch_template": "lab-daa-{lab:02d}",
+  "problem_set_branch_overrides": {},
+  "writeup_document_title": "Design and Analysis of Algorithms",
+  "writeup_header_subtitle": "Design and Analysis of Algorithms Lab Writeup",
+  "writeup_footer_manual_url": "https://s-m-quadri.me/geca/daa",
+  "features": { "writeup": true },
+  "students_csv": "students.csv",
+  "labs_index": "labs/index.md",
+  "writeup_provider_module": "lib.writeup.providers.daa"
+}

@@ -1,0 +1,32 @@
+2026-05-01 17:15:49.383 UTC [19106] LOG:  starting PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+2026-05-01 17:15:49.384 UTC [19106] LOG:  could not bind IPv6 address "::1": Address already in use
+2026-05-01 17:15:49.384 UTC [19106] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2026-05-01 17:15:49.384 UTC [19106] LOG:  could not bind IPv4 address "127.0.0.1": Address already in use
+2026-05-01 17:15:49.384 UTC [19106] HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+2026-05-01 17:15:49.384 UTC [19106] WARNING:  could not create listen socket for "localhost"
+2026-05-01 17:15:49.384 UTC [19106] FATAL:  could not create any TCP/IP sockets
+2026-05-01 17:15:49.386 UTC [19106] LOG:  database system is shut down
+2026-05-01 17:17:11.482 UTC [19650] LOG:  starting PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+2026-05-01 17:17:11.482 UTC [19650] LOG:  listening on IPv6 address "::1", port 5433
+2026-05-01 17:17:11.482 UTC [19650] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2026-05-01 17:17:11.485 UTC [19650] FATAL:  could not create lock file "/var/run/postgresql/.s.PGSQL.5433.lock": Permission denied
+2026-05-01 17:17:11.487 UTC [19650] LOG:  database system is shut down
+2026-05-01 17:18:09.842 UTC [20059] LOG:  starting PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+2026-05-01 17:18:09.843 UTC [20059] LOG:  listening on IPv6 address "::1", port 5433
+2026-05-01 17:18:09.843 UTC [20059] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2026-05-01 17:18:09.845 UTC [20059] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5433"
+2026-05-01 17:18:09.851 UTC [20062] LOG:  database system was shut down at 2026-05-01 17:15:22 UTC
+2026-05-01 17:18:09.857 UTC [20059] LOG:  database system is ready to accept connections
+2026-05-01 17:18:23.440 UTC [20204] FATAL:  database "vscode" does not exist
+2026-05-01 17:23:09.942 UTC [20060] LOG:  checkpoint starting: time
+2026-05-01 17:24:48.840 UTC [20060] LOG:  checkpoint complete: wrote 991 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=98.729 s, sync=0.165 s, total=98.899 s; sync files=318, longest=0.010 s, average=0.001 s; distance=4597 kB, estimate=4597 kB; lsn=0/196CC28, redo lsn=0/196CBF0
+2026-05-01 17:24:50.798 UTC [22990] ERROR:  syntax error at or near "select" at character 45
+2026-05-01 17:24:50.798 UTC [22990] STATEMENT:  select name,price from products
+	where price(select avg(price) from products);
+2026-05-01 17:26:26.399 UTC [23822] ERROR:  syntax error at or near "order" at character 70
+2026-05-01 17:26:26.399 UTC [23822] STATEMENT:  select name from customers
+	where cust_id in(
+	    select cust_id from order o
+	    join order_lines ol on o.order_id=ol.order_id
+	    where ol.prod_id=20
+	);

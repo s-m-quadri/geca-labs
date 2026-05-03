@@ -1,0 +1,297 @@
+name: Bot Merge & Organize
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  merge_and_organize:
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@bot-s-m-quadri merge')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Permission check
+        id: perm
+        run: |
+          COMMENTER="${{ github.event.comment.user.login }}"
+          if [ "$COMMENTER" != "s-m-quadri" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="😏 Who are you? Only @s-m-quadri can do it."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Get PR details
+        id: pr
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/{pull_number}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Validate base branch (Guardrail)
+        run: |
+          BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
+
+          # CRITICAL: Only allow merging to sub-lab-{subject}-{NN} branches
+          if [[ ! "$BASE_BRANCH" =~ ^sub-lab-[a-z]+-[0-9]{2}$ ]]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="🛑 **BLOCKED!** Cannot merge to \`$BASE_BRANCH\`. Automation only merges to \`sub-lab-{subject}-{NN}\` branches. Current base: \`$BASE_BRANCH\`"
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+              -f labels[]="⛌ Error! Please Resubmit"
+            exit 1
+          fi
+
+          echo "✅ Base branch validated: $BASE_BRANCH — merging."
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Merge PR
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pull_number: ${{ github.event.issue.number }}
+          merge_method: merge
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Checkout merged branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ fromJson(steps.pr.outputs.data).base.ref }}
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Checkout stable for automation scripts
+        run: |
+          # Save merged branch ref
+          git branch merged_state
+
+          # Checkout stable to get automation scripts
+          git checkout stable
+          cp -r automation-scripts /tmp/
+
+          # Return to merged branch
+          git checkout merged_state
+
+      - name: Extract PRN and Branch Info
+        run: |
+          HEAD_BRANCH="${{ fromJson(steps.pr.outputs.data).head.ref }}"
+          PR_TITLE="${{ fromJson(steps.pr.outputs.data).title }}"
+
+          # Fork PRs: head ref may be "fork-owner:branch-name"
+          case "$HEAD_BRANCH" in
+            *:*)
+              HEAD_BRANCH="${HEAD_BRANCH#*:}"
+              ;;
+          esac
+
+          ROLL=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
+          if [ -z "$ROLL" ]; then
+            ROLL=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
+          fi
+          if [ -z "$ROLL" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="❌ Could not extract PRN from title (\`$PR_TITLE\`) or branch (\`$HEAD_BRANCH\`)"
+            exit 1
+          fi
+          ROLL=$(echo "$ROLL" | tr '[:lower:]' '[:upper:]')
+          echo "ROLL=$ROLL" >> $GITHUB_ENV
+          BASE_BRANCH="${{ fromJson(steps.pr.outputs.data).base.ref }}"
+          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
+          ORIGINAL_BRANCH=$(echo "$BASE_BRANCH" | sed 's/^sub-//')
+          # Prefer -v2 variant if it exists (e.g. lab-dbms-05-v2 over lab-dbms-05)
+          if git ls-remote --exit-code origin "${ORIGINAL_BRANCH}-v2" &>/dev/null; then
+            ORIGINAL_BRANCH="${ORIGINAL_BRANCH}-v2"
+          fi
+          echo "ORIGINAL_BRANCH=$ORIGINAL_BRANCH" >> $GITHUB_ENV
+          echo "Extracted ROLL=$ROLL BASE_BRANCH=$BASE_BRANCH ORIGINAL_BRANCH=$ORIGINAL_BRANCH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Determine Lab Folder
+        run: |
+          # Extract subject from branch name (sub-lab-{subject}-{NN})
+          SUBJECT=$(echo "${BASE_BRANCH}" | grep -oP 'lab-\K[a-z]+' || true)
+          if [ -z "$SUBJECT" ]; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="❌ Could not extract subject from branch: ${BASE_BRANCH}"
+            exit 1
+          fi
+
+          # Map subject to lab folder
+          case "$SUBJECT" in
+            daa)
+              LAB_BASE="labs-design-analysis-algorithms"
+              ;;
+            dbms)
+              LAB_BASE="labs-database-management-systems"
+              ;;
+            *)
+              gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+                -f body="❌ Unknown subject: $SUBJECT. Supported: daa, dbms"
+              exit 1
+              ;;
+          esac
+
+          LAB_NUM=$(echo "${BASE_BRANCH}" | grep -oP '\d{2}$' || true)
+          if [ -z "$LAB_NUM" ]; then
+            LAB_NUM="00"
+            echo "::notice title=Lab folder::Lab number not found in branch name; defaulting to lab-00."
+          fi
+          LAB_DIR="$LAB_BASE/lab-$LAB_NUM"
+          echo "LAB_DIR=$LAB_DIR" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Organize submission and restore clean lab
+        run: |
+          echo "ROLL=$ROLL LAB_DIR=$LAB_DIR ORIGINAL_BRANCH=$ORIGINAL_BRANCH"
+
+          # Ensure orphan baseline branch is fetched
+          git fetch origin "${ORIGINAL_BRANCH}"
+
+          # 1. Copy all root-level files to temp (use process substitution, not pipe)
+          mkdir -p /tmp/student_submission
+          while IFS= read -r file; do
+            cp "$file" /tmp/student_submission/
+          done < <(find . -maxdepth 1 -type f)
+          echo "Saved $(ls /tmp/student_submission/ | wc -l) files to temp"
+
+          # 2. Wipe all root-level files
+          find . -maxdepth 1 -type f -delete
+
+          # 3. Restore clean baseline from orphan branch
+          git checkout "origin/${ORIGINAL_BRANCH}" -- .
+          echo "Root restored: $(ls -1 | head -20)"
+
+          # 4. Move student files into PRN folder
+          mkdir -p "$LAB_DIR/$ROLL"
+          cp -r /tmp/student_submission/. "$LAB_DIR/$ROLL/"
+          echo "Organized into $LAB_DIR/$ROLL: $(ls $LAB_DIR/$ROLL/)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Commit changes as bot
+        run: |
+          git config user.name "bot-s-m-quadri"
+          git config user.email "access.smq@gmail.com"
+
+          # Stage all changes (student directory + restored clean lab at root)
+          git add -A
+
+          if git commit -m "Organize submission for $ROLL into $LAB_DIR/$ROLL"; then
+            git push origin "HEAD:${BASE_BRANCH}"
+            echo "✓ Successfully organized and pushed submission"
+          else
+            gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -f body="ℹ️ No changes to commit for $ROLL (files may already be organized)."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Add Accepted label
+        run: |
+          # Create Accepted label if not exists
+          gh api repos/${{ github.repository }}/labels -f name="🎉 Accepted" -f color="28A745" -f description="Submission accepted and merged" || true
+
+          # Remove Incomplete label if exists
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⚠️%20Incomplete \
+            -X DELETE || true
+
+          # Remove Error labels if exist
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⛌%20Error!%20Must%20Provide%20PRN \
+            -X DELETE || true
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels/⛌%20Error!%20Please%20Resubmit \
+            -X DELETE || true
+
+          # Add Accepted label (Note: Test labels are preserved)
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+            -f labels[]="🎉 Accepted"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Setup Python and generate comprehensive report
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install SQL parsers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y mysql-client postgresql-client
+          if [ -f automation-scripts/requirements-test.txt ]; then
+            pip install -r automation-scripts/requirements-test.txt
+          else
+            pip install "sqlglot>=24.0.0"
+          fi
+
+      - name: Checkout PR head for testing
+        run: |
+          # Fetch and checkout PR head SHA for validation
+          git fetch origin ${{ fromJson(steps.pr.outputs.data).head.sha }}
+          git checkout ${{ fromJson(steps.pr.outputs.data).head.sha }}
+
+          # Restore automation scripts
+          cp -r /tmp/automation-scripts .
+
+          # Fetch baseline branch for comparison
+          git fetch origin "${ORIGINAL_BRANCH}:refs/remotes/origin/${ORIGINAL_BRANCH}" || true
+
+          echo "Checked out PR head for testing against ${ORIGINAL_BRANCH}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Generate comprehensive merge report
+        id: merge_report
+        run: |
+          # Determine if DBMS lab or other subject
+          if [[ "${ORIGINAL_BRANCH}" =~ ^lab-dbms ]]; then
+            # Run test to generate comprehensive report
+            set +e
+            REPORT=$(python3 automation-scripts/test_submission.py \
+              --lab-branch "${ORIGINAL_BRANCH}" \
+              --prn "${ROLL}" \
+              --author "${{ fromJson(steps.pr.outputs.data).user.login }}" \
+              --head-repo "${{ fromJson(steps.pr.outputs.data).head.repo.full_name }}" \
+              --head-branch "${{ fromJson(steps.pr.outputs.data).head.ref }}" \
+              --base-repo "${{ fromJson(steps.pr.outputs.data).base.repo.full_name }}" \
+              --pr-number "${{ github.event.issue.number }}" \
+              --show-file-tree \
+              2>&1)
+            set -e
+            
+            # Save report
+            echo "$REPORT" > /tmp/merge_report.md
+            echo "HAS_REPORT=true" >> $GITHUB_ENV
+          else
+            echo "HAS_REPORT=false" >> $GITHUB_ENV
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Post comprehensive acceptance comment
+        run: |
+          if [ "$HAS_REPORT" = "true" ]; then
+            # Post comprehensive report with test results
+            FULL_REPORT=$(cat /tmp/merge_report.md)
+            
+            COMMENT_BODY=$(printf "🎉 **Congratulations!** Your submission has been accepted and merged.\n\n---\n\n%s" "$FULL_REPORT")
+          else
+            # Simple acceptance message for non-DBMS labs
+            COMMENT_BODY="🎉 **Congratulations!** Your submission has been accepted and merged into \`${BASE_BRANCH}\`."
+          fi
+
+          # Escape for JSON
+          COMMENT_JSON=$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')
+
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            --input - <<< "$COMMENT_JSON"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}

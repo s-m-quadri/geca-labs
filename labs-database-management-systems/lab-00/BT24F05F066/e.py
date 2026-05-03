@@ -1,0 +1,20 @@
+# Task: Write a function to display student information:
+#  - Function name: display_student(name, age, dept)
+#  - It should print the details in a formatted way
+#  - Call this function 3 times with different students
+
+# 💡 TIP:
+# def function_name(param1, param2):
+#     print(f"Student: {param1}")
+def display_student(name, age, dept):
+    print(f"Name : {name}")
+    print(f"Age  : {age}")
+    print(f"Dept : {dept}")
+    print('-' * 20)
+
+
+
+# Call the function three times with different students
+display_student("Alice", 20, "Computer Science")
+display_student("Bob", 21, "Electrical Engineering")
+display_student("Carol", 22, "Mechanical Engineering")

@@ -1,0 +1,3 @@
+Sheetal,20,CSE
+Sanika,19,IT
+Anjali,18,CSE

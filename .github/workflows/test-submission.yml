@@ -1,0 +1,219 @@
+name: Test Submission
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  test-submission:
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@bot-s-m-quadri test')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR details
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const prNumber = context.payload.issue.number;
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            return {
+              number: pr.number,
+              base: pr.base.ref,
+              head: pr.head.ref,
+              title: pr.title,
+              headSha: pr.head.sha,
+              headRepo: pr.head.repo.full_name,
+              baseRepo: pr.base.repo.full_name
+            };
+
+      - name: Extract lab branch
+        id: lab
+        run: |
+          HEAD_BRANCH="${{ fromJson(steps.pr.outputs.result).head }}"
+          PR_TITLE="${{ fromJson(steps.pr.outputs.result).title }}"
+
+          # Fork PRs: head ref may be "fork-owner:branch-name"
+          case "$HEAD_BRANCH" in
+            *:*)
+              HEAD_BRANCH="${HEAD_BRANCH#*:}"
+              ;;
+          esac
+
+          # Baseline branch: lab-dbms-{N} with N one or two digits (e.g. lab-dbms-6-v2 → lab 06)
+          CLEAN_HEAD=$(echo "$HEAD_BRANCH" | sed 's/-v[0-9]*$//')
+          if [[ "$CLEAN_HEAD" =~ ^lab-dbms-([0-9]{1,2})$ ]]; then
+            N=$(printf '%02d' "$((10#${BASH_REMATCH[1]}))")
+            LAB_BRANCH="lab-dbms-${N}"
+          elif [[ "$CLEAN_HEAD" =~ ^lab-dbms$ ]] || [[ "$HEAD_BRANCH" =~ ^lab-dbms(-v[0-9]*)?$ ]]; then
+            LAB_BRANCH="lab-dbms-00"
+          else
+            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+              -f body="Cannot determine DBMS lab from branch: \`$HEAD_BRANCH\`. Expected format: \`lab-dbms-NN\` or \`lab-dbms-N-v2\`"
+            exit 1
+          fi
+
+          # Extract PRN from branch or title
+          PRN=$(echo "$HEAD_BRANCH" | grep -ioP 'BT[0-9A-Z]+' || true)
+          if [ -z "$PRN" ]; then
+            PRN=$(echo "$PR_TITLE" | grep -ioP 'BT[0-9A-Z]+' || true)
+          fi
+          if [ -z "$PRN" ]; then
+            PRN="UNKNOWN"
+          fi
+          PRN=$(echo "$PRN" | tr '[:lower:]' '[:upper:]')
+
+          echo "LAB_BRANCH=$LAB_BRANCH" >> $GITHUB_ENV
+          echo "PRN=$PRN" >> $GITHUB_ENV
+          echo "Testing against baseline: $LAB_BRANCH for PRN: $PRN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Checkout repository (main branch for scripts)
+        uses: actions/checkout@v4
+        with:
+          ref: stable
+          fetch-depth: 0
+          token: ${{ secrets.BOT_TOKEN }}
+
+      - name: Fetch PR head and baseline
+        run: |
+          # Save automation scripts (they're on stable)
+          cp -r automation-scripts /tmp/
+
+          # Fetch and checkout PR head
+          git fetch origin ${{ fromJson(steps.pr.outputs.result).headSha }}
+          git checkout ${{ fromJson(steps.pr.outputs.result).headSha }}
+
+          # Restore automation scripts
+          cp -r /tmp/automation-scripts .
+
+          # Fetch baseline branch
+          git fetch origin "${LAB_BRANCH}:refs/remotes/origin/${LAB_BRANCH}" || true
+
+          echo "Testing PR head with baseline: ${LAB_BRANCH}"
+          ls -la automation-scripts/
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies (SQL syntax validation)
+        run: |
+          # Prefer requirements file when present on ``stable``; otherwise install sqlglot directly
+          # (avoids CI failure before ``requirements-test.txt`` is merged to the branch used for restore).
+          if [ -f automation-scripts/requirements-test.txt ]; then
+            pip install -r automation-scripts/requirements-test.txt
+          else
+            pip install "sqlglot>=24.0.0"
+          fi
+
+      - name: Run tests
+        id: test
+        run: |
+          # Run test script and capture both stdout and exit code
+          set +e
+          OUTPUT=$(python3 automation-scripts/test_submission.py \
+            --lab-branch "${LAB_BRANCH}" \
+            --prn "${PRN}" \
+            --author "${{ github.event.issue.user.login }}" \
+            --head-repo "${{ fromJson(steps.pr.outputs.result).headRepo }}" \
+            --head-branch "${{ fromJson(steps.pr.outputs.result).head }}" \
+            --base-repo "${{ fromJson(steps.pr.outputs.result).baseRepo }}" \
+            --pr-number "${{ fromJson(steps.pr.outputs.result).number }}" \
+            2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          # One PR comment later: prepend marker (same line old "Acknowledge" step used) for tooling
+          HEADER=$(printf 'Running tests for `%s`... report below.' "$LAB_BRANCH")
+          printf '%s\n\n%s\n' "$HEADER" "$OUTPUT" > /tmp/test_output.md
+
+          # Determine status
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "TEST_STATUS=passed" >> $GITHUB_ENV
+          else
+            echo "TEST_STATUS=failed" >> $GITHUB_ENV
+          fi
+
+          echo "Test completed with exit code: $EXIT_CODE"
+        env:
+          LAB_BRANCH: ${{ env.LAB_BRANCH }}
+          PRN: ${{ env.PRN }}
+
+      - name: Post test results
+        run: |
+          COMMENT_BODY=$(cat /tmp/test_output.md)
+
+          # Escape for JSON
+          COMMENT_JSON=$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')
+
+          gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
+            --input - <<< "$COMMENT_JSON"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Ensure test labels exist
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const labels = [
+              { name: '🧪 Tests Passed', color: '0E8A16', description: 'Automated tests passed' },
+              { name: '⚠️ Tests Failed (Non-blocking)', color: 'FBCA04', description: 'Tests failed but merge is still allowed' }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description
+                });
+              }
+            }
+
+      - name: Update labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN }}
+          script: |
+            const prNumber = ${{ fromJson(steps.pr.outputs.result).number }};
+            const testStatus = process.env.TEST_STATUS;
+
+            // Remove old test labels
+            const labelsToRemove = ['🧪 Tests Passed', '⚠️ Tests Failed (Non-blocking)'];
+            for (const label of labelsToRemove) {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: label
+                });
+              } catch (error) {
+                // Label might not exist, ignore
+              }
+            }
+
+            // Add new label
+            const newLabel = testStatus === 'passed' ? '🧪 Tests Passed' : '⚠️ Tests Failed (Non-blocking)';
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: [newLabel]
+            });
