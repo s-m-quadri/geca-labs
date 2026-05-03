@@ -1,14 +1,7 @@
 -- view_lab sanity check
-USE view_lab;
+\c view_lab
 
-SELECT * 
-FROM (
-    SELECT 
-        ol.order_id, 
-        SUM(ol.qty * p.price) AS rev
-    FROM order_lines ol
-    JOIN products p 
-        ON ol.prod_id = p.prod_id
-    GROUP BY ol.order_id
-) AS t
-WHERE t.rev > 30;
+SELECT tablename FROM pg_tables WHERE schemaname = 'public';
+SELECT COUNT(*) AS customers FROM customers;
+SELECT COUNT(*) AS orders    FROM orders;
+SELECT * FROM products;
