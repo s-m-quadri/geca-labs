@@ -3,8 +3,8 @@
 
 USE school_db;
 
- SELECT NOW() AS server_time;
+-- TODO: SELECT NOW() AS server_time;
 
- SELECT full_name, hire_date, CURDATE() AS today,
-   (CURDATE() >= hire_date) AS hired_on_or_before_today
- FROM employees;
+-- TODO: SELECT full_name, hire_date, CURDATE() AS today,
+--   (CURDATE() >= hire_date) AS hired_on_or_before_today
+-- FROM employees;
