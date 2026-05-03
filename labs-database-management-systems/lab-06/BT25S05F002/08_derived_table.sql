@@ -9,3 +9,11 @@
 --   GROUP BY order_id
 -- ) AS t
 -- WHERE t.rev > 30;
+
+select * from(
+    select order_id,sum(ol.qty*p.price) as rev
+    from order_lines ol
+    join products p on ol.prod_id=p.prod_id
+    group by order_id
+)as t
+where t.rev>30;
