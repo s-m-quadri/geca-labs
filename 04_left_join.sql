@@ -6,3 +6,7 @@ USE join_lab;
 -- FROM departments
 -- LEFT JOIN staff ON staff.dept_id = departments.dept_id
 -- ORDER BY departments.dept_id, staff.name;
+select departments.dept_name, staff.name
+from departments
+left join staff on staff.dept_id = departments.dept_id
+order by departments.dept_id, staff.name;
