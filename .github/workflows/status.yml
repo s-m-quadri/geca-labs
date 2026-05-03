@@ -203,28 +203,41 @@ jobs:
       - name: Validate and ensure sub-branch
         run: |
           TARGET_BRANCH="sub-lab-${SUBJECT}-${LAB_NUM}"
-
-          # Guardrail: Block if targeting stable directly
-          if [[ "${BASE_BRANCH}" == "stable" ]]; then
-            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments \
-              -f body="⛌ **Error!** Cannot target \`stable\` branch directly. Must target \`${TARGET_BRANCH}\`."
-            gh api repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels \
-              -f labels[]="⛌ Error! Please Resubmit"
-            exit 1
-          fi
+          LAB_BRANCH="lab-${SUBJECT}-${LAB_NUM}"
+          HEAD_REPO="${{ fromJson(steps.pr.outputs.result).headRepo }}"
+          HEAD_REF="${{ fromJson(steps.pr.outputs.result).head }}"
 
           git init temprepo
           cd temprepo
           git remote add origin "https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}.git"
+          git remote add student "https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${HEAD_REPO}.git"
           git fetch origin
-          if ! git rev-parse --verify origin/$TARGET_BRANCH >/dev/null 2>&1; then
-            # Get the lab branch name (should be lab-{subject}-{NN})
-            LAB_BRANCH="lab-${SUBJECT}-${LAB_NUM}"
-            echo "Creating $TARGET_BRANCH from ${LAB_BRANCH}"
+          git fetch student "$HEAD_REF" 2>/dev/null || true
+
+          # Check for common history between student's head and the lab branch
+          STUDENT_SHA=$(git rev-parse FETCH_HEAD 2>/dev/null || true)
+          LAB_SHA=$(git rev-parse "origin/${LAB_BRANCH}" 2>/dev/null || true)
+          if [ -n "$STUDENT_SHA" ] && [ -n "$LAB_SHA" ]; then
+            MERGE_BASE=$(git merge-base "$STUDENT_SHA" "$LAB_SHA" 2>/dev/null || true)
+          else
+            MERGE_BASE=""
+          fi
+
+          if [ -z "$MERGE_BASE" ]; then
+            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments" \
+              -f body="⛌ **Error!** Your branch has no history in common with \`${LAB_BRANCH}\`. Please fork from the correct lab branch and resubmit."
+            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels" \
+              -f "labels[]=⛌ Error! Please Resubmit"
+            exit 1
+          fi
+
+          # Ensure sub-branch exists (create from lab branch if needed)
+          if ! git rev-parse --verify "origin/${TARGET_BRANCH}" >/dev/null 2>&1; then
+            echo "Creating ${TARGET_BRANCH} from ${LAB_BRANCH}"
             git checkout -b "$TARGET_BRANCH" "origin/${LAB_BRANCH}"
             git push origin "$TARGET_BRANCH"
           else
-            echo "$TARGET_BRANCH already exists"
+            echo "${TARGET_BRANCH} already exists"
           fi
         env:
           LAB_NUM: ${{ env.LAB_NUM }}
