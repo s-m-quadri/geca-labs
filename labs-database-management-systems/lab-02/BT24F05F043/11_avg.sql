@@ -4,3 +4,7 @@
 USE school_db;
 
 -- TODO: SELECT AVG(age) as average_age FROM students;
+USE school_db;
+
+SELECT AVG(age) AS average_age
+FROM students;
