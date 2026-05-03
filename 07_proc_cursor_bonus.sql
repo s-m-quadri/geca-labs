@@ -14,6 +14,10 @@ BEGIN
     FETCH cur INTO eid;
     EXIT WHEN NOT FOUND;
     -- TODO: UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
+    UPDATE payroll 
+    SET salary = salary + 100 
+    WHERE emp_id = eid;   
+    
   END LOOP;
   CLOSE cur;
 END;
@@ -21,3 +25,6 @@ $$;
 
 -- TODO: CALL apply_bonuses();
 -- TODO: SELECT * FROM payroll;
+CALL apply_bonuses();
+
+SELECT * FROM payroll;
