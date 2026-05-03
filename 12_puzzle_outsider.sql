@@ -4,4 +4,9 @@
 
 USE join_lab;
 
--- TODO: SELECT name, title (or equivalent) — rows for every such outsider
+SELECT s.name, p.title
+FROM project_staff ps
+JOIN staff s ON s.staff_id = ps.staff_id
+JOIN projects p ON p.proj_id = ps.proj_id
+WHERE s.dept_id <> p.dept_id
+ORDER BY s.name, p.title;

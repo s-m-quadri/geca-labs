@@ -3,5 +3,7 @@
 
 USE join_lab;
 
--- TODO: Rewrite the left-join pattern using RIGHT JOIN
--- (departments on the left, staff on the right) so every staff appears once.
+SELECT d.dept_name, s.name
+FROM departments d
+RIGHT JOIN staff s ON s.dept_id = d.dept_id
+ORDER BY s.staff_id;
