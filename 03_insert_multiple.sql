@@ -10,6 +10,6 @@ USE school_db;
 -- ('Diana', 17, '12th');
 
 INSERT INTO students (name, age, grade) VALUES
-('Bob', 16, '11th'),
-('Charlie', 17, '12th'),
-('Diana', 15, '10th');
+('Charlie', 15, '10th'),
+('Diana', 17, '12th'),
+('Eve', 14, '9th');
