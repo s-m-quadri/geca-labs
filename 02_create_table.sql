@@ -5,9 +5,3 @@
 USE school_db;
 
 -- TODO: Write your CREATE TABLE command here
-CREATE TABLE students(
-    id INT PRIMARRY KEY AUTO_INCRIMENT,
-    name VARCHAR(100),
-    age INT,
-    email VARCHAR(100)
-);
