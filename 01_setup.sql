@@ -22,7 +22,7 @@ CREATE TABLE orders (
   order_date DATE NOT NULL,
   FOREIGN KEY (cust_id) REFERENCES customers(cust_id)
 );
-
+ 
 CREATE TABLE order_lines (
   order_id INT NOT NULL,
   prod_id  INT NOT NULL,
