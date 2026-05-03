@@ -22,4 +22,4 @@ SELECT * FROM students;
 -- Summary by grade
 SELECT grade, COUNT(*) as count, AVG(age) as avg_age
 FROM students
-GROUP BY grade;
+GROUP BY grade ;
