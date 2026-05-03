@@ -1,4 +1,5 @@
--- Task 5: IN subquery — customers who ordered product id 20 (PenSet)
+-- Task 5: IN subquery -- customers who ordered product id 20 (PenSet)
+\c view_lab
 
 USE view_lab;
 

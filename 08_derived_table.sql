@@ -1,4 +1,6 @@
--- Task 8: Derived table in FROM — from a subquery that computes per-order revenue, select orders where revenue > 30
+-- Task 8: Derived table in FROM
+-- From a subquery that computes per-order revenue, select orders where revenue > 30
+\c view_lab
 
 USE view_lab;
 

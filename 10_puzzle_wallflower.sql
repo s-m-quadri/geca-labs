@@ -1,7 +1,6 @@
 -- Puzzle B (riddle)
--- "Who never pressed checkout? List customer names with **zero** orders."
-
-USE view_lab;
+-- "Who never pressed checkout? List customer names with zero orders."
+\c view_lab
 
 SELECT c.name
 FROM customers c

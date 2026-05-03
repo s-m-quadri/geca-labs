@@ -1,4 +1,5 @@
--- Task 4: Scalar subquery — products priced above the average product price
+-- Task 4: Scalar subquery -- products priced above the average product price
+\c view_lab
 
 USE view_lab;
 

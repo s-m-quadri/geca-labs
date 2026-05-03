@@ -1,4 +1,5 @@
--- Task 6: EXISTS — customers who have at least one order
+-- Task 6: EXISTS -- customers who have at least one order
+\c view_lab
 
 USE view_lab;
 
