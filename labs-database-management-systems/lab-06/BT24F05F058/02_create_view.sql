@@ -4,3 +4,5 @@
 
 -- TODO: CREATE OR REPLACE VIEW v_order_lines_detail AS
 -- SELECT ...
+
+SELECT * FROM v_order_lines_detail;
