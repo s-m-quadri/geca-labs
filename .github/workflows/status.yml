@@ -214,30 +214,31 @@ jobs:
           git fetch origin
           git fetch student "$HEAD_REF" 2>/dev/null || true
 
-          # Check for common history between student's head and the lab branch
-          STUDENT_SHA=$(git rev-parse FETCH_HEAD 2>/dev/null || true)
-          LAB_SHA=$(git rev-parse "origin/${LAB_BRANCH}" 2>/dev/null || true)
-          if [ -n "$STUDENT_SHA" ] && [ -n "$LAB_SHA" ]; then
-            MERGE_BASE=$(git merge-base "$STUDENT_SHA" "$LAB_SHA" 2>/dev/null || true)
-          else
-            MERGE_BASE=""
-          fi
-
-          if [ -z "$MERGE_BASE" ]; then
-            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments" \
-              -f body="⛌ **Error!** Your branch has no history in common with \`${LAB_BRANCH}\`. Please fork from the correct lab branch and resubmit."
-            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels" \
-              -f "labels[]=⛌ Error! Please Resubmit"
-            exit 1
-          fi
-
           # Ensure sub-branch exists (create from lab branch if needed)
           if ! git rev-parse --verify "origin/${TARGET_BRANCH}" >/dev/null 2>&1; then
             echo "Creating ${TARGET_BRANCH} from ${LAB_BRANCH}"
             git checkout -b "$TARGET_BRANCH" "origin/${LAB_BRANCH}"
             git push origin "$TARGET_BRANCH"
+            git fetch origin
           else
             echo "${TARGET_BRANCH} already exists"
+          fi
+
+          # Check for common history with TARGET_BRANCH (sub-lab-{subject}-{NN})
+          STUDENT_SHA=$(git rev-parse FETCH_HEAD 2>/dev/null || true)
+          TARGET_SHA=$(git rev-parse "origin/${TARGET_BRANCH}" 2>/dev/null || true)
+
+          MERGE_BASE=""
+          if [ -n "$STUDENT_SHA" ] && [ -n "$TARGET_SHA" ]; then
+            MERGE_BASE=$(git merge-base "$STUDENT_SHA" "$TARGET_SHA" 2>/dev/null || true)
+          fi
+
+          if [ -z "$MERGE_BASE" ]; then
+            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/comments" \
+              -f body="⛌ **Error!** Your branch has no history in common with \`${TARGET_BRANCH}\`. Please fork from the correct lab branch and resubmit."
+            gh api "repos/${{ github.repository }}/issues/${{ fromJson(steps.pr.outputs.result).number }}/labels" \
+              -f "labels[]=⛌ Error! Please Resubmit"
+            exit 1
           fi
         env:
           LAB_NUM: ${{ env.LAB_NUM }}
