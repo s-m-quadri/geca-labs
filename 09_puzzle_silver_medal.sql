@@ -4,3 +4,15 @@
 \c view_lab
 
 -- TODO: one SELECT; avoid hard-coded price values from the seed in the outer query
+-- Connect to the database
+\c view_lab
+
+-- Select names where the price matches the second-highest distinct price
+SELECT name 
+FROM products 
+WHERE price = (
+    SELECT DISTINCT price 
+    FROM products 
+    ORDER BY price DESC 
+    LIMIT 1 OFFSET 1
+);
