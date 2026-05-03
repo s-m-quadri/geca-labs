@@ -9,3 +9,18 @@
 # Loop: for key, value in student.items():
 
 
+# Creating a dictionary for a student record
+student = {
+    "id": 101,
+    "name": "Alice",
+    "age": 20,
+    "department": "CSE"
+}
+
+# Printing each field with its value
+print("Student Record:")
+for key, value in student.items():
+    print(f"{key}: {value}")
+
+# Accessing and printing only the student's name
+print(f"\nStudent Name: {student['name']}")

@@ -11,3 +11,15 @@
 #          print(f.read())
 
 
+
+# Writing student records to a file
+with open("students.txt", "w") as f:
+    f.write("Alice,20,CSE\n")
+    f.write("Bob,21,IT\n")
+    f.write("Charlie,19,ECE\n")
+
+# Reading and printing the file contents
+with open("students.txt", "r") as f:
+    content = f.read()
+    print("File Contents:")
+    print(content)
