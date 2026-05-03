@@ -19,13 +19,13 @@ CREATE TABLE payroll (
 );
 
 INSERT INTO accounts (holder, balance) VALUES
-  ('Alice', 1200.00),
-  ('Bob',   450.50),
-  ('Chen',  2000.00);
+  ('mansi', 1200.00),
+  ('bubu',   450.50),
+  ('laila',  2000.00);
 
 INSERT INTO payroll (name, salary, bonus_eligible) VALUES
-  ('Ada', 50000.00, TRUE),
-  ('Ben', 48000.00, FALSE),
-  ('Cal', 52000.00, TRUE);
+  ('ankit', 50000.00, TRUE),
+  ('brunoit', 48000.00, FALSE),
+  ('calorie', 52000.00, TRUE);
 
 SELECT 'proc_lab ready' AS status;
