@@ -1,32 +1,16 @@
-# Hospital Management System (DBMS Mini Project)
+# Lab 7: Homework — DBMS mini project
 
-## Problem Statement
-This system manages hospital operations including patients, doctors, appointments, and billing.
+This branch is for **your own workspace** (Codespaces + MySQL). It does **not** ship a numbered SQL problem set.
 
-## Entities
-- Patients
-- Doctors
-- Appointments
-- Bills
+- Follow the **lab manual** for the brief, rubric, and deliverables:  
+  https://www.s-m-quadri.me/geca/dbms/07
+- Create your schema, scripts, and documentation in **your fork** under a folder named with your **PRN** (same convention as earlier labs).
+- Copilot may help you **plan** and **debug**; it should not become a substitute for your design document.
 
-## Features
-- Store patient and doctor details
-- Book appointments
-- Track billing status
-- Update bill payment using stored procedure
+## Why no `01_…sql` tasks here?
 
-## Relationships
-- One patient can have many appointments
-- One doctor can handle many patients
-- Each bill belongs to one patient
+Homework is open-ended. Grading follows the manual rubric, not autograded repo files.
 
-## Sample Queries
-- View appointments with doctor and patient details
-- Count total appointments per doctor
-- Check pending bills
+## Environment
 
-## How to Run
-1. Run schema.sql
-2. Run sample_data.sql
-3. Run queries.sql
-4. Run procedures.sql
+Same Copilot-first editor tuning as Labs 4–6 (see `.vscode/` and `.devcontainer/`).
