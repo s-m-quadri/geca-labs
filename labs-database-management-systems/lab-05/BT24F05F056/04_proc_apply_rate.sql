@@ -12,3 +12,4 @@ BEGIN
   RETURN NULL;
 END;
 $$;
+ RETURN base + (base * pct / 100);

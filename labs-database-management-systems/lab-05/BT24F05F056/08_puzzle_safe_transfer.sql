@@ -19,3 +19,7 @@ BEGIN
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+IF donor_bal < amount THEN RETURN; END IF;
+UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+UPDATE accounts SET balance = balance + amount WHERE id = to_id;
