@@ -9,13 +9,36 @@ CREATE OR REPLACE PROCEDURE safe_transfer(
   from_id INT,
   to_id   INT,
   amount  DECIMAL(12,2)
-) LANGUAGE plpgsql AS $$
+) 
+LANGUAGE plpgsql 
+AS $$
 DECLARE
   donor_bal DECIMAL(12,2);
 BEGIN
-  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
-  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  -- Get balance of sender
+  SELECT balance INTO donor_bal 
+  FROM accounts 
+  WHERE id = from_id;
+
+  -- Check sufficient balance
+  IF donor_bal < amount THEN
+    RETURN;
+  END IF;
+
+  -- Deduct from sender
+  UPDATE accounts 
+  SET balance = balance - amount 
+  WHERE id = from_id;
+
+  -- Add to receiver
+  UPDATE accounts 
+  SET balance = balance + amount 
+  WHERE id = to_id;
+
 END;
 $$;
+SELECT * FROM accounts;
+
+CALL safe_transfer(1, 2, 100);
+
+SELECT * FROM accounts;
