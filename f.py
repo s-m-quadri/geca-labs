@@ -10,4 +10,15 @@
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
 
+students_data = [
+    "Alice,20,CSE",
+    "Bob,22,EEE",
+    "Charlie,21,ME"
+]
 
+with open("students.txt", "w") as f:
+    for student in students_data:
+        f.write(f"{student}\n")
+
+with open("students.txt", "r") as f:
+    print(f.read())         
