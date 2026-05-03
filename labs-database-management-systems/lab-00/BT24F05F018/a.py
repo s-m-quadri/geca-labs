@@ -4,5 +4,9 @@
 
 # 💡 TIP:
 # Use the print() function to display text
+print("Hello, Python!")
+print("Welcome to DBMS Lab")
 
 
+print("Hello, Python!")
+print("Welcome to DBMS Lab")

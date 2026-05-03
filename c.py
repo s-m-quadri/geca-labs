@@ -9,13 +9,3 @@
 # Count: len(students)
 
 
-# Creating a list of student names
-students = ["Alice", "Bob", "Charlie", "David", "Eva"]
-
-# Printing each name using a for loop
-print("Student Names:")
-for student in students:
-    print(student)
-
-# Printing total count of students
-print(f"Total number of students: {len(students)}")
