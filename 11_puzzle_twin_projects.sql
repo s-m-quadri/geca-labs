@@ -19,3 +19,4 @@ JOIN projects p2 ON ps2.project_id = p2.project_id
 WHERE p1.project_id < p2.project_id           -- Ensures we are looking at two different projects
   AND p1.dept_id = p2.dept_id                 -- Same 'home' department
   AND SUBSTRING_INDEX(p1.title, ' ', 1) = SUBSTRING_INDEX(p2.title, ' ', 1); -- Shared prefix
+  

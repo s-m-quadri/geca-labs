@@ -14,3 +14,4 @@ SELECT
 FROM staff
 INNER JOIN departments 
     ON staff.dept_id = departments.dept_id;
+    
