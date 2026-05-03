@@ -2,5 +2,5 @@
 -- Columns: order_id, prod_id, qty, product name, unit price, line_total (qty * price)
 \c view_lab
 
--- TODO: CREATE OR REPLACE VIEW v_order_lines_detail AS
--- SELECT ...
+ CREATE OR REPLACE VIEW v_order_lines_detail AS
+ SELECT ...
