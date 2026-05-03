@@ -9,5 +9,9 @@
 #     print(f"ID: {value}")
 # except ValueError:
 #     print("Invalid input! Please enter a number.")
-
-
+# g.py solution
+try:
+    student_id = int(input("Enter student ID: "))
+    print(f"Valid ID: {student_id}")
+except ValueError:
+    print("Invalid input! Please enter a number.")
