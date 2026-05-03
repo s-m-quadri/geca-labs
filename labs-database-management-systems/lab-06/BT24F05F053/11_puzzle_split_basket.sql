@@ -4,3 +4,10 @@
 \c view_lab
 
 -- TODO: HAVING with conditional sums, or EXISTS pair, or intersect of two subqueries
+SELECT order_id
+FROM order_lines ol
+JOIN products p ON p.prod_id = ol.prod_id
+GROUP BY order_id
+HAVING SUM(CASE WHEN p.price < 15 THEN 1 ELSE 0 END) > 0
+   AND SUM(CASE WHEN p.price > 30 THEN 1 ELSE 0 END) > 0
+ORDER BY order_id;      
