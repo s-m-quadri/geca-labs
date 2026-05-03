@@ -1,0 +1,3 @@
+Rahul,20,CSE
+Sneha,19,IT
+Amit,21,Mechanical
