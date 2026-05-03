@@ -6,3 +6,4 @@ UNION ALL
 SELECT 'payroll', COUNT(*) FROM payroll;
 SELECT * FROM accounts;
 SELECT * FROM payroll;
+
