@@ -1,0 +1,17 @@
+-- Task 9: Delete with WHERE
+-- Remove students younger than 15
+
+USE school_db;
+
+-- First, see who will be deleted
+SELECT * 
+FROM students 
+WHERE age < 15;
+
+-- Then delete them
+DELETE FROM students 
+WHERE age < 15;
+
+-- Check remaining students
+SELECT * 
+FROM students;
