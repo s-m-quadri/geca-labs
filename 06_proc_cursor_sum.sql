@@ -1,6 +1,6 @@
 -- Task 6: Function with cursor loop -- sum every row in accounts.balance
 -- Returns total as DECIMAL(14,2)
--- Test: SELECT sum_balances();
+-- Testh: SELECT sum_balances();
 \c proc_lab
 
 CREATE OR REPLACE FUNCTION sum_balances()
@@ -22,3 +22,5 @@ END;
 $$;
 
 -- TODO: SELECT sum_balances();
+SELECT sum_balances();
+
