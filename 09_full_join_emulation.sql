@@ -5,3 +5,13 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+SELECT s.name AS staff_name, p.title AS project_title
+FROM staff AS s
+LEFT JOIN project_staff AS ps ON s.staff_id = ps.staff_id
+LEFT JOIN projects AS p ON ps.project_id = p.project_id
+UNION
+SELECT s.name AS staff_name, p.title AS project_title
+FROM staff AS s
+RIGHT JOIN project_staff AS ps ON s.staff_id = ps.staff_id
+RIGHT JOIN projects AS p ON ps.project_id = p.project_id
+ORDER BY staff_name, project_title;
