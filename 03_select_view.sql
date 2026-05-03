@@ -4,5 +4,5 @@
 
 SELECT order_id, SUM(line_total) AS order_total
 FROM v_order_lines_detail
-GROUP BY order_id;
+GROUP BY order_id
 ORDER BY order_id;
