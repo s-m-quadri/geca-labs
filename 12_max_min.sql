@@ -3,4 +3,8 @@
 
 USE school_db;
 
+SELECT MAX(age) AS oldest,
+       MIN(age) AS youngest
+FROM students;
+
 -- TODO: SELECT MAX(age) as oldest, MIN(age) as youngest FROM students;
