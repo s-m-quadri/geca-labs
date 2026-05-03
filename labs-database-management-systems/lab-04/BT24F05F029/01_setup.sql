@@ -1,6 +1,5 @@
 -- Lab 4 — Task 1: schema and seed data for join practice + puzzles
 -- Run: sudo mysql < 01_setup.sql
-
 DROP DATABASE IF EXISTS join_lab;
 CREATE DATABASE join_lab;
 USE join_lab;
