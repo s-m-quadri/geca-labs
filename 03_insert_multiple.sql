@@ -8,3 +8,10 @@ USE school_db;
 -- ('Bob', 16, '11th'),
 -- ('Charlie', 15, '10th'),
 -- ('Diana', 17, '12th');
+INSERT INTO students (student_name, age, grade) VALUES
+('Bob', 16, '11th'),
+('Charlie', 15, '10th'),
+('Diana', 17, '12th');
+SELECT * FROM students;
+SELECT COUNT(*) AS total FROM students;
+   
