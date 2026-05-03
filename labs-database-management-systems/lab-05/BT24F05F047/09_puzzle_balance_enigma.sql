@@ -6,3 +6,7 @@
 -- TODO: SELECT
 --   (SELECT MIN(balance) FROM accounts) *
 --   (SELECT MAX(balance) FROM accounts) AS secret_code;
+SELECT
+  (SELECT MIN(balance) FROM accounts) *
+  (SELECT MAX(balance) FROM accounts) AS secret_code;           
+                            
