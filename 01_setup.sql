@@ -64,3 +64,7 @@ INSERT INTO project_staff (staff_id, proj_id, hours) VALUES
   (6, 301, 20);
 
 SELECT 'join_lab ready' AS status;
+select * from departments;
+select * from staff;
+select * from projects;
+select * from project_staff;  
