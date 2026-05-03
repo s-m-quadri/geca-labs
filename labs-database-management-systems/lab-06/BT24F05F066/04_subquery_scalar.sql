@@ -3,3 +3,13 @@
 
 -- TODO: SELECT name, price FROM products
 --       WHERE price > ( ... scalar subquery for AVG(price) ... );
+\c view_lab
+
+SELECT 
+    name, 
+    price 
+FROM products
+WHERE price > (
+    SELECT AVG(price) 
+    FROM products
+);
