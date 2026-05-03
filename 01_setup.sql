@@ -35,7 +35,7 @@ CREATE TABLE order_lines (
 INSERT INTO customers VALUES
   (1, 'Nia'),
   (2, 'Omar'),
-  (3, 'Pia'),
+  (3, 'Pia'),   
   (4, 'Quinn');
 
 INSERT INTO products VALUES
