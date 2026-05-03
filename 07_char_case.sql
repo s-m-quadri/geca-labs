@@ -7,3 +7,7 @@ USE school_db;
 --   UPPER(dept) AS dept_upper,
 --   LOWER(full_name) AS name_lower
 -- FROM employees;
+SELECT full_name, dept,
+    UPPER(dept) AS dept_uppper,
+    LOWER(full_name) AS name_lower
+FROM employees;
