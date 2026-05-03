@@ -3,6 +3,11 @@
 
 USE school_db;
 
+SELECT grade, COUNT(*) AS count
+FROM students
+GROUP BY grade
+HAVING COUNT(*) > 1;
+
 -- TODO: SELECT grade, COUNT(*) as count
 -- FROM students
 -- GROUP BY grade
