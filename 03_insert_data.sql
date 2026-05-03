@@ -3,5 +3,9 @@
 
 USE school_db;
 
--- TODO: Write your INSERT commands here
--- Example: INSERT INTO students VALUES (...);
+INSERT INTO students (name, age, email) VALUES
+  ('Aarav Patel', 15, 'aarav.patel@example.com'),
+  ('Nisha Sharma', 14, 'nisha.sharma@example.com'),
+  ('Rohan Gupta', 16, 'rohan.gupta@example.com');
+
+SELECT * FROM students;

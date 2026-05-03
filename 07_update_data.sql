@@ -3,5 +3,8 @@
 
 USE school_db;
 
--- TODO: Write your UPDATE command here
--- Remember to use WHERE clause!
+UPDATE students
+SET grade = 'A'
+WHERE student_name = 'Aarav Patel';
+
+SELECT student_name, grade FROM students WHERE student_name = 'Aarav Patel';

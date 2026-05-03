@@ -7,6 +7,9 @@ SHOW DATABASES;
 -- Use your database
 USE school_db;
 
+-- Show current user and database
+SELECT CURRENT_USER() AS current_user, DATABASE() AS current_database;
+
 -- Show all tables
 SHOW TABLES;
 

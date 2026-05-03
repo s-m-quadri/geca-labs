@@ -3,5 +3,7 @@
 
 USE school_db;
 
--- TODO: Write your DROP TABLE command here
+DROP TABLE IF EXISTS students;
 -- Warning: This will permanently delete the table!
+
+SHOW TABLES LIKE 'students';
