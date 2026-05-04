@@ -1,260 +1,242 @@
+#!/usr/bin/env python3
+"""Validate PR data per course: identity clashes, duplicate PRs, filesystem cross-checks.
+
+Reads from pr_details.json (preferred) or pull_requests.csv fallback.
+"""
+
+from __future__ import annotations
+
 import argparse
-import pandas as pd
+import json
 import re
 from pathlib import Path
+from typing import Any
+
+import pandas as pd
 
 from lib.lab_course import LabCourse
 
-# ------------------------
-# CONFIG
-# ------------------------
 _SCRIPTS = Path(__file__).resolve().parent
-_ap = argparse.ArgumentParser(description="Validate pull_requests.csv for a course.")
-_ap.add_argument("--course", default="daa")
-_args = _ap.parse_args()
-_course = LabCourse.load(_args.course, root=str(_SCRIPTS))
-INPUT_FILE = _course.pull_requests_csv
 
-# Legacy: repo root (geca-labs) for fallbacks
-PROJ_ROOT = _SCRIPTS.parent
 
-# ------------------------
-# HELPER FUNCTIONS
-# ------------------------
-def extract_lab(labels):
-    """Extract lab number from label like 'Lab 01', return as int."""
-    for lbl in labels.split(","):
-        match = re.search(r"Lab\s*0*([0-9]+)", lbl.strip(), re.IGNORECASE)
-        if match:
-            return int(match.group(1))
+def extract_lab(labels) -> int | None:
+    """Accept a list of label strings or a comma-separated string."""
+    if isinstance(labels, list):
+        parts = labels
+    else:
+        parts = str(labels or "").split(",")
+    for lbl in parts:
+        m = re.search(r"Lab\s*0*([0-9]+)", str(lbl).strip(), re.IGNORECASE)
+        if m:
+            return int(m.group(1))
     return None
 
-def is_merged(row):
-    return pd.notna(row["Merged At"]) and row["Merged At"] != ""
 
-def is_open(row):
-    return row["State"] == "open"
-
-# ------------------------
-# MAIN SCRIPT
-# ------------------------
-input_path = Path(INPUT_FILE).resolve()
-if not input_path.exists():
-    alt_path = PROJ_ROOT / "output" / "pull_requests.csv"
-    if alt_path.exists():
-        input_path = alt_path
-    else:
-        raise FileNotFoundError(
-            f"Input CSV not found at '{input_path}'. Fetch with: "
-            f"python3 automation-scripts/fetch_pull_requests.py --course {_course.id}"
-        )
-
-df = pd.read_csv(input_path)
-
-print("\n==== Validity Checks ====\n")
-
-# 1. Same GitHub username, different PRN
-user_groups = df.groupby("User")
-for user, group in user_groups:
-    unique_prns = group["PRN"].unique()
-    if len(unique_prns) > 1:
-        print(f"[ERROR] GitHub user '{user}' has multiple PRNs: {list(unique_prns)}")
-        print(group[["PR Number","PRN","Title","State"]], "\n")
-
-# 2. Same PRN, different GitHub username
-prn_groups = df.groupby("PRN")
-for prn, group in prn_groups:
-    unique_users = group["User"].unique()
-    if len(unique_users) > 1:
-        print(f"[ERROR] PRN '{prn}' is used by multiple GitHub users: {list(unique_users)}")
-        print(group[["PR Number","User","Title","State"]], "\n")
-
-# 3. Duplicate PRs / inconsistent states per lab per PRN
-for prn, group in prn_groups:
-    # Extract lab numbers present for this PRN
-    all_labs = group["Labels"].apply(lambda x: extract_lab(str(x))).dropna().unique()
-    
-    for lab_num in all_labs:
-        # Regex: match exact Lab number
-        pattern = rf"\bLab 0*{lab_num}\b"
-        lab_rows = group[group["Labels"].apply(lambda x: bool(re.search(pattern, str(x), re.IGNORECASE)))]
-
-        if len(lab_rows) == 0:
-            continue
-
-        merged_rows = lab_rows[lab_rows["Merged At"].notna()]
-        open_rows = lab_rows[lab_rows["State"] == "open"]
-
-        # Only flag if open PR exists for this same lab that already has a merged PR
-        if len(merged_rows) >= 1 and len(open_rows) >= 1:
-            print(f"[ERROR] PRN '{prn}' Lab {lab_num}: Open PRs exist despite merged PR for this lab")
-            print(lab_rows[["PR Number","State","Merged At","Title"]], "\n")
-
-        if len(open_rows) > 1:
-            print(f"[ERROR] PRN '{prn}' Lab {lab_num}: Multiple open PRs exist for this lab")
-            print(open_rows[["PR Number","State","Title"]], "\n")
-
-# ------------------------
-# FILESYSTEM CROSS-CHECKS
-# ------------------------
-print("\n==== Filesystem Checks ====\n")
-
-# Resolve labs root relative to this script to be robust no matter where it's run from
-BASE_DIR = Path(__file__).resolve().parent
-LABS_ROOT = (BASE_DIR.parent / "labs-design-analysis-algorithms").resolve()
-
-if not LABS_ROOT.exists():
-    print(f"[ERROR] Labs root not found at: {LABS_ROOT}")
-else:
-    # 4. For every merged PR with an identifiable Lab label, ensure folder exists: labs-design-analysis-algorithms/lab-XX/PRN
-    print("-> Check 4: Each merged PR has a corresponding folder under labs-design-analysis-algorithms")
-
-    merged_df = df[df["Merged At"].notna()].copy()
-    # attach lab number parsed from labels
-    merged_df["_lab_num"] = merged_df["Labels"].apply(lambda x: extract_lab(str(x)))
-    merged_df = merged_df.dropna(subset=["_lab_num"])  # Keep only rows where we could parse lab
-
-    seen_pairs = set()  # (PRN_upper, lab_num)
-    for _, row in merged_df.iterrows():
-        prn_val = str(row.get("PRN", "")).strip().upper()
-        lab_num = int(row["_lab_num"]) if pd.notna(row["_lab_num"]) else None
-        if not prn_val or lab_num is None:
-            continue
-        key = (prn_val, lab_num)
-        if key in seen_pairs:
-            continue
-        seen_pairs.add(key)
-
-        lab_dir = LABS_ROOT / f"lab-{lab_num:02d}"
-        expected_folder = lab_dir / prn_val
-        if not lab_dir.exists():
-            print(f"[ERROR] Merged PR exists for Lab {lab_num} but lab folder missing: {lab_dir}")
-        elif not expected_folder.exists() or not expected_folder.is_dir():
-            print(
-                f"[ERROR] Merged PR exists but submission folder missing -> PRN '{prn_val}', Lab {lab_num}, expected: {expected_folder}"
-            )
-
-    # 5. For every existing PRN folder under labs/lab-XX, ensure there is a merged PR for that PRN and Lab
-    print("\n-> Check 5: Each existing submission folder has a corresponding merged PR entry")
-
-    # Precompute a fast lookup for merged presence per (PRN_upper, lab_num)
-    merged_lookup = set()
-    label_cache = {}
-    for _, row in df.iterrows():
-        if pd.isna(row.get("Merged At")):
-            continue
-        prn_val = str(row.get("PRN", "")).strip().upper()
-        labels_str = str(row.get("Labels", ""))
-        if prn_val == "":
-            continue
-        if labels_str not in label_cache:
-            label_cache[labels_str] = extract_lab(labels_str)
-        lab_num = label_cache[labels_str]
-        if lab_num is None:
-            continue
-        merged_lookup.add((prn_val, int(lab_num)))
-
-    # Walk lab directories
-    for lab_dir in sorted(LABS_ROOT.glob("lab-*")):
-        if not lab_dir.is_dir():
-            continue
-        # parse lab number from folder name 'lab-XX'
-        m = re.search(r"lab-0*([0-9]+)$", lab_dir.name, re.IGNORECASE)
-        if not m:
-            continue
-        lab_num = int(m.group(1))
-
-        # iterate PRN subfolders
-        for prn_folder in sorted(lab_dir.iterdir()):
-            if not prn_folder.is_dir():
+def count_files(dir_path: Path) -> int:
+    skip_dirs = {"__pycache__", ".git", ".ipynb_checkpoints", ".venv", "venv", "node_modules"}
+    total = 0
+    for p in dir_path.rglob("*"):
+        try:
+            if any(part.startswith(".") for part in p.parts if part not in (".", "..")):
                 continue
-            prn_name = prn_folder.name.strip().upper()
-            if (prn_name, lab_num) not in merged_lookup:
-                print(
-                    f"[ERROR] Submission folder exists without a merged PR -> PRN '{prn_name}', Lab {lab_num}, path: {prn_folder}"
-                )
-
-    # 6. For every existing PRN folder, enforce minimum file count and report GitHub URL if below threshold
-    print("\n-> Check 6: Minimum file count per submission folder (Lab 0 >= 26, Lab 1+ >= 6)")
-
-    # Build helpers to map (PRN, lab_num) -> set(users) with merged PRs, and PRN -> most common user overall
-    merged_users_lookup = {}
-    prn_user_counts = {}
-    for _, row in df.iterrows():
-        prn_val = str(row.get("PRN", "")).strip().upper()
-        user = str(row.get("User", "")).strip()
-        if not prn_val or not user:
+            if any(sd in p.parts for sd in skip_dirs):
+                continue
+            if p.is_file() and p.suffix.lower() != ".pyc":
+                total += 1
+        except Exception:
             continue
-        # PRN -> user frequency
-        if prn_val not in prn_user_counts:
-            prn_user_counts[prn_val] = {}
-        prn_user_counts[prn_val][user] = prn_user_counts[prn_val].get(user, 0) + 1
+    return total
 
-        # Only consider merged rows for (PRN, lab) mapping
-        if pd.isna(row.get("Merged At")):
-            continue
-        labels_str = str(row.get("Labels", ""))
-        lab_num = extract_lab(labels_str)
-        if lab_num is None:
-            continue
-        key = (prn_val, int(lab_num))
-        merged_users_lookup.setdefault(key, set()).add(user)
 
-    def preferred_user_for(prn_upper: str, lab_number: int):
-        """Return a best-effort GitHub username for a PRN and lab.
-        Prefers users with a merged PR for that (PRN, lab). Falls back to most frequent user for PRN.
-        Returns None if unknown.
-        """
-        users = merged_users_lookup.get((prn_upper, lab_number))
+def load_data(course: LabCourse) -> tuple[list[dict], str]:
+    """Load PR records. Returns (records, source_label)."""
+    json_path = Path(course.path_in_output("pr_details.json"))
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data, str(json_path)
+
+    csv_path = Path(course.pull_requests_csv)
+    if csv_path.exists():
+        df = pd.read_csv(csv_path)
+        records = []
+        for _, row in df.iterrows():
+            labels_raw = str(row.get("Labels", ""))
+            records.append({
+                "number": row.get("PR Number"),
+                "prn": str(row.get("PRN", "")).strip().upper(),
+                "title": str(row.get("Title", "")),
+                "state": str(row.get("State", "")),
+                "merged": bool(row.get("Merged At") and pd.notna(row.get("Merged At"))),
+                "merged_at": row.get("Merged At") or "",
+                "user": str(row.get("User", "")),
+                "labels": [l.strip() for l in labels_raw.split(",") if l.strip()],
+                "url": "",
+            })
+        return records, str(csv_path)
+
+    return [], ""
+
+
+def check_csv(records: list[dict]) -> None:
+    print("\n==== CSV / PR Validity Checks ====\n")
+
+    user_to_prns: dict[str, set] = {}
+    prn_to_users: dict[str, set] = {}
+    prn_lab_rows: dict[tuple, list] = {}
+
+    for r in records:
+        user = r.get("user", "")
+        prn = str(r.get("prn", "")).strip().upper()
+        if user and prn:
+            user_to_prns.setdefault(user, set()).add(prn)
+            prn_to_users.setdefault(prn, set()).add(user)
+        lab = extract_lab(r.get("labels", []))
+        if lab is not None and prn:
+            prn_lab_rows.setdefault((prn, lab), []).append(r)
+
+    # 1. One user -> multiple PRNs
+    for user, prns in sorted(user_to_prns.items()):
+        if len(prns) > 1:
+            print(f"[ERROR] User '{user}' has multiple PRNs: {sorted(prns)}")
+
+    # 2. One PRN -> multiple users
+    for prn, users in sorted(prn_to_users.items()):
+        if len(users) > 1:
+            print(f"[ERROR] PRN '{prn}' used by multiple users: {sorted(users)}")
+
+    # 3. Duplicate / inconsistent open+merged per (PRN, lab)
+    for (prn, lab), rows in sorted(prn_lab_rows.items()):
+        merged = [r for r in rows if r.get("merged") or r.get("merged_at")]
+        open_ = [r for r in rows if r.get("state") == "open"]
+        if merged and open_:
+            nums = [r["number"] for r in rows]
+            print(f"[ERROR] PRN '{prn}' Lab {lab}: open PR despite merged PR — PRs {nums}")
+        if len(open_) > 1:
+            nums = [r["number"] for r in open_]
+            print(f"[ERROR] PRN '{prn}' Lab {lab}: multiple open PRs — #{nums}")
+
+
+def check_filesystem(records: list[dict], course: LabCourse) -> None:
+    labs_root = (_SCRIPTS.parent / course.labs_repo_subdir).resolve()
+    if not labs_root.exists():
+        print(f"\n[SKIP] Labs root not found (filesystem checks skipped): {labs_root}")
+        return
+
+    print(f"\n==== Filesystem Checks ({labs_root.name}) ====\n")
+
+    merged_lookup: dict[tuple, set] = {}
+    user_freq: dict[str, dict] = {}
+
+    for r in records:
+        prn = str(r.get("prn", "")).strip().upper()
+        user = str(r.get("user", "")).strip()
+        if not prn or not user:
+            continue
+        user_freq.setdefault(prn, {})
+        user_freq[prn][user] = user_freq[prn].get(user, 0) + 1
+        if not (r.get("merged") or r.get("merged_at")):
+            continue
+        lab = extract_lab(r.get("labels", []))
+        if lab is not None:
+            merged_lookup.setdefault((prn, int(lab)), set()).add(user)
+
+    merged_set = set(merged_lookup.keys())
+
+    def best_user(prn: str, lab: int) -> str:
+        users = merged_lookup.get((prn, lab))
         if users:
-            # If multiple due to data error, pick one deterministically (sorted)
             return sorted(users)[0]
-        # Fallback to most frequent user for this PRN across all rows
-        if prn_upper in prn_user_counts and prn_user_counts[prn_upper]:
-            return sorted(prn_user_counts[prn_upper].items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
-        return None
+        if prn in user_freq and user_freq[prn]:
+            return sorted(user_freq[prn].items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+        return ""
 
-    def count_files_in(dir_path: Path) -> int:
-        """Count files recursively in dir_path, skipping hidden files/dirs and common cache directories."""
-        skip_dirs = {"__pycache__", ".git", ".ipynb_checkpoints", ".venv", "venv", "node_modules", ".mypy_cache"}
-        total = 0
-        for p in dir_path.rglob("*"):
-            try:
-                # Skip hidden files/dirs
-                parts = {part for part in p.parts}
-                if any(part.startswith(".") for part in p.parts if part != "."):
-                    # If any path segment is hidden, skip
-                    continue
-                if any(sd in parts for sd in skip_dirs):
-                    continue
-                if p.is_file():
-                    # Skip compiled Python bytecode files
-                    if p.suffix.lower() == ".pyc":
-                        continue
-                    total += 1
-            except Exception:
-                # Best-effort; ignore inaccessible paths
-                continue
-        return total
+    # Check 4: merged PR -> folder exists
+    print("-> Check 4: each merged PR has a submission folder")
+    seen: set[tuple] = set()
+    for r in records:
+        if not (r.get("merged") or r.get("merged_at")):
+            continue
+        prn = str(r.get("prn", "")).strip().upper()
+        lab = extract_lab(r.get("labels", []))
+        if not prn or lab is None:
+            continue
+        key = (prn, int(lab))
+        if key in seen:
+            continue
+        seen.add(key)
+        lab_dir = labs_root / f"lab-{int(lab):02d}"
+        folder = lab_dir / prn
+        if not lab_dir.exists():
+            print(f"[ERROR] Lab dir missing for Lab {lab}: {lab_dir}")
+        elif not folder.is_dir():
+            print(f"[ERROR] Missing folder -> PRN '{prn}' Lab {lab}: {folder}")
 
-    # Walk lab directories and validate counts
-    for lab_dir in sorted(LABS_ROOT.glob("lab-*")):
+    # Check 5: folder exists -> merged PR present
+    print("\n-> Check 5: each submission folder has a merged PR")
+    for lab_dir in sorted(labs_root.glob("lab-*")):
         if not lab_dir.is_dir():
             continue
         m = re.search(r"lab-0*([0-9]+)$", lab_dir.name, re.IGNORECASE)
         if not m:
             continue
-        lab_num = int(m.group(1))
-        min_required = 26 if lab_num == 0 else 6
-
-        for prn_folder in sorted(lab_dir.iterdir()):
-            if not prn_folder.is_dir():
+        lab = int(m.group(1))
+        for prn_dir in sorted(lab_dir.iterdir()):
+            if not prn_dir.is_dir():
                 continue
-            prn_name = prn_folder.name.strip().upper()
-            file_count = count_files_in(prn_folder)
-            if file_count < min_required:
-                user = preferred_user_for(prn_name, lab_num)
-                profile_url = f"https://github.com/{user}" if user else "(unknown)"
-                print(
-                    f"[ERROR] Insufficient files -> PRN '{prn_name}', Lab {lab_num}: {file_count} files < {min_required} required | Path: {prn_folder} | GitHub: {profile_url}"
-                )
+            prn = prn_dir.name.strip().upper()
+            if (prn, lab) not in merged_set:
+                print(f"[ERROR] Folder without merged PR -> PRN '{prn}' Lab {lab}: {prn_dir}")
+
+    # Check 6: minimum file count
+    print("\n-> Check 6: minimum file count per submission folder")
+    lo, hi = course.lab_range
+    min_files = {lab: 1 for lab in range(lo, hi + 1)}
+    for lab_dir in sorted(labs_root.glob("lab-*")):
+        if not lab_dir.is_dir():
+            continue
+        m = re.search(r"lab-0*([0-9]+)$", lab_dir.name, re.IGNORECASE)
+        if not m:
+            continue
+        lab = int(m.group(1))
+        required = min_files.get(lab, 1)
+        for prn_dir in sorted(lab_dir.iterdir()):
+            if not prn_dir.is_dir():
+                continue
+            prn = prn_dir.name.strip().upper()
+            n = count_files(prn_dir)
+            if n < required:
+                user = best_user(prn, lab)
+                gh = f"https://github.com/{user}" if user else "(unknown)"
+                print(f"[ERROR] Too few files -> PRN '{prn}' Lab {lab}: {n}/{required} | {prn_dir} | {gh}")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Validate PR data for a course.")
+    ap.add_argument("--course", default="daa", help="Course id (daa, dbms, ...)")
+    ap.add_argument("--no-fs", action="store_true", help="Skip filesystem checks")
+    args = ap.parse_args()
+
+    course = LabCourse.load(args.course.strip().lower(), root=str(_SCRIPTS))
+    records, source = load_data(course)
+
+    if not records:
+        print(f"[ERROR] No data found for course '{course.id}'.")
+        print(f"  Run: python3 fetch_pr.py --course {course.id}")
+        print(f"   or: python3 fetch_pr.py --course {course.id}")
+        return 1
+
+    print(f"Course: {course.label} ({course.id})")
+    print(f"Source: {source}")
+    print(f"PRs:    {len(records)}")
+
+    check_csv(records)
+    if not args.no_fs:
+        check_filesystem(records, course)
+
+    print("\nDone.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
