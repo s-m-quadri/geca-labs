@@ -5,3 +5,7 @@ USE join_lab;
 -- TODO: SELECT staff.name, departments.dept_name
 -- FROM staff
 -- INNER JOIN departments ON staff.dept_id = departments.dept_id;
+select staff.name, departments.dept_name
+from staff  
+inner join departments on staff.dept_id = departments.dept_id;
+
