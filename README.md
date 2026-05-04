@@ -1,6 +1,6 @@
 # GECA Labs
 
-This repository provides a structured collection of laboratory resources for advanced undergraduate and postgraduate courses in Computer Science and Engineering.  
+This repository provides a structured collection of laboratory resources for advanced undergraduate and postgraduate courses in Computer Science and Engineering.
 
 The materials are authored and maintained on [https://www.s-m-quadri.me/geca](https://www.s-m-quadri.me/geca), a personal academic site that hosts lab manuals and supporting resources. While the author is affiliated with Government College of Engineering, Aurangabad (GECA), this is not an official institutional repository.
 
@@ -20,46 +20,61 @@ ffmpeg -y -r 25 -f image2pipe -vcodec ppm -i dump.ppm -c:v libx265 -preset slow 
 
 ## Automation Scripts
 
-Public scripts live in `automation-scripts/` (Python files not ignored by git). Below is a terse guide with typical flags. Run any script with `-h` to see full options.
+All scripts live in `automation-scripts/`. Require `GITHUB_TOKEN` env var for API calls. Run any script with `-h` for full options.
 
-- **Generate covers** (LaTeX/PDF) per student/lab: `automation-scripts/gen_cover.py`
-  - Inputs: `automation-scripts/output/students.csv`, `automation-scripts/output/commits.csv`
-  - Default output: `automation-scripts/output/daa-covers/{PRN}/...`
-  - Examples:
-    - Preview for specific PRNs and labs (no PDF):
-      - `python3 automation-scripts/gen_cover.py --only BT23F05F002 BT23F05F013 --labs 0 1`
-    - Generate all with PDFs (requires pdflatex):
-      - `python3 automation-scripts/gen_cover.py --compile`
+### Typical workflow
 
-- **Generate writeups** (LaTeX/PDF): `automation-scripts/gen_writeup.py`
-  - Examples:
-    - Preview first N students: `python3 automation-scripts/gen_writeup.py --limit 2`
-    - Generate all + PDF: `python3 automation-scripts/gen_writeup.py --compile`
+```sh
+cd automation-scripts
 
-- **Fetch pull requests metadata**: `automation-scripts/fetch_pull_requests.py`
-  - Produces: `automation-scripts/output/pull_requests.csv/.xlsx` and raw commit artifact files
-  - Example: `python3 automation-scripts/fetch_pull_requests.py`
+# 1. Fetch detailed PR data (incremental/resumable, per course)
+python3 fetch_pr.py --course dbms
+python3 fetch_pr.py --course daa
 
-- **Check pull requests** (simple report): `automation-scripts/check_pull_requests.py`
-  - Reads previously fetched artifacts and prints a summary
-  - Example: `python3 automation-scripts/check_pull_requests.py`
+# 2. Validate submissions (identity clashes, open/merged conflicts, filesystem checks)
+python3 check_pull_requests.py --course dbms
+python3 check_pull_requests.py --course daa --no-fs
 
-- **Attendance sheet** from commits: `automation-scripts/gen_attendance.py`
-  - Produces: `automation-scripts/output/attendance.(csv|xlsx)` and `students.(csv|xlsx)` if needed
-  - Example: `python3 automation-scripts/gen_attendance.py`
+# 3. Interactive PR console (review, approve, post comments)
+python3 pr_console.py --course dbms --live
 
-- **Lab summary report** (PDF): `automation-scripts/gen_report.py`
-  - Produces: `automation-scripts/output/report-*.pdf`
-  - Example: `python3 automation-scripts/gen_report.py`
+# 4. Generate attendance sheet from commits
+python3 gen_attendance.py --course dbms
 
-- **Misc student utilities**: `automation-scripts/misc_students.py`
-  - Grab-bag helpers (IDs, quick transformations)
-  - Example: `python3 automation-scripts/misc_students.py -h`
+# 5. Generate cover pages (requires pdflatex)
+python3 gen_cover.py --course dbms --compile
+# or preview for specific PRNs/labs only:
+python3 gen_cover.py --course dbms --only BT24F05F001 --labs 1 2
+
+# 6. Generate writeups (requires pdflatex)
+python3 gen_writeup.py --course dbms --compile
+
+# 7. Generate lab summary report (PDF)
+python3 gen_report.py --course dbms
+```
+
+### Key flags
+
+| Flag                 | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `--course dbms\|daa` | Select course (required for most scripts)         |
+| `--only <PRN ...>`   | Scope to specific roll numbers                    |
+| `--labs <N ...>`     | Scope to specific lab numbers                     |
+| `--force`            | Re-fetch even if cached (`fetch_pr.py`)           |
+| `--no-fs`            | Skip filesystem checks (`check_pull_requests.py`) |
+| `--compile`          | Compile LaTeX to PDF                              |
+
+### Outputs
+
+| Path                              | Content                                          |
+| --------------------------------- | ------------------------------------------------ |
+| `output/{course}/pr_details.json` | Full PR data — commits, files, comments, reviews |
+| `output/{course}/attendance.csv`  | Attendance from commits                          |
+| `output/{course}/covers/`         | Per-student cover page PDFs                      |
+| `output/{course}/report-*.pdf`    | Lab summary report                               |
 
 > [!NOTE]
-> - Some scripts depend on `pdflatex` (TeX Live) to compile PDFs. If unavailable, run without `--compile` or install a LaTeX distribution.
-> - CSVs live under `automation-scripts/output/` and are produced by `fetch_pull_requests.py` and related scripts.
-> - Use `--only <PRN ...>` and `--labs <numbers>` to scope work.
+> `pdflatex` (TeX Live) required for `--compile`. Without it, LaTeX source is still generated.
 
 ## Objective
 
