@@ -1,7 +1,9 @@
 *
 !.gitignore
 !check_pull_requests.py
-!fetch_pull_requests.py
+!fetch_pr.py
+!fetch_pr.bck.py
+!analyze_pr.py
 !gen_report.py
 !gen_attendance.py
 !gen_writeup.py
@@ -16,3 +18,4 @@
 !labs_dbms
 !labs_dbms/**
 !lib/writeup/providers/**
+!pr_console.py
