@@ -10,13 +10,18 @@ Includes:
 """
 from __future__ import annotations
 
+import csv
+import json
 import os
 import re
 import subprocess
 import unicodedata
-import csv
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+
+if TYPE_CHECKING:
+    import pandas as pd
+    from lib.lab_course import LabCourse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -62,6 +67,54 @@ def student_sort_key(prn: str) -> Tuple[int, str]:
     """Sort key: non-DSY first (0), DSY last (1); then PRN alphabetically."""
     u = (prn or "").strip().upper()
     return (1 if is_dsy_prn(u) else 0, u)
+
+
+def load_pull_requests_df(course: "LabCourse") -> "pd.DataFrame":
+    """Return a normalized PR DataFrame with consistent column names.
+
+    Reads ``pr_flat.csv`` (new format) if present, otherwise falls back to
+    ``pull_requests.csv`` (legacy format).  Labels are enriched from
+    ``pr_details.json`` when available.
+
+    Normalized columns: PR Number, PRN, User, Labels, State, Created At,
+    Closed At, Merged At, Title.
+    """
+    import pandas as pd
+
+    flat_path = course.path_in_output("pr_flat.csv")
+    legacy_path = course.pull_requests_csv
+    details_path = course.path_in_output("pr_details.json")
+
+    if os.path.isfile(flat_path):
+        df = pd.read_csv(flat_path)
+        # Build label map from pr_details.json
+        label_map: Dict[int, str] = {}
+        if os.path.isfile(details_path):
+            with open(details_path, encoding="utf-8") as f:
+                details = json.load(f)
+            for pr in details:
+                num = pr.get("number")
+                labels = pr.get("labels", [])
+                if num is not None:
+                    label_map[int(num)] = ", ".join(
+                        lbl if isinstance(lbl, str) else lbl.get("name", "")
+                        for lbl in (labels if isinstance(labels, list) else [])
+                    )
+        df["Labels"] = df["number"].apply(lambda n: label_map.get(int(n), ""))
+        df = df.rename(columns={
+            "number": "PR Number",
+            "prn": "PRN",
+            "user": "User",
+            "state": "State",
+            "created_at": "Created At",
+            "closed_at": "Closed At",
+            "merged_at": "Merged At",
+            "title": "Title",
+        })
+        # merged flag → Merged At: keep merged_at value; if merged==1 but NaN, treat as closed
+        return df
+
+    return pd.read_csv(legacy_path)
 
 # Paths
 STUDENTS_CSV = os.path.join(ROOT, "output", "students.csv")
@@ -124,6 +177,19 @@ def escape_latex(text: str) -> str:
 
 def latex_manual_url(lab_num: int) -> str:
     return f"https://s-m-quadri.me/geca/daa/{lab_num:02d}"
+
+
+def lab_titles_dbms() -> Dict[int, str]:
+    return {
+        0: "Python Foundations and SQL Client Environment",
+        1: "Relational Schema Design (DDL)",
+        2: "Inserting, Updating, and Deleting Data (DML)",
+        3: "Built-In Functions, Filtering, and Aggregates",
+        4: "Inner and Outer Joins (Multi-Table Queries)",
+        5: "Stored Procedures, Functions, and Procedural Logic",
+        6: "Views, Scalar and Correlated Subqueries",
+        7: "Conceptual Modeling, Normalization, and Mini-Project",
+    }
 
 
 def lab_titles_default() -> Dict[int, str]:
