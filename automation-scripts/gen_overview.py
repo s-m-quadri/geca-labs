@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import re
 
-from lib.common import student_sort_key
+from lib.common import load_pull_requests_df, student_sort_key
 from lib.lab_course import LabCourse
 from lib.latex_duplex import latex_duplex_even_page_suffix
 
@@ -104,7 +104,7 @@ def escape_latex(text):
 # MAIN SCRIPT
 # ------------------------
 students_df = pd.read_csv(STUDENT_FILE)
-df = pd.read_csv(INPUT_FILE)
+df = load_pull_requests_df(course)
 attendance_df = pd.read_csv(ATTENDANCE_FILE)
 
 # Prepare attendance_df
@@ -199,7 +199,32 @@ overview_dff = overview_dff.sort_values(
 )
 
 # Apply LaTeX escaping
-overview_dff = overview_dff.applymap(escape_latex)
+overview_dff = overview_dff.map(escape_latex)
+
+def df_to_longtable(df, caption=""):
+    cols = df.columns.tolist()
+    col_spec = "l" * len(cols)
+    header = " & ".join(escape_latex(str(c)) for c in cols) + r" \\"
+    lines = [
+        f"\\begin{{longtable}}{{{col_spec}}}",
+        f"\\caption{{{escape_latex(caption)}}} \\\\",
+        "\\toprule",
+        header,
+        "\\midrule",
+        "\\endfirsthead",
+        "\\toprule",
+        header,
+        "\\midrule",
+        "\\endhead",
+        "\\midrule \\multicolumn{" + str(len(cols)) + r"}{r}{\small\textit{continued\ldots}} \\",
+        "\\endfoot",
+        "\\bottomrule",
+        "\\endlastfoot",
+    ]
+    for _, row in df.iterrows():
+        lines.append(" & ".join(str(row[c]) for c in cols) + r" \\")
+    lines.append("\\end{longtable}")
+    return "\n".join(lines) + "\n"
 
 # ------------------------
 # EXPORT TO LATEX
@@ -239,7 +264,7 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \vspace{1em}
 """
     )
-    f.write(overview_dff.to_latex(index=False, longtable=True, escape=False, column_format='lllllll'))
+    f.write(df_to_longtable(overview_dff, caption=escape_latex(course.label) + " Overview"))
     f.write("\n")
     f.write(latex_duplex_even_page_suffix())
     f.write("\n\\end{document}\n")

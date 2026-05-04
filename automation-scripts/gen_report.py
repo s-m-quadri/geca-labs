@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import re
 
-from lib.common import student_sort_key
+from lib.common import load_pull_requests_df, student_sort_key
 from lib.lab_course import LabCourse
 from lib.latex_duplex import latex_duplex_even_page_suffix
 
@@ -79,7 +79,7 @@ def status_from_rows(rows, lab_num):
 # ------------------------
 # MAIN SCRIPT
 # ------------------------
-df = pd.read_csv(INPUT_FILE)
+df = load_pull_requests_df(course)
 students_df = pd.read_csv(STUDENT_FILE)
 
 summary = []
@@ -219,7 +219,7 @@ def process_lab_column(val):
 # Apply formatting
 # ------------------------
 # Escape all textual data first
-latex_df = latex_df.applymap(escape_latex)
+latex_df = latex_df.map(escape_latex)
 
 # Format GitHub usernames
 if "User" in latex_df.columns:
@@ -239,7 +239,7 @@ if "Percent" in latex_df.columns:
 attendance_df = pd.read_csv(ATTENDANCE_FILE)
 
 # remove Unicode if any
-attendance_df = attendance_df.applymap(
+attendance_df = attendance_df.map(
     lambda x: x.encode("ascii","ignore").decode("ascii") if isinstance(x,str) else x
 )
 
@@ -285,9 +285,37 @@ def sort_labels(label_str):
     return ", ".join(labels)
 pr_latex_df["Labels"] = pr_latex_df["Labels"].apply(sort_labels)
 
-pr_latex_df = pr_latex_df.applymap(escape_latex)
+pr_latex_df = pr_latex_df.map(escape_latex)
 pr_latex_df["User"] = pr_latex_df["User"].apply(format_github_user)
 pr_latex_df["PR Number"] = pr_latex_df["PR Number"].apply(lambda x: format_pr_link(f"#{x}"))
+
+# ------------------------
+# Helper: longtable without jinja2 dependency
+# ------------------------
+def df_to_longtable(df, caption=""):
+    cols = df.columns.tolist()
+    col_spec = "l" * len(cols)
+    header = " & ".join(escape_latex(str(c)) for c in cols) + r" \\"
+    lines = [
+        f"\\begin{{longtable}}{{{col_spec}}}",
+        f"\\caption{{{escape_latex(caption)}}} \\\\",
+        "\\toprule",
+        header,
+        "\\midrule",
+        "\\endfirsthead",
+        "\\toprule",
+        header,
+        "\\midrule",
+        "\\endhead",
+        "\\midrule \\multicolumn{" + str(len(cols)) + r"}{r}{\small\textit{continued\ldots}} \\",
+        "\\endfoot",
+        "\\bottomrule",
+        "\\endlastfoot",
+    ]
+    for _, row in df.iterrows():
+        lines.append(" & ".join(str(row[c]) for c in cols) + r" \\")
+    lines.append("\\end{longtable}")
+    return "\n".join(lines) + "\n"
 
 # ------------------------
 # Export to LaTeX
@@ -322,7 +350,7 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \begin{center}
     {\LARGE \textbf{"""
         + escape_latex(course.label)
-        + r"""} Attendance and Submission Report \textbf{2025}}
+        + r"""} Attendance and Submission Report \textbf{Jan-Apr 2026}}
 \end{center}
 \vspace{1em} % small space before first table
 """
@@ -331,7 +359,7 @@ with open(LATEX_FILE, "w", encoding="utf-8") as f:
 \section*{1. Student Attendance}
 This table shows the attendance record for each student.
 """)
-    f.write(attendance_df.to_latex(index=False, longtable=True, escape=False, caption="Student Attendance Record"))
+    f.write(df_to_longtable(attendance_df, caption="Student Attendance Record"))
     f.write(r"""
 \section*{2. Summary of Lab Submissions}
 This table summarizes the lab submissions for each student, including their PR status and overall performance.
@@ -345,12 +373,12 @@ Err & Error (Closed without merge) \\
 \bottomrule
 \end{longtable}
 """)
-    f.write(latex_df.to_latex(index=False, longtable=True, escape=False, caption="Summary of Lab Submissions"))
+    f.write(df_to_longtable(latex_df, caption="Summary of Lab Submissions"))
     f.write(r"""
 \section*{3. Summary of Pull Requests}
 This table lists all pull requests made by students, along with their details.
 """)
-    f.write(pr_latex_df.to_latex(index=False, longtable=True, escape=False, caption="List of Pull Requests"))
+    f.write(df_to_longtable(pr_latex_df, caption="List of Pull Requests"))
     f.write("\n")
     f.write(latex_duplex_even_page_suffix())
     f.write(r"""
