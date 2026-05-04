@@ -9,5 +9,17 @@
 #           f.write("text\n")
 # Read: with open("file.txt", "r") as f:
 #          print(f.read())
+students_data = [
+    "Alice,20,CSE",
+    "Bob,22,ECE",
+    "Charlie,21,ME"
+]
+with open("students.txt", "w") as f:
+    for record in students_data:
+        f.write(record + "\n")  
+with open("students.txt", "r") as f:
+    contents = f.read()
+    print(contents)
+    
 
 
