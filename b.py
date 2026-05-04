@@ -17,4 +17,3 @@ print(f"Marks: {marks}")
 print(f"Department: {department}")
 
 
-
