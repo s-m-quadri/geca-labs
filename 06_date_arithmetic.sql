@@ -4,10 +4,16 @@
 
 USE school_db;
 
--- TODO: SELECT full_name, hire_date,
---   DATEDIFF(CURDATE(), hire_date) AS days_employed
--- FROM employees;
+-- Calculate how many days each employee has been with the company
+SELECT 
+    full_name, 
+    hire_date,
+    DATEDIFF(CURDATE(), hire_date) AS days_employed
+FROM employees;
 
--- TODO: SELECT full_name, hire_date,
---   DATE_ADD(hire_date, INTERVAL 1 YEAR) AS first_anniversary
--- FROM employees;
+-- Project the one-year work anniversary for each employee
+SELECT 
+    full_name, 
+    hire_date,
+    DATE_ADD(hire_date, INTERVAL 1 YEAR) AS first_anniversary
+FROM employees;

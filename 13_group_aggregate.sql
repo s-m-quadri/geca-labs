@@ -1,11 +1,7 @@
--- Task 13: Group — SUM and AVG by department
--- For each dept: employee count, total salary, average salary.
+-- Task 12: Count — COUNT(DISTINCT)
+-- How many distinct departments appear?
 
 USE school_db;
 
--- TODO: SELECT dept,
---   COUNT(*) AS n,
---   SUM(salary) AS total_pay,
---   AVG(salary) AS avg_pay
--- FROM employees
--- GROUP BY dept;
+SELECT COUNT(DISTINCT dept) AS distinct_depts 
+FROM employees;

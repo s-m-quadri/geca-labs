@@ -1,19 +1,30 @@
 -- Task 1: Setup database and employees table
--- You need sample data for later tasks (at least 5 rows, 2+ departments).
 
--- TODO: DROP DATABASE IF EXISTS school_db; then CREATE DATABASE school_db;
+-- DROP DATABASE IF EXISTS school_db; then CREATE DATABASE school_db;
+DROP DATABASE IF EXISTS school_db;
+CREATE DATABASE school_db;
 
--- TODO: USE school_db;
+-- USE school_db;
+USE school_db;
 
--- TODO: CREATE TABLE employees with:
---   emp_id INT PRIMARY KEY AUTO_INCREMENT
---   full_name VARCHAR(60) NOT NULL
---   dept VARCHAR(40)
---   salary DECIMAL(10,2)
---   hire_date DATE
---   phone VARCHAR(25)
+-- CREATE TABLE employees
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(60) NOT NULL,
+    dept VARCHAR(40),
+    salary DECIMAL(10,2),
+    hire_date DATE,
+    phone VARCHAR(25)
+);
 
--- TODO: INSERT at least 5 rows. Vary dept, salary, hire_date.
--- Optional: put leading/trailing spaces in some phone values for TRIM task later.
+-- INSERT at least 5 rows with varying data
+-- Note: Included leading/trailing spaces in phone numbers for later TRIM exercises
+INSERT INTO employees (full_name, dept, salary, hire_date, phone) VALUES 
+('Alice Johnson', 'Engineering', 85000.00, '2022-03-15', ' 555-0101'),
+('Bob Smith', 'Human Resources', 62000.50, '2021-11-10', '555-0102 '),
+('Charlie Davis', 'Engineering', 92000.00, '2023-01-20', '  555-0103'),
+('Diana Prince', 'Marketing', 75000.00, '2020-05-05', '555-0104'),
+('Evan Wright', 'Marketing', 71000.75, '2022-08-12', ' 555-0105 ');
 
--- TODO: SELECT * FROM employees;
+-- SELECT * FROM employees;
+SELECT * FROM employees;
