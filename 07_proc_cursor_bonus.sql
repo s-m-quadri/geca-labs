@@ -21,3 +21,6 @@ $$;
 
 -- TODO: CALL apply_bonuses();
 -- TODO: SELECT * FROM payroll;
+call apply_bonuses();
+select * from payroll;
+
