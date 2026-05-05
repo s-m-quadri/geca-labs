@@ -1,94 +1,66 @@
---- Lab 4 — Task 1: Schema + Seed Data for JOIN Practice
+-- Lab 4 — Task 1: schema and seed data for join practice + puzzles
+-- Run: sudo mysql < 01_setup.sql
 
--- Reset (safe rerun)
-DROP DATABASE IF EXISTS lab4_db;
-CREATE DATABASE lab4_db;
-USE lab4_db;
+DROP DATABASE IF EXISTS join_lab;
+CREATE DATABASE join_lab;
+USE join_lab;
 
--- =====================
--- Tables
--- =====================
-
--- Departments
 CREATE TABLE departments (
   dept_id INT PRIMARY KEY,
-  dept_name VARCHAR(50) NOT NULL
+  dept_name VARCHAR(40) NOT NULL,
+  floor_no INT NOT NULL
 );
 
--- Employees
-CREATE TABLE employees (
-  emp_id INT PRIMARY KEY,
-  full_name VARCHAR(100) NOT NULL,
-  dept_id INT,
-  salary DECIMAL(10,2),
-  manager_id INT,
-  hire_date DATE,
-  FOREIGN KEY (dept_id) REFERENCES departments(dept_id),
-  FOREIGN KEY (manager_id) REFERENCES employees(emp_id)
-);
-
--- Projects
-CREATE TABLE projects (
-  proj_id INT PRIMARY KEY,
-  proj_name VARCHAR(100) NOT NULL,
-  dept_id INT,
+CREATE TABLE staff (
+  staff_id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(60) NOT NULL,
+  dept_id INT NOT NULL,
+  joined_on DATE NOT NULL,
   FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
 );
 
--- Employee ↔ Project mapping (many-to-many)
-CREATE TABLE employee_projects (
-  emp_id INT,
-  proj_id INT,
-  role VARCHAR(50),
-  PRIMARY KEY (emp_id, proj_id),
-  FOREIGN KEY (emp_id) REFERENCES employees(emp_id),
+CREATE TABLE projects (
+  proj_id INT PRIMARY KEY,
+  title VARCHAR(80) NOT NULL,
+  dept_id INT NOT NULL,
+  FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+CREATE TABLE project_staff (
+  staff_id INT NOT NULL,
+  proj_id INT NOT NULL,
+  hours INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (staff_id, proj_id),
+  FOREIGN KEY (staff_id) REFERENCES staff(staff_id),
   FOREIGN KEY (proj_id) REFERENCES projects(proj_id)
 );
 
--- =====================
--- Seed Data
--- =====================
+INSERT INTO departments (dept_id, dept_name, floor_no) VALUES
+  (1, 'Logic', 2),
+  (2, 'Systems', 2),
+  (3, 'Data', 4),
+  (4, 'Idle', 1);
 
--- Departments
-INSERT INTO departments VALUES
-(1, 'HR'),
-(2, 'Engineering'),
-(3, 'Sales'),
-(4, 'Finance');
+INSERT INTO staff (name, dept_id, joined_on) VALUES
+  ('Ada', 1, '2019-03-01'),
+  ('Bob', 1, '2020-06-15'),
+  ('Chen', 2, '2018-01-10'),
+  ('Dina', 2, '2021-09-01'),
+  ('Eve', 3, '2017-11-20'),
+  ('Finn', 3, '2022-02-28');
 
--- Employees
-INSERT INTO employees VALUES
-(101, 'Amit Sharma', 2, 60000, NULL, '2020-01-15'),
-(102, 'Neha Verma', 2, 55000, 101, '2021-03-10'),
-(103, 'Ravi Kumar', 3, 45000, NULL, '2019-07-23'),
-(104, 'Sneha Patil', 1, 40000, NULL, '2022-05-01'),
-(105, 'Vikram Singh', 3, 47000, 103, '2020-11-12'),
-(106, 'Anjali Mehta', 4, 52000, NULL, '2018-09-30'),
-(107, 'Karan Gupta', NULL, 38000, NULL, '2023-01-01'); -- no dept (for LEFT JOIN puzzles)
+INSERT INTO projects (proj_id, title, dept_id) VALUES
+  (101, 'Riddle-UI', 1),
+  (102, 'Riddle-API', 1),
+  (201, 'Kernel', 2),
+  (301, 'Warehouse', 3);
 
--- Projects
-INSERT INTO projects VALUES
-(201, 'Website Revamp', 2),
-(202, 'Sales Dashboard', 3),
-(203, 'Recruitment Drive', 1),
-(204, 'Budget Planning', 4),
-(205, 'AI Prototype', 2);
+INSERT INTO project_staff (staff_id, proj_id, hours) VALUES
+  (1, 101, 10), (1, 102, 5),
+  (2, 101, 8),
+  (3, 201, 40),
+  (4, 201, 10),
+  (5, 301, 30), (5, 201, 5),
+  (6, 301, 20);
 
--- Employee-Project Mapping
-INSERT INTO employee_projects VALUES
-(101, 201, 'Lead'),
-(102, 201, 'Developer'),
-(102, 205, 'Developer'),
-(103, 202, 'Lead'),
-(105, 202, 'Sales Exec'),
-(104, 203, 'Coordinator'),
-(106, 204, 'Analyst');
-
--- =====================
--- Optional sanity checks
--- =====================
--- SHOW TABLES;
--- SELECT * FROM employees;
--- SELECT * FROM departments;
--- SELECT * FROM projects;
--- SELECT * FROM employee_projects;
+SELECT 'join_lab ready' AS status;
