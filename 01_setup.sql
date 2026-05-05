@@ -60,3 +60,4 @@ INSERT INTO order_lines VALUES
   (1004, 10, 5);
 
 SELECT 'view_lab ready' AS status;
+    
