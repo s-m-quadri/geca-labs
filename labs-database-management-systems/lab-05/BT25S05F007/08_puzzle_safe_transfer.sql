@@ -13,9 +13,11 @@ CREATE OR REPLACE PROCEDURE safe_transfer(
 DECLARE
   donor_bal DECIMAL(12,2);
 BEGIN
-  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
-  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  -- What defines a failed transfer? How should the procedure handle insufficient funds?
+  -- Hint: Check donor balance first, then update both accounts atomically.
+  -- SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
+  -- IF donor_bal < amount THEN RETURN; END IF;
+  -- UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+  -- UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
