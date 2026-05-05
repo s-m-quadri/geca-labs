@@ -3,10 +3,6 @@
 
 -- TODO: Create database school_db
 
-
-
-
-
 -- TODO: Switch to school_db
 
 -- TODO: Create students table with:
@@ -14,17 +10,3 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
-
-CREATE DATABASE IF NOT EXISTS school_db;
-USE school_db;
-
-CREATE TABLE IF NOT EXISTS students (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50),
-    age INT,
-    grade VARCHAR(10)
-);
-
-INSERT INTO students (name, age, grade)
-VALUES ('Alice', 15, '10th');
-
