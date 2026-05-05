@@ -9,3 +9,8 @@
 # Loop: for key, value in student.items():
 
 
+student = {"Id": 67, "Name": "Mayur", "Age": 20, "Dept": "CSE"}
+
+for key,value in student.items():
+    print(f"{key}: {value}")
+print(f"student Name: {student['Name']}")
