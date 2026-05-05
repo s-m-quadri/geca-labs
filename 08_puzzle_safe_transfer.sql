@@ -12,6 +12,12 @@ CREATE PROCEDURE safe_transfer(IN from_id INT, IN to_id INT, IN amount DECIMAL(1
 BEGIN
   -- TODO: DECLARE donor_balance ... SELECT balance INTO ... IF ...
   -- TODO: UPDATE accounts twice or use transactions mindset (single-threaded lab OK)
+  DECLARE donor_balance DECIMAL(12,2);
+  SELECT balance INTO donor_balance FROM accounts WHERE acc_id = from_id;
+  IF donor_balance >= amount THEN
+    UPDATE accounts SET balance = balance - amount WHERE acc_id = from_id;
+    UPDATE accounts SET balance = balance + amount WHERE acc_id = to_id;
+  END IF;
   SET @lab5_transfer_todo := 0;
 END//
 DELIMITER ;
