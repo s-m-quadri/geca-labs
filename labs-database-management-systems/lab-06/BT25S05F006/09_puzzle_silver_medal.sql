@@ -4,3 +4,12 @@
 \c view_lab
 
 -- TODO: one SELECT; avoid hard-coded price values from the seed in the outer query
+SELECT name
+FROM products
+WHERE price = (
+    SELECT MAX(price)
+    FROM products
+    WHERE price < (
+        SELECT MAX(price) FROM products
+    )
+);
