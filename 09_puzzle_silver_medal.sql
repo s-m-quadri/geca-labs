@@ -4,22 +4,3 @@
 \c view_lab
 
 -- TODO: one SELECT; avoid hard-coded price values from the seed in the outer query
-one select
-    prod_name
-from    
-    products
-where
-    unit_price = (
-        select
-            max(unit_price)
-        from
-            products
-        where
-            unit_price < (
-                select
-                    max(unit_price)
-                from
-                    products
-            )
-    );  
-    
