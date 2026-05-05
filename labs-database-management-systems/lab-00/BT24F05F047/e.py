@@ -8,3 +8,8 @@
 #     print(f"Student: {param1}")
 
 
+def display_student(name: str, age: int, dept: str) -> None:
+    print(f"Name: {name}")
+    print(f"Age: {age}")
+    print(f"Department: {dept}")
+    print("-" * 20)
