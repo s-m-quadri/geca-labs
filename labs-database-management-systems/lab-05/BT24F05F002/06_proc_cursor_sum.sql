@@ -1,31 +1,20 @@
--- Task 6: Cursor + loop — sum every row in accounts.balance into OUT total
--- Run: ./run_source.sh proc_lab 06_proc_cursor_sum.sql
--- Test: CALL sum_balances(@t); SELECT @t;
+\c proc_lab
 
-USE proc_lab;
-DELIMITER //
-DROP PROCEDURE IF EXISTS sum_balances//
-CREATE PROCEDURE sum_balances(OUT total DECIMAL(14,2))
+CREATE OR REPLACE FUNCTION sum_balances()
+RETURNS DECIMAL(14,2) 
+LANGUAGE plpgsql AS $$
+DECLARE
+  total DECIMAL(14,2) := 0;
+  b     DECIMAL(12,2);
+  cur   CURSOR FOR SELECT balance FROM accounts;
 BEGIN
-  DECLARE done INT DEFAULT 0;
-  DECLARE b DECIMAL(12,2);
-
-  DECLARE cur CURSOR FOR SELECT balance FROM accounts;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-  SET total = 0;
-
   OPEN cur;
-
-  read_loop: LOOP
+  LOOP
     FETCH cur INTO b;
-    IF done THEN
-      LEAVE read_loop;
-    END IF;
-
-    SET total = total + b;
+    EXIT WHEN NOT FOUND;
+    total := total + b;
   END LOOP;
-
   CLOSE cur;
-END//
-DELIMITER ;
+  RETURN total;
+END;
+$$;

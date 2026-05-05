@@ -1,9 +1,7 @@
--- Task 2: User variables and arithmetic (+ − * /)
--- No procedures yet.
+\c proc_lab
 
-USE proc_lab;
-
--- TODO: SET @a := 17; SET @b := 5;
--- TODO: SELECT @a + @b AS sum_, @a - @b AS diff, @a * @b AS prod, @a / @b AS quot;
-SET @a := 17; SET @b := 5;
-SELECT @a + @b AS sum_, @a - @b AS diff, @a * @b AS prod, @a / @b AS quot;
+SELECT 
+  17 + 5     AS sum_,
+  17 - 5     AS diff,
+  17 * 5     AS prod,
+  17.0 / 5   AS quot;
