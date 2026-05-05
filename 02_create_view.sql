@@ -4,3 +4,15 @@
 
 -- TODO: CREATE OR REPLACE VIEW v_order_lines_detail AS
 -- SELECT ...
+SELECT
+    ol.order_id,
+    ol.prod_id,
+    ol.qty,
+    p.prod_name,
+    p.unit_price,
+    (ol.qty * p.unit_price) AS line_total
+FROM
+    order_lines ol
+JOIN
+    products p ON ol.prod_id = p.prod_id;   
+    
