@@ -1,7 +1,7 @@
 USE school_db;
 
 SELECT 
-    full_name, 
+    full_name,
     hire_date,
     YEAR(hire_date) AS y,
     MONTH(hire_date) AS m,

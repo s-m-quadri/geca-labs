@@ -1,12 +1,10 @@
 USE school_db;
 
--- Total number of employees
-SELECT 
-    COUNT(*) AS total_employees
+-- Total employees
+SELECT COUNT(*) AS total_employees
 FROM employees;
 
--- Count employees with salary >= 40000 (single query using SUM + CASE)
+-- Employees with salary >= 40000
 SELECT 
-    COUNT(*) AS total_employees,
     SUM(CASE WHEN salary >= 40000 THEN 1 ELSE 0 END) AS high_earners
 FROM employees;
