@@ -1,12 +1,13 @@
--- Task 1: Setup Database and Table
--- Create database and students table
+-- Create database
+CREATE DATABASE school_db;
 
--- TODO: Create database school_db
+-- Switch to database
+USE school_db;
 
--- TODO: Switch to school_db
-
--- TODO: Create students table with:
--- id INT PRIMARY KEY AUTO_INCREMENT
--- name VARCHAR(50)
--- age INT
--- grade VARCHAR(10)
+-- Create students table
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    age INT,
+    grade VARCHAR(10)
+);
