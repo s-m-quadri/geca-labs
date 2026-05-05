@@ -26,6 +26,7 @@ CREATE TABLE projects (
   FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
 );
 
+
 CREATE TABLE project_staff (
   staff_id INT NOT NULL,
   proj_id INT NOT NULL,
