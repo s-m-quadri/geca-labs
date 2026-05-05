@@ -3,8 +3,13 @@
 
 USE school_db;
 
--- TODO: SELECT NOW() AS server_time;
+-- Display the current server timestamp
+SELECT NOW() AS server_time;
 
--- TODO: SELECT full_name, hire_date, CURDATE() AS today,
---   (CURDATE() >= hire_date) AS hired_on_or_before_today
--- FROM employees;
+-- Compare employee hire dates with the current date
+SELECT 
+    full_name, 
+    hire_date, 
+    CURDATE() AS today,
+    (CURDATE() >= hire_date) AS hired_on_or_before_today
+FROM employees;
