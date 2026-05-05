@@ -3,12 +3,8 @@
 
 -- TODO: SELECT name, price FROM products
 --       WHERE price > ( ... scalar subquery for AVG(price) ... );
--- Connect to the database
-\c view_lab
-
--- Find products priced above the average
-SELECT 
-    name, 
-    price 
+SELECT name, price
 FROM products
-WHERE price > (SELECT AVG(price) FROM products);
+WHERE price > (
+  SELECT AVG(price) FROM products
+);
