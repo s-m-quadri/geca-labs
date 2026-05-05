@@ -8,7 +8,9 @@ CREATE OR REPLACE FUNCTION apply_rate(
   pct  DECIMAL(5,2)
 ) RETURNS DECIMAL(10,2) LANGUAGE plpgsql AS $$
 BEGIN
-  -- TODO: RETURN base + (base * pct / 100);
+  -- Hint: `pct` represents a percent increase (think "percent increase").
+  -- Remember operator precedence: multiplication/division happen before addition.
+  -- Implement the return value by increasing `base` by `pct` percent.
   RETURN NULL;
 END;
 $$;
