@@ -5,9 +5,10 @@
 USE school_db;
 
 -- TODO: Write your CREATE TABLE command here
-CREATE table student(
-    id INT PRIMARY KEY ;
-    name VARCHAR(100) NOT NULL ;
-    age INT NOT NULL ;
-    email VARCHAR(20) NOT NULL ;
+
+CREATE TABLE students (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
 );
