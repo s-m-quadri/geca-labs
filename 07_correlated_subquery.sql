@@ -2,12 +2,4 @@
 -- (sum of qty * price across all their order lines)
 \c view_lab
 
-SELECT c.name
-FROM customers c
-WHERE (
-  SELECT COALESCE(SUM(ol.qty * p.price), 0)
-  FROM orders o
-  JOIN order_lines ol ON o.order_id = ol.order_id
-  JOIN products p ON ol.prod_id = p.prod_id
-  WHERE o.cust_id = c.cust_id
-) > 50;
+-- TODO: correlated pattern on customers + orders + order_lines + products
