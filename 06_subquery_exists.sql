@@ -5,14 +5,10 @@
 --       WHERE EXISTS (
 --         SELECT 1 FROM orders o WHERE o.cust_id = c.cust_id
 --       );
--- Connect to the database
-\c view_lab
-
--- Find customers who have placed at least one order
-SELECT c.name 
+SELECT c.name
 FROM customers c
 WHERE EXISTS (
-    SELECT 1 
-    FROM orders o 
-    WHERE o.cust_id = c.cust_id
+  SELECT 1
+  FROM orders o
+  WHERE o.cust_id = c.cust_id
 );
