@@ -5,13 +5,3 @@
 USE join_lab;
 
 -- TODO: SELECT name, title (or equivalent) — rows for every such outsider
-USE join_lab;
-
--- Identify "outsiders" who are working on projects outside their home department
-SELECT 
-    s.name AS person_name, 
-    p.title AS project_title
-FROM staff s
-JOIN project_staff ps ON s.staff_id = ps.staff_id
-JOIN projects p ON ps.project_id = p.project_id
-WHERE s.dept_id != p.dept_id;

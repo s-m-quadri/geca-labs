@@ -7,5 +7,11 @@ USE join_lab;
 -- TODO: SELECT projects.title, departments.dept_name, departments.floor_no
 -- FROM projects
 -- INNER JOIN departments ON ...
-
--- Optional: explain in one line why NATURAL JOIN is risky in real schemas
+-- Match projects to their owning departments using explicit key matching
+SELECT 
+    projects.title, 
+    departments.dept_name, 
+    departments.floor_no
+FROM projects
+INNER JOIN departments 
+    ON projects.dept_id = departments.dept_id;
