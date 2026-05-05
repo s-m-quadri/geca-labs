@@ -3,13 +3,6 @@
 
 USE school_db;
 
-SELECT full_name, phone,
-  TRIM(phone) AS phone_clean
-FROM employees;
-USE school_db;
-
-SELECT 
-    full_name, 
-    phone,
-    TRIM(phone) AS phone_clean
-FROM employees;
+-- TODO: SELECT full_name, phone,
+--   TRIM(phone) AS phone_clean
+-- FROM employees;
