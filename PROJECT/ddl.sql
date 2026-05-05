@@ -1,73 +1,52 @@
--- Hospital Management System
--- DDL File - Table Definitions
+CREATE DATABASE IF NOT EXISTS hostel_db;
+USE hostel_db;
 
--- Drop database if it already exists (clean setup ke liye)
-DROP DATABASE IF EXISTS hospital_db;
-CREATE DATABASE hospital_db;
-USE hospital_db;
-
-
--- Table 1: Department
--- Stores different departments in the hospital
-
-CREATE TABLE Department (
-    dept_id     INT AUTO_INCREMENT PRIMARY KEY,
-    dept_name   VARCHAR(100) NOT NULL,
-    location    VARCHAR(100)
+-- STUDENTS
+CREATE TABLE students (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    roll_no VARCHAR(20) UNIQUE,
+    name VARCHAR(100),
+    branch VARCHAR(50),
+    year INT,
+    contact_no VARCHAR(15),
+    address VARCHAR(255)
 );
 
-
--- Table 2: Doctor
--- Stores doctor details and their department
-
-CREATE TABLE Doctor (
-    doctor_id       INT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(100) NOT NULL,
-    specialization  VARCHAR(100),
-    phone           VARCHAR(15),
-    dept_id         INT,
-    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+-- ROOMS
+CREATE TABLE rooms (
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_no VARCHAR(10),
+    floor INT,
+    capacity INT
 );
 
+-- ROOM ALLOTMENT
+CREATE TABLE room_allotment (
+    allotment_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    room_id INT,
+    allot_date DATE,
+    vacate_date DATE,
 
--- Table 3: Patient
--- Stores patient personal details
-
-CREATE TABLE Patient (
-    patient_id  INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL,
-    age         INT,
-    gender      VARCHAR(10),
-    phone       VARCHAR(15),
-    address     VARCHAR(200)
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id)
 );
 
-
--- Table 4: Appointment
--- Links patient with a doctor for a visit
-
-CREATE TABLE Appointment (
-    appt_id     INT AUTO_INCREMENT PRIMARY KEY,
-    patient_id  INT,
-    doctor_id   INT,
-    appt_date   DATE,
-    reason      VARCHAR(200),
-    status      VARCHAR(20) DEFAULT 'Scheduled',
-    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id),
-    FOREIGN KEY (doctor_id)  REFERENCES Doctor(doctor_id)
+-- OFFICIALS
+CREATE TABLE officials (
+    official_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    role VARCHAR(20), -- warden / rector
+    contact VARCHAR(15)
 );
 
+-- COMPLAINTS
+CREATE TABLE complaints (
+    complaint_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    complaint_text VARCHAR(255),
+    complaint_date DATE,
+    status VARCHAR(20),
 
--- Table 5: Bill
--- Stores billing info for each appointment
-
-CREATE TABLE Bill (
-    bill_id     INT AUTO_INCREMENT PRIMARY KEY,
-    patient_id  INT,
-    appt_id     INT,
-    amount      DECIMAL(10, 2),
-    paid        VARCHAR(5) DEFAULT 'No',
-    bill_date   DATE,
-    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id),
-    FOREIGN KEY (appt_id)    REFERENCES Appointment(appt_id)
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
 );

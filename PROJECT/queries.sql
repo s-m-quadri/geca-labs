@@ -1,113 +1,60 @@
--- Hospital Management System
--- Queries File
+USE hostel_db;
 
-USE hospital_db;
+-- 1. Students with their room details (JOIN)
+SELECT s.name, s.branch, r.room_no, r.floor
+FROM students s
+JOIN room_allotment ra ON s.student_id = ra.student_id
+JOIN rooms r ON ra.room_id = r.room_id;
 
+-- 2. Count of students in each room (GROUP BY)
+SELECT r.room_no, COUNT(ra.student_id) AS total_students
+FROM rooms r
+JOIN room_allotment ra ON r.room_id = ra.room_id
+GROUP BY r.room_no;
 
--- Query 1: List all patients
+-- 3. Rooms that are over capacity (HAVING)
+SELECT r.room_no, COUNT(ra.student_id) AS occupants, r.capacity
+FROM rooms r
+JOIN room_allotment ra ON r.room_id = ra.room_id
+GROUP BY r.room_no, r.capacity
+HAVING COUNT(ra.student_id) > r.capacity;
 
-SELECT * FROM Patient;
+-- 4. List all pending complaints
+SELECT s.name, c.complaint_text, c.complaint_date
+FROM complaints c
+JOIN students s ON c.student_id = s.student_id
+WHERE c.status = 'pending';
 
+-- 5. Count complaints per student
+SELECT s.name, COUNT(c.complaint_id) AS total_complaints
+FROM students s
+LEFT JOIN complaints c ON s.student_id = c.student_id
+GROUP BY s.name;
 
--- Query 2: List all doctors with their department
+-- 6. Students who have raised at least one complaint (SUBQUERY)
+SELECT name
+FROM students
+WHERE student_id IN (
+    SELECT DISTINCT student_id FROM complaints
+);
 
-SELECT 
-    d.doctor_id,
-    d.name          AS doctor_name,
-    d.specialization,
-    dep.dept_name
-FROM Doctor d
-JOIN Department dep ON d.dept_id = dep.dept_id;
+-- 7. Create VIEW: complaint summary
+CREATE OR REPLACE VIEW complaint_summary AS
+SELECT s.name, c.complaint_text, c.status
+FROM students s
+JOIN complaints c ON s.student_id = c.student_id;
 
+-- Use view
+SELECT * FROM complaint_summary;
 
--- Query 3: View all appointments with patient and doctor names
+-- 8. Most occupied room (Business query)
+SELECT r.room_no, COUNT(ra.student_id) AS occupancy
+FROM rooms r
+JOIN room_allotment ra ON r.room_id = ra.room_id
+GROUP BY r.room_no
+ORDER BY occupancy DESC
+LIMIT 1;
 
-SELECT 
-    a.appt_id,
-    p.name      AS patient_name,
-    d.name      AS doctor_name,
-    a.appt_date,
-    a.reason,
-    a.status
-FROM Appointment a
-JOIN Patient p ON a.patient_id = p.patient_id
-JOIN Doctor  d ON a.doctor_id  = d.doctor_id;
-
-
--- Query 4: Show all unpaid bills
-
-SELECT 
-    b.bill_id,
-    p.name      AS patient_name,
-    b.amount,
-    b.bill_date
-FROM Bill b
-JOIN Patient p ON b.patient_id = p.patient_id
-WHERE b.paid = 'No';
-
-
--- Query 5: Count patients per department (via appointments)
-
-SELECT 
-    dep.dept_name,
-    COUNT(DISTINCT a.patient_id) AS total_patients
-FROM Appointment a
-JOIN Doctor     d   ON a.doctor_id = d.doctor_id
-JOIN Department dep ON d.dept_id   = dep.dept_id
-GROUP BY dep.dept_name;
-
-
--- Query 6: Find all appointments of a specific patient (Ravi Sharma)
-
-SELECT 
-    a.appt_date,
-    d.name      AS doctor_name,
-    a.reason,
-    a.status
-FROM Appointment a
-JOIN Doctor d ON a.doctor_id = d.doctor_id
-WHERE a.patient_id = 1;
-
-
--- Query 7: Total revenue collected (paid bills only)
-
-SELECT 
-    SUM(amount) AS total_revenue_collected
-FROM Bill
-WHERE paid = 'Yes';
-
-
--- Query 8: List doctors who have at least 2 appointments
-
-SELECT 
-    d.name          AS doctor_name,
-    COUNT(a.appt_id) AS total_appointments
-FROM Appointment a
-JOIN Doctor d ON a.doctor_id = d.doctor_id
-GROUP BY d.doctor_id, d.name
-HAVING COUNT(a.appt_id) >= 2;
-
-
--- Query 9: Show all scheduled (upcoming) appointments
-
-SELECT 
-    p.name      AS patient_name,
-    d.name      AS doctor_name,
-    a.appt_date,
-    a.reason
-FROM Appointment a
-JOIN Patient p ON a.patient_id = p.patient_id
-JOIN Doctor  d ON a.doctor_id  = d.doctor_id
-WHERE a.status = 'Scheduled';
-
-
--- Query 10: Get billing summary per patient
-
-SELECT 
-    p.name          AS patient_name,
-    COUNT(b.bill_id) AS total_visits,
-    SUM(b.amount)    AS total_billed,
-    SUM(CASE WHEN b.paid = 'Yes' THEN b.amount ELSE 0 END) AS amount_paid
-FROM Bill b
-JOIN Patient p ON b.patient_id = p.patient_id
-GROUP BY p.patient_id, p.name;
+-- 9. List officials (warden + rector)
+SELECT name, role, contact
+FROM officials;

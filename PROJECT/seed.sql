@@ -1,59 +1,41 @@
--- Hospital Management System
--- Seed File - Sample Data
+USE hostel_db;
 
+-- Students (simple roll numbers)
+INSERT INTO students (roll_no, name, branch, year, contact_no, address) VALUES
+('S101','Alice','Civil',2,'9876543210','Bangalore'),
+('S102','Bob','Mech',3,'9876543211','Chennai'),
+('S103','Charlie','EEP',4,'9876543212','Kolkata'),
+('S104','David','CSE',2,'9876543213','Mumbai'),
+('S105','Eve','ENTC',2,'9876543214','Pune'),
+('S106','Frank','IT',1,'9876543215','Delhi');
 
-USE hospital_db;
+-- Rooms
+INSERT INTO rooms (room_no, floor, capacity) VALUES
+('101',1,2),
+('102',1,2),
+('201',2,3),
+('202',2,2);
 
+-- Room Allotment
+INSERT INTO room_allotment (student_id, room_id, allot_date, vacate_date) VALUES
+(1,1,'2026-01-01','2026-12-31'),
+(2,2,'2026-01-02','2026-12-31'),
+(3,1,'2026-01-03','2026-12-31'),
+(4,3,'2026-01-04','2026-12-31'),
+(5,3,'2026-01-05','2026-12-31'),
+(6,4,'2026-01-06','2026-12-31');
 
--- Inserting Departments
+-- Officials
+INSERT INTO officials (name, role, contact) VALUES
+('Mr.Starc','warden','9991110001'),
+('Mr.Johnson','warden','9991110002'),
+('Dr.Kumar','rector','8882220001');
 
-INSERT INTO Department (dept_name, location) VALUES
-('Cardiology',     'Block A, Floor 1'),
-('Neurology',      'Block B, Floor 2'),
-('Orthopedics',    'Block A, Floor 3'),
-('General Medicine','Block C, Floor 1'),
-('Pediatrics',     'Block D, Floor 2');
-
-
--- Inserting Doctors
-
-INSERT INTO Doctor (name, specialization, phone, dept_id) VALUES
-('Dr. Ramesh Gupta',    'Heart Specialist',   '9876543210', 1),
-('Dr. Priya Mehta',     'Brain & Nerves',      '9876543211', 2),
-('Dr. Arjun Patil',     'Bone Specialist',    '9876543212', 3),
-('Dr. Sneha Kulkarni',  'General Physician',  '9876543213', 4),
-('Dr. Vikram Joshi',    'Child Specialist',   '9876543214', 5);
-
-
--- Inserting Patients
-
-INSERT INTO Patient (name, age, gender, phone, address) VALUES
-('Ravi Sharma',    35, 'Male',   '9001234567', 'Solapur, MH'),
-('Anita Desai',    28, 'Female', '9001234568', 'Pune, MH'),
-('Suresh Nair',    52, 'Male',   '9001234569', 'Kolhapur, MH'),
-('Pooja Reddy',    22, 'Female', '9001234570', 'Latur, MH'),
-('Manoj Yadav',    45, 'Male',   '9001234571', 'Nagpur, MH'),
-('Kavita Singh',   60, 'Female', '9001234572', 'Solapur, MH');
-
-
--- Inserting Appointments
-
-INSERT INTO Appointment (patient_id, doctor_id, appt_date, reason, status) VALUES
-(1, 1, '2026-04-01', 'Chest Pain',         'Completed'),
-(2, 2, '2026-04-02', 'Frequent Headaches', 'Completed'),
-(3, 3, '2026-04-03', 'Knee Pain',          'Completed'),
-(4, 4, '2026-04-05', 'Fever and Cold',     'Completed'),
-(5, 1, '2026-04-10', 'Heart Checkup',      'Completed'),
-(6, 5, '2026-04-12', 'Child Vaccination',  'Scheduled'),
-(1, 4, '2026-04-15', 'Follow-up Visit',    'Scheduled');
-
-
--- Inserting Bills
-
-INSERT INTO Bill (patient_id, appt_id, amount, paid, bill_date) VALUES
-(1, 1, 1500.00, 'Yes', '2026-04-01'),
-(2, 2, 1200.00, 'Yes', '2026-04-02'),
-(3, 3, 2000.00, 'No',  '2026-04-03'),
-(4, 4,  800.00, 'Yes', '2026-04-05'),
-(5, 5, 1500.00, 'No',  '2026-04-10'),
-(6, 6,  500.00, 'No',  '2026-04-12');
+-- Complaints
+INSERT INTO complaints (student_id, complaint_text, complaint_date, status) VALUES
+(1,'Water issue','2026-02-01','pending'),
+(2,'Electricity problem','2026-02-02','resolved'),
+(3,'WiFi not working','2026-02-03','pending'),
+(4,'Cleaning issue','2026-02-04','resolved'),
+(5,'Fan not working','2026-02-05','pending'),
+(6,'Water leakage','2026-02-06','resolved');
