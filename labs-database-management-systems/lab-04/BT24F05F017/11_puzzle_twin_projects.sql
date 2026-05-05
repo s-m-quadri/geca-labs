@@ -1,0 +1,17 @@
+-- Puzzle A (riddle)
+-- "Two sibling projects share a name prefix and the same home department.
+--  Only one person booked hours on **both**. Who is it?"
+-- Hint: inspect projects.title and project_staff; avoid hard-coding IDs in your
+-- final query if you can use titles or dept instead.
+
+USE join_lab;
+
+SELECT DISTINCT staff.name
+FROM staff
+JOIN project_staff ps1 ON staff.staff_id = ps1.staff_id
+JOIN project_staff ps2 ON staff.staff_id = ps2.staff_id
+JOIN projects p1 ON ps1.proj_id = p1.proj_id
+JOIN projects p2 ON ps2.proj_id = p2.proj_id
+WHERE p1.proj_id < p2.proj_id
+  AND p1.dept_id = p2.dept_id
+  AND SUBSTRING(p1.title, 1, POSITION('-' IN p1.title) - 1) = SUBSTRING(p2.title, 1, POSITION('-' IN p2.title) - 1);
