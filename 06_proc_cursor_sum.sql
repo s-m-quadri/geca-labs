@@ -4,24 +4,21 @@
 \c proc_lab
 
 CREATE OR REPLACE FUNCTION sum_balances()
-RETURNS DECIMAL(14,2) AS $$
+RETURNS DECIMAL(14,2) LANGUAGE plpgsql AS $$
 DECLARE
-  v_bal DECIMAL(12,2);
-  v_total DECIMAL(14,2) := 0;
-  cur CURSOR FOR SELECT balance FROM accounts;
+  total DECIMAL(14,2) := 0;
+  b     DECIMAL(12,2);
+  cur   CURSOR FOR SELECT balance FROM accounts;
 BEGIN
   OPEN cur;
   LOOP
-    FETCH cur INTO v_bal;
+    FETCH cur INTO b;
     EXIT WHEN NOT FOUND;
-    -- Add current row balance to running total here.
-    -- TODO: v_total := ...
+    -- TODO: total := total + b;
   END LOOP;
   CLOSE cur;
-
-  RETURN v_total;
+  RETURN total;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
--- TODO: Uncomment after completing the TODO in the loop.
--- SELECT sum_balances();
+-- TODO: SELECT sum_balances();
