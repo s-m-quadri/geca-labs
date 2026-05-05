@@ -12,10 +12,10 @@ CREATE TABLE accounts (
 );
 
 CREATE TABLE payroll (
-  emp_id          SERIAL PRIMARY KEY,
-  name            VARCHAR(60) NOT NULL,
-  salary          DECIMAL(12,2) NOT NULL,
-  bonus_eligible  BOOLEAN NOT NULL DEFAULT FALSE
+  id             SERIAL PRIMARY KEY,
+  name           VARCHAR(60) NOT NULL,
+  salary         DECIMAL(12,2) NOT NULL,
+  bonus_eligible BOOLEAN NOT NULL
 );
 
 INSERT INTO accounts (holder, balance) VALUES

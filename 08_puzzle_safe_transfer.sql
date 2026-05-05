@@ -5,17 +5,15 @@
 -- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
 \c proc_lab
 
-CREATE OR REPLACE PROCEDURE safe_transfer(
-  from_id INT,
-  to_id   INT,
-  amount  DECIMAL(12,2)
-) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION safe_transfer(from_id INT, to_id INT, amount DECIMAL)
+RETURNS VOID AS $$
 DECLARE
-  donor_bal DECIMAL(12,2);
+  from_balance DECIMAL;
 BEGIN
-  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
-  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  SELECT balance INTO from_balance FROM accounts WHERE id = from_id;
+  IF from_balance >= amount THEN
+    UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+    UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  END IF;
 END;
-$$;
+$$ LANGUAGE plpgsql;
