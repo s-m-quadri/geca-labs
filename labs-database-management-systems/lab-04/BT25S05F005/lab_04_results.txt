@@ -1,0 +1,20 @@
+Database
+information_schema
+join_lab
+mysql
+performance_schema
+sys
+Tables_in_join_lab
+departments
+project_staff
+projects
+staff
+staff_rows
+6
+ps_rows
+8
+dept_name	project_count
+Logic	2
+Systems	1
+Data	1
+Idle	0
