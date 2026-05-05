@@ -1,0 +1,18 @@
+-- Solution files (starting with .solution.)
+.solution.*.sql
+.solution.*.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
