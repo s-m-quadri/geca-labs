@@ -3,6 +3,12 @@
 
 USE school_db;
 
--- TODO: SELECT full_name,
---   CONCAT(full_name, ' | ', dept, ' | ', salary) AS label
--- FROM employees;
+SELECT full_name,
+  CONCAT(full_name, ' | ', dept, ' | ', salary) AS label
+FROM employees;
+USE school_db;
+
+SELECT 
+    full_name,
+    CONCAT(full_name, ' | ', dept, ' | ', salary) AS label
+FROM employees;
