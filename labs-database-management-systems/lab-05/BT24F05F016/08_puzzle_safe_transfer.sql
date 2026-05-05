@@ -13,9 +13,8 @@ CREATE OR REPLACE PROCEDURE safe_transfer(
 DECLARE
   donor_bal DECIMAL(12,2);
 BEGIN
-  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
-  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+  -- Hint: fetch the donor's balance into `donor_bal` (SELECT ... INTO donor_bal).
+  -- Hint: if `donor_bal` is less than `amount`, exit the procedure without changing rows.
+  -- Hint: otherwise perform two updates inside a transaction: subtract from donor, add to receiver.
 END;
 $$;
