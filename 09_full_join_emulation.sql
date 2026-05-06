@@ -5,3 +5,5 @@
 USE join_lab;
 
 -- TODO: Write a query your instructor can run; add a short comment on your strategy
+USE join_lab;
+SELECT s.name AS staff_name, p.title AS project_title, ps.hours     
