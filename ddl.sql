@@ -1,0 +1,64 @@
+CREATE DATABASE IF NOT EXISTS BookingSystemDB;
+USE BookingSystemDB;
+
+CREATE TABLE Departments (
+    DeptID INT PRIMARY KEY AUTO_INCREMENT,
+    DeptName VARCHAR(50) NOT NULL,
+    LeadManager VARCHAR(50)
+);
+
+CREATE TABLE Employees (
+    EmpID INT PRIMARY KEY AUTO_INCREMENT,
+    DeptID INT,
+    Name VARCHAR(50) NOT NULL,
+    Role VARCHAR(30),
+    Phone VARCHAR(15),
+    Salary DECIMAL(8,2),
+    FOREIGN KEY (DeptID) REFERENCES Departments(DeptID)
+);
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(50) NOT NULL,
+    Email VARCHAR(50) UNIQUE,
+    Phone VARCHAR(15),
+    DocProof VARCHAR(50)  
+);
+
+CREATE TABLE RoomClasses (
+    ClassID INT PRIMARY KEY AUTO_INCREMENT,
+    ClassName VARCHAR(30) NOT NULL,
+    Price DECIMAL(8,2) NOT NULL,
+    Beds INT DEFAULT 1
+);
+
+CREATE TABLE HotelRooms (
+    RoomID INT PRIMARY KEY AUTO_INCREMENT,
+    RoomTag VARCHAR(10) UNIQUE NOT NULL,
+    ClassID INT,
+    Status VARCHAR(20) DEFAULT 'Empty', 
+    FOREIGN KEY (ClassID) REFERENCES RoomClasses(ClassID)
+);
+
+CREATE TABLE Stays (
+    StayID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT,
+    RoomID INT,
+    EmpID INT,
+    InDate DATE NOT NULL,
+    OutDate DATE NOT NULL,
+    Status VARCHAR(20) DEFAULT 'Booked',
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (RoomID) REFERENCES HotelRooms(RoomID),
+    FOREIGN KEY (EmpID) REFERENCES Employees(EmpID)
+);
+
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+    StayID INT UNIQUE,
+    RoomTotal DECIMAL(10,2),
+    Taxes DECIMAL(5,2) DEFAULT 18.00,
+    FinalBill DECIMAL(10,2),
+    IsPaid BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (StayID) REFERENCES Stays(StayID)
+);
