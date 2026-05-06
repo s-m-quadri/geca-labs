@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+kirti,20,CSE
+poorva,21,ECE
+renu,19,MECH
+=======
+Alice,20,CSE
+Bob,21,ECE
+Cara,19,ME
+>>>>>>> 5ca9861c (BT25S05F002)
