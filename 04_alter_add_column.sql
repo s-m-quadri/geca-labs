@@ -3,5 +3,10 @@
 
 USE school_db;
 
+<<<<<<< HEAD
 ALTER TABLE students
   ADD COLUMN grade VARCHAR(10);
+=======
+-- TODO: Write your ALTER TABLE ADD COLUMN command here
+ALTER TABLE students ADD COLUMN grade VARCHAR(10);
+>>>>>>> 4380d56c (BT25S05F003)
