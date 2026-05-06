@@ -4,4 +4,14 @@
 
 USE join_lab;
 
--- TODO: Write a query your instructor can run; add a short comment on your strategy
+-- Strategy: Use UNION of LEFT JOIN and anti-join pattern to emulate FULL OUTER JOIN
+-- This shows all projects with their assigned staff, plus staff with no assignments, plus projects with no staff
+SELECT COALESCE(p.title, 'No Project') AS project_title, COALESCE(s.name, 'Unassigned') AS staff_name
+FROM projects p
+LEFT JOIN project_staff ps ON p.proj_id = ps.proj_id
+LEFT JOIN staff s ON ps.staff_id = s.staff_id
+UNION
+SELECT 'No Project', s.name
+FROM staff s
+WHERE NOT EXISTS (SELECT 1 FROM project_staff ps WHERE ps.staff_id = s.staff_id)
+ORDER BY project_title, staff_name;
