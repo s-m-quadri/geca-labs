@@ -4,3 +4,4 @@
 \c view_lab
 
 -- TODO: one SELECT; avoid hard-coded price values from the seed in the outer query
+POSTGRESQL          

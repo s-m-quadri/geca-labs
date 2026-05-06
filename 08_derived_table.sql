@@ -9,3 +9,11 @@
 --   GROUP BY order_id
 -- ) AS t
 -- WHERE t.rev > 30;
+POSTGRESQL
+SELECT * FROM (
+  SELECT order_id, SUM(ol.qty * p.unit_price) AS rev
+  FROM order_lines ol
+  JOIN products p ON ol.prod_id = p.prod_id
+  GROUP BY order_id
+) AS t
+WHERE t.rev > 30;           
