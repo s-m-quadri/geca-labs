@@ -10,3 +10,13 @@
 -- name VARCHAR(50)
 -- age INT
 -- grade VARCHAR(10)
+CREATE DATABASE school_db;
+
+USE school_db;
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    grade VARCHAR(10)
+);
