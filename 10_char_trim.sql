@@ -1,7 +1,9 @@
 USE school_db;
 
-SELECT 
-    full_name,
-    phone,
-    TRIM(phone) AS phone_clean
+-- TODO: SELECT full_name, phone,
+--   TRIM(phone) AS phone_clean
+-- FROM employees;
+
+SELECT full_name, phone,
+TRIM(phone) AS phone_clean
 FROM employees;
