@@ -9,3 +9,8 @@
 # Use f-strings for formatting: f"ID: {student_id}"
 
 
+student_id = 101
+student_name = "Mayur"
+student_marks = 85.5
+student_department = "CSE"
+print("ID:",student_id, "\nName:" , student_name , "\nMarks:" ,student_marks, "\nDept:", student_department)
