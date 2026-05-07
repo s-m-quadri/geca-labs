@@ -7,3 +7,8 @@ USE school_db;
 -- FROM students
 -- GROUP BY grade
 -- HAVING count > 1;
+USE school_db;
+SELECT grade, COUNT(*) as count
+FROM students
+GROUP BY grade
+HAVING count > 1;
