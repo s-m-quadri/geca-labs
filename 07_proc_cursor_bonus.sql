@@ -3,21 +3,15 @@
 -- Reset with 01_setup.sql if you need fresh numbers.
 \c proc_lab
 
-CREATE OR REPLACE PROCEDURE apply_bonuses()
-LANGUAGE plpgsql AS $$
+DROP FUNCTION IF EXISTS apply_bonus();
+CREATE FUNCTION apply_bonus()
+RETURNS VOID AS $$
 DECLARE
-  eid INT;
-  cur CURSOR FOR SELECT emp_id FROM payroll WHERE bonus_eligible = TRUE;
+    rec RECORD;
 BEGIN
-  OPEN cur;
-  LOOP
-    FETCH cur INTO eid;
-    EXIT WHEN NOT FOUND;
-    -- TODO: UPDATE payroll SET salary = salary + 100 WHERE emp_id = eid;
-  END LOOP;
-  CLOSE cur;
+    FOR rec IN SELECT id, salary FROM payroll WHERE bonus_eligible = TRUE
+    LOOP
+        UPDATE payroll SET salary = salary + 100 WHERE id = rec.id;
+    END LOOP;
 END;
-$$;
-
--- TODO: CALL apply_bonuses();
--- TODO: SELECT * FROM payroll;
+$$ LANGUAGE plpgsql;  

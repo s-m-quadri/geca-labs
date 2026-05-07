@@ -4,18 +4,6 @@
 -- Rules: if balance < amount, do not change any row; else subtract from donor, add to receiver.
 -- Test: SELECT * FROM accounts; CALL safe_transfer(1,2,100); SELECT * FROM accounts;
 \c proc_lab
-
-CREATE OR REPLACE PROCEDURE safe_transfer(
-  from_id INT,
-  to_id   INT,
-  amount  DECIMAL(12,2)
-) LANGUAGE plpgsql AS $$
-DECLARE
-  donor_bal DECIMAL(12,2);
-BEGIN
-  -- TODO: SELECT balance INTO donor_bal FROM accounts WHERE id = from_id;
-  -- TODO: IF donor_bal < amount THEN RETURN; END IF;
-  -- TODO: UPDATE accounts SET balance = balance - amount WHERE id = from_id;
-  -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
-END;
-$$;
+DROP FUNCTION IF EXISTS safe_transfer(from_id INT, to_id INT, amount NUMERIC);
+CREATE FUNCTION safe_transfer(from_id INT, to_id INT, amount NUMERIC)
+RETURNS VOID AS $$      
