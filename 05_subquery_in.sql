@@ -7,3 +7,10 @@
 --         JOIN order_lines ol ON o.order_id = ol.order_id
 --         WHERE ol.prod_id = 20
 --       );
+POSTGRESQL
+SELECT cust_name FROM customers
+WHERE cust_id IN (
+  SELECT o.cust_id FROM orders o
+  JOIN order_lines ol ON o.order_id = ol.order_id
+  WHERE ol.prod_id = 20
+);
