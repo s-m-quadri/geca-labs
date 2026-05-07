@@ -3,7 +3,5 @@
 
 USE join_lab;
 
-SELECT departments.dept_name, staff.name
-FROM staff
-RIGHT JOIN departments ON staff.dept_id = departments.dept_id
-ORDER BY departments.dept_id, staff.name;
+-- TODO: Rewrite the left-join pattern using RIGHT JOIN
+-- (departments on the left, staff on the right) so every staff appears once.
