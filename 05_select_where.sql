@@ -3,5 +3,4 @@
 
 USE school_db;
 
--- SELECT students WHERE grade = '10th'
-SELECT * FROM students WHERE grade = '10th';
+-- TODO: SELECT students WHERE grade = '10th'
