@@ -6,3 +6,6 @@ USE join_lab;
 -- TODO: SELECT a.name AS person_a, b.name AS person_b, a.dept_id
 -- FROM staff a
 -- JOIN staff b ON ...
+USE join_lab;                                                   
+
+ SELECT a.name AS person_a, b.name AS person_b, a.dept_id                   
