@@ -6,4 +6,12 @@
 
 USE join_lab;
 
--- TODO: Write one SELECT that returns exactly one name (the solver).
+-- Solution: Find staff who have hours on both Riddle-UI and Riddle-API (twin projects with same prefix and dept_id=1)
+SELECT DISTINCT s.name
+FROM staff s
+WHERE s.staff_id IN (
+  SELECT ps1.staff_id FROM project_staff ps1 WHERE ps1.proj_id = 101
+)
+AND s.staff_id IN (
+  SELECT ps2.staff_id FROM project_staff ps2 WHERE ps2.proj_id = 102
+);

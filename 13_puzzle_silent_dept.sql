@@ -3,4 +3,8 @@
 
 USE join_lab;
 
--- TODO: Use an outer join or NOT EXISTS pattern; return dept_name only
+-- Solution: Find department(s) with no sponsored projects using LEFT JOIN and NULL check
+SELECT d.dept_name
+FROM departments d
+LEFT JOIN projects p ON d.dept_id = p.dept_id
+WHERE p.proj_id IS NULL;
