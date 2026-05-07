@@ -7,3 +7,7 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+USE join_lab;                                                   
+
+ SELECT staff.name
+FROM project_staff                                  
