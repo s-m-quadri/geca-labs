@@ -3,4 +3,4 @@
 
 USE school_db;
 
--- TODO: SELECT students WHERE grade = '10th'
+SELECT students WHERE grade = '10th'
