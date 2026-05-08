@@ -14,3 +14,12 @@ CREATE TABLE students (
     age INT,
     email VARCHAR(100) UNIQUE
 );
+=======
+-- TODO: Write your CREATE TABLE command here
+CREATE TABLE students(
+    id int PRIMARY KEY,
+    name VARCHAR(50),
+    age int NOT NULL,
+    email NVARCHAR
+);
+ (BT24F05F031)
