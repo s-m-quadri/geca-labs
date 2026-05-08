@@ -1,6 +1,5 @@
 -- Task 15: Check Status
 -- Inspect database state anytime
-
 SHOW DATABASES;
 
 USE school_db;
