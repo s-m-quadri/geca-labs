@@ -1,0 +1,4 @@
+USE school_db;
+SHOW TABLES;
+DROP TABLE students;
+SHOW TABLES;
