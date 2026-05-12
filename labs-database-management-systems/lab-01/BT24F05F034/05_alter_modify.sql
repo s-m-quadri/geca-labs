@@ -4,3 +4,4 @@
 USE school_db;
 
 -- TODO: Write your ALTER TABLE MODIFY COLUMN command here
+ALTER TABLE student MODIFY age TINYINT NOT NULL;
