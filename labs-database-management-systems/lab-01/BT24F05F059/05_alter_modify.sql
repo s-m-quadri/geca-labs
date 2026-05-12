@@ -1,0 +1,3 @@
+USE school_db;
+ALTER TABLE students MODIFY COLUMN age TINYINT NOT NULL;
+DESCRIBE students;
