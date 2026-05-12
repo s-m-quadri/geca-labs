@@ -342,7 +342,7 @@ _LITERAL_RE = re.compile(r"'([^']*)'|\"([^\"]*)\"|([-]?\b\d+(?:\.\d+)?\b)")
 def _extract_literals(sql: str) -> str:
     """Extract only string/numeric literals from SQL — what the student actually chose."""
     return " ".join(
-        m.group(1) or m.group(2) or m.group(3)
+        next(g for g in (m.group(1), m.group(2), m.group(3)) if g is not None)
         for m in _LITERAL_RE.finditer(sql)
     ).upper()
 
