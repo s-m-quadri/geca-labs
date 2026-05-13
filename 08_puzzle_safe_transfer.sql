@@ -19,3 +19,4 @@ BEGIN
   -- TODO: UPDATE accounts SET balance = balance + amount WHERE id = to_id;
 END;
 $$;
+
