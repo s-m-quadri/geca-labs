@@ -3,5 +3,10 @@
 
 USE join_lab;
 
--- TODO: Rewrite the left-join pattern using RIGHT JOIN
--- (departments on the left, staff on the right) so every staff appears once.
+<<<<<<< HEAD
+ Rewrite the left-join pattern using RIGHT JOIN
+ (departments on the left, staff on the right) so every staff appears once.
+=======
+Rewrite the left-join pattern using RIGHT JOIN
+--(departments on the left, staff on the right) so every staff appears once.
+>>>>>>> c5bc72027f82f845608c3256226d1211c296effc
