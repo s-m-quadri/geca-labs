@@ -4,5 +4,6 @@
 
 # 💡 TIP:
 # Use the print() function to display text
-
+print("hello world")
+print(""Welcome to DBMS Lab")
 
