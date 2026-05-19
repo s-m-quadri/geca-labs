@@ -8,3 +8,10 @@
 #     print(f"Student: {param1}")
 
 
+# Define function
+def print_student(name, age):
+    print(f"Student: {name}, Age: {age}")
+
+# Call function
+print_student("Alice", 15)
+print_student("Bob", 16)

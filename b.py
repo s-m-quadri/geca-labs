@@ -9,3 +9,5 @@
 # Use f-strings for formatting: f"ID: {student_id}"
 
 
+student_id=5
+print(f"ID: {student_id}")
