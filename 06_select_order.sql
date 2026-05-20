@@ -4,3 +4,10 @@
 USE school_db;
 
 -- TODO: SELECT all students ORDER BY age DESC
+
+SELECT * FROM students ORDER BY age DESC;
+-- Verify the output
+SELECT * FROM students ORDER BY age DESC;
+
+
+    
