@@ -1,6 +1,6 @@
--- Task 8: Three-way join — staff name, department name, project title, hours
-
-USE join_lab;
-
--- TODO: From project_staff, join staff and projects (and departments if you want dept_name)
--- Columns: staff.name, departments.dept_name, projects.title, project_staff.hours
+-- Hint: Start with project_staff as the base table.
+-- Join to staff on staff_id to get staff.name and dept_id.
+-- Join to projects on proj_id to get projects.title and another dept_id.
+-- To get departments.dept_name, join departments on dept_id (but which one? staff or projects?).
+-- Sketch: project_staff INNER JOIN staff ON ... INNER JOIN projects ON ... LEFT JOIN departments ON ...
+-- What keys link them? Ask yourself: which entity is missing if not joined?

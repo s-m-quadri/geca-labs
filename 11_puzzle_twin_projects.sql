@@ -7,3 +7,4 @@
 USE join_lab;
 
 -- TODO: Write one SELECT that returns exactly one name (the solver).
+To solve this puzzle, restate the story in relational terms: Which entities (tables) represent the "sibling projects," the "home department," and the "person who booked hours on both"? What conditions define "share a name prefix" and "same home department"? Which joins (inner or outer) might help find the unique person across project_staff? Sketch the table relationships on paper first.

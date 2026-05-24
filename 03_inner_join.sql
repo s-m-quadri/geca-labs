@@ -1,7 +1,6 @@
--- Task 3: Inner join — staff with their department name
+To complete Task 3, focus on uncommenting and verifying the SELECT statement. 
 
-USE join_lab;
+- Which column in `staff` matches the primary key in `departments`?
+- Sketch the join: each staff row connects to one department row where the IDs match.
 
--- TODO: SELECT staff.name, departments.dept_name
--- FROM staff
--- INNER JOIN departments ON staff.dept_id = departments.dept_id;
+Run `14_check_status.sql` to see sample data and confirm your query. What does the result look like?
