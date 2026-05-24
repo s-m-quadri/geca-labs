@@ -4,4 +4,4 @@
 
 USE join_lab;
 
--- TODO: Write a query your instructor can run; add a short comment on your strategy
+-- TODO:  Write a query your instructor can run; add a short comment on your strategy

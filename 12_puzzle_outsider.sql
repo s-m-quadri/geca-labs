@@ -4,4 +4,4 @@
 
 USE join_lab;
 
--- TODO: SELECT name, title (or equivalent) — rows for every such outsider
+SELECT name, title (or equivalent) — rows for every such outsider
