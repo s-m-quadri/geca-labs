@@ -8,4 +8,9 @@
 # Loop: for student in students:
 # Count: len(students)
 
+list1 = ["Shraddha","Shlok","Parth","Pranit","pratik"]
+n = 5
+for i in range(0,5):
+    print(list1[i])
 
+     
