@@ -11,3 +11,10 @@
 #          print(f.read())
 
 
+with open("students.txt", "w") as f:
+    f.write("shraddha,20,CSE\n")
+    f.write("anushka,21,ECE\n")
+    f.write("rucha,19,MECH\n")
+
+with open("students.txt", "r") as f:
+    print(f.read())

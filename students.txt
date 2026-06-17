@@ -1,0 +1,3 @@
+shraddha,20,CSE
+anushka,21,ECE
+rucha,19,MECH
